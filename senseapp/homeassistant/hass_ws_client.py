@@ -36,16 +36,13 @@ async def listen_for_message():
 async def send_data(data):
     global websocket
     if websocket:
-        print(f"Send data to websocket: {data}")
         await websocket.send(data)
     else:
-        print(f"websocket not initializade")
+        print(f"websocket not initialized!")
 
 
 async def handle_message(message):
-    print(f"message: {message}")
     jsonData = json.loads(message)
     messageType = jsonData.get(MESSAGE_TYPE)
-    print(f"messageType: {messageType}")
     if messageType == "auth_required":
         await auth(websocket, message)

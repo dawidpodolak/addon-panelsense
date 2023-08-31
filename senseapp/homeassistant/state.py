@@ -1,8 +1,9 @@
 import asyncio
 import json
+from homeassistant.ids import get_message_id
 
 STATE_SUBSCRIPTION = {
-    "id": 18,
+    "id": get_message_id(),
     "type": "subscribe_events",
     "event_type": "state_changed"
 }
