@@ -1,9 +1,8 @@
 import json
 import websockets
 import logging
-import asyncio
 from homeassistant.auth_ha import auth
-from homeassistant.state import subscribe_to_state
+from homeassistant.components import event_observer
 
 HOME_ASSISTANT_URL = "ws://172.30.32.1:8123/api/websocket"
 websocket = None
@@ -23,14 +22,14 @@ async def start_haws_client():
     response = await websocket.recv()
     await handle_message(response)
     print(f"response1: {response}")
-    await subscribe_to_state(websocket)
+    await event_observer.subscribe_to_state(websocket)
     await listen_for_message()
 
 
 async def listen_for_message():
     while True:
         response = await websocket.recv()
-        print(f"response2: {response}")
+        await handle_message(response)
 
 
 async def send_data(data):
@@ -46,3 +45,5 @@ async def handle_message(message):
     messageType = jsonData.get(MESSAGE_TYPE)
     if messageType == "auth_required":
         await auth(websocket, message)
+    elif messageType == "event":
+        await event_observer.handle_state(message)

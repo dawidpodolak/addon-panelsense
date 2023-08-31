@@ -1,4 +1,3 @@
-import asyncio
 import json
 from homeassistant.ids import get_message_id
 
@@ -11,3 +10,7 @@ STATE_SUBSCRIPTION = {
 
 async def subscribe_to_state(websocket):
     await websocket.send(json.dumps(STATE_SUBSCRIPTION))
+
+
+async def handle_state(message):
+    print(f"state ===> {message}")
