@@ -1,6 +1,7 @@
-from homeassistant import hass_ws_client
+from homeassistant.hass_ws_client import HomeAssistantClient
 from homeassistant.components.light import *
-from server import sense_server
+from server.sense_server import PanelSenseServer
+from homeassistant.components.event_observer import EventObserver
 import asyncio
 import sys
 
@@ -28,9 +29,10 @@ async def listening_user_input():
 
 
 def main():
+    ha_event_observer = EventObserver()
+    haClient = HomeAssistantClient(loop, ha_event_observer)
+    panelSenseSrver = PanelSenseServer(loop)
     loop.create_task(listening_user_input())
-    loop.create_task(sense_server.start_sense_server())
-    loop.create_task(hass_ws_client.start_haws_client())
     loop.run_forever()
 
 

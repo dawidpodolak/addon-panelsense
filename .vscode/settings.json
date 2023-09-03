@@ -3,5 +3,5 @@
         "editor.defaultFormatter": "ms-python.autopep8"
     },
     "python.formatting.provider": "black",
-    "python.languageServer": "Default"
+    "python.languageServer": "Pylance"
 }

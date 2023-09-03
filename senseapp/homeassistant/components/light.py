@@ -39,3 +39,7 @@ async def toggle_light(entity):
     data_to_send = get_entity_data(entity)
     data_to_send["service"] = SWITCH_SERVICE
     await hass_ws_client.send_data(json.dumps(data_to_send))
+
+
+async def process_light_state(entity, state):
+    print(f"entity: {entity} === >>> {state}")
