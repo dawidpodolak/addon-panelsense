@@ -1,8 +1,10 @@
 from pydantic import BaseModel
-from typing import List, Optional
+from typing import Optional, List
 
 
-class StateAttributes(BaseModel):
+class LightState(BaseModel):
+
+    on: bool = False
     brightness: Optional[int] = None
     color_mode: Optional[str] = None
     effect: Optional[str] = None
@@ -16,25 +18,3 @@ class StateAttributes(BaseModel):
     rgb_color: Optional[List[int]] = None
     supported_color_modes: Optional[List[str]] = None
     supported_features: Optional[int] = None
-
-
-class HaEventState(BaseModel):
-    entity_id: str
-    state: str
-    attributes: StateAttributes
-
-
-class HaEventData(BaseModel):
-    entity_id: str
-    new_state: HaEventState
-
-
-class HaEvent(BaseModel):
-    event_type: str
-    data: HaEventData
-
-
-class HaMessage(BaseModel):
-    id: Optional[int] = None
-    type: str
-    event: Optional[HaEvent] = None

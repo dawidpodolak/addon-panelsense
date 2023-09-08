@@ -56,3 +56,6 @@ class HomeAssistantClient:
             await auth(websocket, message)
         elif ha_message.type == "event" and ha_message.event:
             await self.event_observer.handle_state(ha_message.event)
+
+    def set_message_callback(self, callback):
+        self.event_observer.set_message_callback(callback)

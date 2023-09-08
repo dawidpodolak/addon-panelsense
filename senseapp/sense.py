@@ -2,10 +2,12 @@ from homeassistant.hass_ws_client import HomeAssistantClient
 from homeassistant.components.light import *
 from server.sense_server import PanelSenseServer
 from homeassistant.components.event_observer import EventObserver
+from mediator.mediator import Mediator
 import asyncio
 import sys
 
 loop = asyncio.get_event_loop()
+mediator: Mediator
 
 
 async def get_steam_reader(pipe) -> str:
@@ -30,8 +32,9 @@ async def listening_user_input():
 
 def main():
     ha_event_observer = EventObserver()
-    haClient = HomeAssistantClient(loop, ha_event_observer)
-    panelSenseSrver = PanelSenseServer(loop)
+    ha_client = HomeAssistantClient(loop, ha_event_observer)
+    panel_sense_server = PanelSenseServer(loop)
+    mediator = Mediator(ha_client, panel_sense_server)
     loop.create_task(listening_user_input())
     loop.run_forever()
 
