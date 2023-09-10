@@ -5,7 +5,7 @@ import asyncio
 from homeassistant.auth_ha import auth
 from homeassistant.components.event_observer import EventObserver
 from asyncio import AbstractEventLoop
-from homeassistant.model.ha_message import *
+from homeassistant.model.ha_income_message import *
 
 
 class HomeAssistantClient:
@@ -49,7 +49,7 @@ class HomeAssistantClient:
             print(f"websocket not initialized!")
 
     async def handle_message(self, message):
-        ha_message = HaMessage.model_validate_json(message)
+        ha_message = HaIncomeMessage.model_validate_json(message)
         if ha_message.type == "auth_required":
             await auth(websocket, message)
         elif ha_message.type == "event" and ha_message.event:

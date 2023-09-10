@@ -1,5 +1,5 @@
 import json
-from homeassistant.model.ha_message import HaEvent, HaEventData, HaEventState
+from homeassistant.model.ha_income_message import HaEvent, HaEventData, HaEventState
 from homeassistant.ids import get_message_id
 from .light import process_light_state
 
