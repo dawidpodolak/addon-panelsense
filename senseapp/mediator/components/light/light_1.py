@@ -2,15 +2,19 @@ from mediator.components.base_component import BaseComponent
 from homeassistant.model.ha_message import HaEventData
 from mediator.components.light.state import LightState
 from mediator.components.light.light_model import LightModel
+from server.model.server_message import LightMessage
+from typing import Optional
 
 
 class Light(BaseComponent):
 
     state = LightState()
 
-    def __init__(self, haEventData: HaEventData):
+    def __init__(self, haEventData: Optional[HaEventData] = None, light_message: Optional[LightMessage] = None):
         if haEventData:
             self.updateState(haEventData)
+        elif light_message:
+            self.update_state_from_server(light_message)
 
     def updateState(self, haEventData: HaEventData):
         self.entity_id = haEventData.entity_id
@@ -29,8 +33,17 @@ class Light(BaseComponent):
         self.state.supported_color_modes = haEventData.new_state.attributes.supported_color_modes
         self.state.supported_features = haEventData.new_state.attributes.supported_features
 
+    def getHomeAssistantMessage(self) -> str:
+        return "This is test!"
+
     def getSenseServerMessage(self):
         return LightModel(
             entity_id=self.entity_id,
             state=self.state
         )
+
+    def update_state_from_server(self, light_message: LightMessage):
+        self.entity_id = light_message.entity_id
+        self.state.on = light_message.state.on
+        print(
+            f"update_state_from_server: entity_id: {self.entity_id}, state: {self.state.on}")

@@ -23,8 +23,6 @@ class EventObserver:
 
     async def process_state(self, entity, state: HaEventData):
         domain = entity.split('.')[0]
-        # print(
-        # f"domain: {domain} => {json.dumps(state.model_dump(), indent = 4)}")
         if domain == 'light' and self.callback_message:
             self.callback_message(state)
 

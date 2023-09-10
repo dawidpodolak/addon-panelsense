@@ -40,17 +40,15 @@ class HomeAssistantClient:
             response = await websocket.recv()
             await self.handle_message(response)
 
-    async def send_data(self, data):
+    def send_data(self, data):
         global websocket
+        print(f"Sending data: {data}")
         if websocket:
-            await websocket.send(data)
+            asyncio.create_task(websocket.send(data))
         else:
             print(f"websocket not initialized!")
 
     async def handle_message(self, message):
-        jsonData = json.loads(message)
-
-        messageType = jsonData.get(self.MESSAGE_TYPE)
         ha_message = HaMessage.model_validate_json(message)
         if ha_message.type == "auth_required":
             await auth(websocket, message)

@@ -5,7 +5,7 @@ from mediator.components.light.light_model import LightModel
 class BaseComponent():
     entity_id: str
 
-    def getHassMessage(self):
+    def getHomeAssistantMessage(self) -> str:
         pass
 
     def getSenseServerMessage(self) -> LightModel:

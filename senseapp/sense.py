@@ -1,4 +1,4 @@
-from homeassistant.hass_ws_client import HomeAssistantClient
+from homeassistant.home_assistant_client import HomeAssistantClient
 from homeassistant.components.light import *
 from server.sense_server import PanelSenseServer
 from homeassistant.components.event_observer import EventObserver
