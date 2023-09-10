@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from mediator.components.light.state import LightState
+from mediator.components.light.light_state import LightState
 
 
 class LightModel(BaseModel):

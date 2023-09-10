@@ -6,7 +6,7 @@ from mediator.components.base_component import BaseComponent
 import json
 from server.model.server_message import ServerMessage
 from server.model.server_message import LightMessage
-from mediator.components.light.light_1 import Light
+from mediator.components.light.light_component import Light
 from typing import Callable
 
 

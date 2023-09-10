@@ -1,7 +1,7 @@
 from homeassistant.home_assistant_client import HomeAssistantClient
 from homeassistant.model.ha_message import HaEventData
 from server.sense_server import PanelSenseServer
-from mediator.components.light.light_1 import Light
+from mediator.components.light.light_component import Light
 from mediator.components.base_component import BaseComponent
 
 
