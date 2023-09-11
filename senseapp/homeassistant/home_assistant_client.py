@@ -31,7 +31,6 @@ class HomeAssistantClient:
 
         response = await websocket.recv()
         await self.handle_message(response)
-        print(f"response1: {response}")
         await self.event_observer.subscribe_to_state(websocket)
         await self.listen_for_message()
 
@@ -42,13 +41,15 @@ class HomeAssistantClient:
 
     def send_data(self, data):
         global websocket
-        print(f"Sending data: {data}")
+        json_message = json.dumps(data.model_dump(exclude_none=True))
+        print(f"-> HA: {json_message}")
         if websocket:
-            asyncio.create_task(websocket.send(data))
+            asyncio.create_task(websocket.send(json_message))
         else:
             print(f"websocket not initialized!")
 
     async def handle_message(self, message):
+        print(f"HA ->: {message}")
         ha_message = HaIncomeMessage.model_validate_json(message)
         if ha_message.type == "auth_required":
             await auth(websocket, message)

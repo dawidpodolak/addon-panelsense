@@ -1,5 +1,4 @@
 from homeassistant.home_assistant_client import HomeAssistantClient
-from homeassistant.components.light import *
 from server.sense_server import PanelSenseServer
 from homeassistant.components.event_observer import EventObserver
 from mediator.mediator import Mediator
@@ -22,12 +21,6 @@ async def get_steam_reader(pipe) -> str:
 async def listening_user_input():
     while True:
         user_input = await get_steam_reader(sys.stdin)
-        if user_input == '1':
-            await turn_light_on("light.bed_light")
-        elif user_input == '2':
-            await turn_light_off("light.bed_light")
-        elif user_input == '3':
-            await toggle_light("light.bed_light")
 
 
 def main():
