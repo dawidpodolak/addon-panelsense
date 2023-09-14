@@ -1,6 +1,7 @@
-from pydantic import BaseModel
-from mediator.components.light.light_model import LightModel
 from homeassistant.model.ha_outcome_message import HaOutcomeMessage
+from mediator.components.light.light_model import LightModel
+from pydantic import BaseModel
+from server.model.server_message import ServerMessage
 
 
 class BaseComponent():
@@ -9,5 +10,5 @@ class BaseComponent():
     def getHomeAssistantMessage(self) -> HaOutcomeMessage:
         pass
 
-    def getSenseServerMessage(self) -> LightModel:
+    def getSenseServerMessage(self) -> ServerMessage:
         pass

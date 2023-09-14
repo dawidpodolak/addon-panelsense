@@ -1,5 +1,6 @@
-from pydantic import BaseModel
 from typing import List, Optional
+
+from pydantic import BaseModel
 
 
 class ServiceData(BaseModel):
@@ -12,6 +13,7 @@ class LightServiceData(ServiceData):
     rgb_color: Optional[List[int]] = None
     color_temp_kelvin: Optional[int] = None
     brightness: Optional[int] = None
+    position: Optional[int] = None
 
 
 class Target(BaseModel):

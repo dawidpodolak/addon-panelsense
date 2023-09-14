@@ -1,13 +1,18 @@
 import asyncio
-import websockets
-from websockets import WebSocketClientProtocol
-from asyncio import AbstractEventLoop
-from mediator.components.base_component import BaseComponent
 import json
-from server.model.server_message import ServerMessage
-from server.model.server_message import LightMessage
-from mediator.components.light.light_component import Light
+from asyncio import AbstractEventLoop
 from typing import Callable
+from pydantic import ValidationError
+
+import websockets
+from mediator.components.base_component import BaseComponent
+from mediator.components.cover.cover_component import Cover
+from mediator.components.light.light_component import Light
+from server.model.server_cover_message import CoverMessage
+from server.model.server_message import *
+from server.model.server_message import ServerMessage
+from websockets import WebSocketClientProtocol
+from server.model.error import Error, ErrorCode
 
 
 class PanelSenseServer:
@@ -22,10 +27,10 @@ class PanelSenseServer:
     connected_clients = set()
     callback = None
 
-    async def message_handler(self, websocket):
+    async def message_handler(self, websocket: WebSocketClientProtocol):
         self.connected_clients.add(websocket)
         async for message in websocket:
-            self.handle_message(message)
+            self.handle_message(websocket, message)
             print(f"Reveived message:\n {message}")
 
     async def start_sense_server(self):
@@ -35,22 +40,60 @@ class PanelSenseServer:
 
     async def send_message_async(self, message: BaseComponent):
         for client in self.connected_clients:
-            await client.send(json.dumps(message.getSenseServerMessage().model_dump()))
+            print(f"SERVER ->: {message.getSenseServerMessage()}\n")
+            await client.send(json.dumps(message.getSenseServerMessage().model_dump(exclude_none=True)))
 
-    def send_message(self, message: BaseComponent):
-        print(f"Sending message: {message.getSenseServerMessage()}")
-        # asyncio.create_task(self.send_message_async(message))
+    async def send_error_async(self, client: WebSocketClientProtocol, error: Error):
+        await client.send(error.model_dump_json(exclude_none=True))
 
-    def handle_message(self, message):
-        server_message = ServerMessage.model_validate_json(message)
+    def send_message(self, component: BaseComponent):
+        asyncio.create_task(self.send_message_async(component))
+
+    def send_error(self, client: WebSocketClientProtocol, error_code: ErrorCode, error_message: str):
+        asyncio.create_task(self.send_error_async(
+            client, Error(error_code=error_code, message=error_message)))
+
+    def handle_message(self, client: WebSocketClientProtocol, message):
+        server_message: ServerMessage
+        try:
+            server_message = ServerMessage.model_validate_json(message)
+        except ValidationError as e:
+            print(f"SERVER ERROR -> {message}")
+            self.send_error(client, ErrorCode.MISSING_ENTITY_ID,
+                            "Missing entity_id")
+            return
+
         domain = server_message.entity_id.split('.')[0]
-
         if domain == 'light':
-            light_message = LightMessage.model_validate_json(message)
-            print(
-                f"handle light message: {light_message} ---->> {self.callback}")
-            light = Light(None, light_message=light_message)
-            self.callback(light)
+            self.handle_light(client, message)
+        elif domain == 'cover':
+            self.handle_cover(client, message)
 
     def set_message_callback(self, callback):
         self.callback = callback
+
+    def handle_light(self, client: WebSocketClientProtocol, message):
+        light_message: LightMessage
+        try:
+            light_message = LightMessage.model_validate_json(message)
+        except ValidationError as e:
+            print(f"SERVER ERROR -> {message}")
+            self.send_error(client, ErrorCode.INVALID_DATA,
+                            "Invalid light data")
+            return
+
+        light = Light(None, light_message=light_message)
+        self.callback(light)
+
+    def handle_cover(self, client: WebSocketClientProtocol, message):
+        cover_message: CoverMessage
+        try:
+            cover_message = CoverMessage.model_validate_json(message)
+        except ValidationError as e:
+            print(f"SERVER ERROR -> {message}")
+            self.send_error(client, ErrorCode.INVALID_DATA,
+                            "Invalid cover data")
+            return
+
+        cover = Cover(cover_message=cover_message)
+        self.callback(cover)

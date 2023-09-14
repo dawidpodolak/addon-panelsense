@@ -1,9 +1,10 @@
-from homeassistant.home_assistant_client import HomeAssistantClient
-from server.sense_server import PanelSenseServer
-from homeassistant.components.event_observer import EventObserver
-from mediator.mediator import Mediator
 import asyncio
 import sys
+
+from homeassistant.components.event_observer import EventObserver
+from homeassistant.home_assistant_client import HomeAssistantClient
+from mediator.mediator import Mediator
+from server.sense_server import PanelSenseServer
 
 loop = asyncio.get_event_loop()
 mediator: Mediator

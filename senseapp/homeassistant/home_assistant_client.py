@@ -1,11 +1,14 @@
-import json
-import websockets
-import logging
 import asyncio
+import json
+import logging
+from asyncio import AbstractEventLoop
+
+import websockets
 from homeassistant.auth_ha import auth
 from homeassistant.components.event_observer import EventObserver
-from asyncio import AbstractEventLoop
 from homeassistant.model.ha_income_message import *
+from mediator.components.cover.cover_component import Cover
+from mediator.components.light.light_component import Light
 
 
 class HomeAssistantClient:
@@ -14,6 +17,7 @@ class HomeAssistantClient:
     websocket = None
     MESSAGE_TYPE = "type"
     event_observer: EventObserver
+    callback_message = None
 
     def __init__(self, loop: AbstractEventLoop, event_observer: EventObserver):
         self.event_observer = event_observer
@@ -21,10 +25,10 @@ class HomeAssistantClient:
 
     async def start_haws_client(self):
         global websocket
-        logging.basicConfig(
-            format="%(message)s",
-            level=logging.DEBUG,
-        )
+        # logging.basicConfig(
+        #     format="%(message)s",
+        #     level=logging.DEBUG,
+        # )
         print(f"Starting websocket ....")
         websocket = await websockets.connect(self.HOME_ASSISTANT_URL)
         print(f"Websocket started!")
@@ -42,19 +46,30 @@ class HomeAssistantClient:
     def send_data(self, data):
         global websocket
         json_message = json.dumps(data.model_dump(exclude_none=True))
-        print(f"-> HA: {json_message}")
+        print(f"-> HA: {json_message}\n")
         if websocket:
             asyncio.create_task(websocket.send(json_message))
         else:
             print(f"websocket not initialized!")
 
     async def handle_message(self, message):
-        print(f"HA ->: {message}")
+        print(f"HA ->: {message}\n")
         ha_message = HaIncomeMessage.model_validate_json(message)
         if ha_message.type == "auth_required":
             await auth(websocket, message)
         elif ha_message.type == "event" and ha_message.event:
-            await self.event_observer.handle_state(ha_message.event)
+            await self.process_state_changed(ha_message.event)
+
+    async def process_state_changed(self, event: HaEvent):
+        entity = event.data.entity_id
+        state: HaEventData = event.data
+        domain = entity.split('.')[0]
+        if domain == 'light' and self.callback_message:
+            light = Light(state)
+            self.callback_message(light)
+        elif domain == 'cover' and self.callback_message:
+            cover = Cover(state)
+            self.callback_message(cover)
 
     def set_message_callback(self, callback):
-        self.event_observer.set_message_callback(callback)
+        self.callback_message = callback
