@@ -1,7 +1,7 @@
 import asyncio
 import json
 from asyncio import AbstractEventLoop
-from typing import Callable
+from typing import Callable, Optional
 from pydantic import ValidationError
 
 import websockets
@@ -11,7 +11,11 @@ from mediator.components.light.light_component import Light
 from server.model.server_cover_message import CoverMessage
 from server.model.server_message import *
 from server.model.server_message import ServerMessage
-from websockets import WebSocketClientProtocol
+from websockets.client import WebSocketClientProtocol
+from websockets.server import ServerConnection
+from websockets.http11 import Request, Response
+from http import HTTPStatus
+import websockets
 from server.model.error import Error, ErrorCode
 
 
@@ -33,9 +37,21 @@ class PanelSenseServer:
             self.handle_message(websocket, message)
             print(f"Reveived message:\n {message}")
 
+    async def process_request(self, function: Callable[[ServerConnection, Request], Optional[Response]]):
+
+        print(f"Connection request!")
+        pass
+
+    async def process_request1(self, path, request_headers):
+        authorization = request_headers["Authorization"]
+        print(
+            f"Connection request1!path: {path}, request_headers: {authorization}")
+        if authorization is None:
+            return HTTPStatus.UNAUTHORIZED, [], b"Missing token\n"
+
     async def start_sense_server(self):
         print(f"Server starting at ws://localhost:{self.SENSE_SERVER_PORT}")
-        self.websocket_server = await websockets.serve(self.message_handler, "0.0.0.0", self.SENSE_SERVER_PORT)
+        self.websocket_server = await websockets.serve(self.message_handler, "0.0.0.0", self.SENSE_SERVER_PORT, process_request=self.process_request1)
         await self.websocket_server.serve_forever()
 
     async def send_message_async(self, message: BaseComponent):
