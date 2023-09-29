@@ -14,9 +14,9 @@ for arg in "$@"; do
   esac
 done
 
- 
+
 if [ "$USE_DOCKER" = "true" ]; then
-  docker build -t panel_sense . 
+  docker build -t panel_sense .
   docker run -p 8652:8652 panel_sense
 else
   ./start.sh

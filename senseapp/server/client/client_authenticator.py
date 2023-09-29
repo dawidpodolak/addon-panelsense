@@ -21,8 +21,6 @@ class ClientAuthenticator:
     encoded_credentials: str
 
     def __init__(self, server_credentials: ServerCredentials):
-        _LOGGER.info(
-            f"Initializing ClientAuthenticator")
         self.user_name = server_credentials.username
         self.password = server_credentials.password
         self.encoded_credentials = base64.b64encode(
