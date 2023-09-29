@@ -11,4 +11,3 @@ ports:
 map:
   - config:rw
   - ssl
-image: repo/{arch}-my-custom-addon
