@@ -1,5 +1,6 @@
-from pydantic import BaseModel
 from enum import Enum
+
+from .base import MessageType, ServerOutgoingMessage
 
 
 class ErrorCode(Enum):
@@ -7,6 +8,7 @@ class ErrorCode(Enum):
     INVALID_DATA = "INVALID_DATA"
 
 
-class Error(BaseModel):
+class ErrorResponse(ServerOutgoingMessage):
     error_code: ErrorCode
     message: str
+    type: MessageType = MessageType.ERROR

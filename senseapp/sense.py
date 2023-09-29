@@ -4,6 +4,7 @@ import sys
 from homeassistant.components.event_observer import EventObserver
 from homeassistant.home_assistant_client import HomeAssistantClient
 from mediator.mediator import Mediator
+from server.model.server_credentials import ServerCredentials
 from server.sense_server import PanelSenseServer
 
 loop = asyncio.get_event_loop()
@@ -27,7 +28,8 @@ async def listening_user_input():
 def main():
     ha_event_observer = EventObserver()
     ha_client = HomeAssistantClient(loop, ha_event_observer)
-    panel_sense_server = PanelSenseServer(loop)
+    server_credentials = ServerCredentials("admin", "admin")
+    panel_sense_server = PanelSenseServer(loop, server_credentials)
     mediator = Mediator(ha_client, panel_sense_server)
     loop.create_task(listening_user_input())
     loop.run_forever()

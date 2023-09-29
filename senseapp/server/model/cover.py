@@ -1,7 +1,9 @@
 from typing import List, Optional
 
 from pydantic import BaseModel
-from server.model.server_message import ServerMessage
+from server.model.light import ServerMessage
+
+from .base import ServerOutgoingMessage
 
 
 class CoverState(BaseModel):

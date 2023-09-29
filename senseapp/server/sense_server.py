@@ -1,28 +1,28 @@
 import asyncio
 import json
 from asyncio import AbstractEventLoop
+from http import HTTPStatus
 from typing import Callable, Optional
-from pydantic import ValidationError
 
 import websockets
 from mediator.components.base_component import BaseComponent
 from mediator.components.cover.cover_component import Cover
 from mediator.components.light.light_component import Light
-from server.model.server_cover_message import CoverMessage
-from server.model.server_message import *
-from server.model.server_message import ServerMessage
+from pydantic import ValidationError
+from server.client.client_authenticator import ClientAuthenticator
+from server.model.cover import CoverMessage
+from server.model.error import ErrorCode, ErrorResponse
+from server.model.light import *
+from server.model.light import ServerMessage
+from server.model.server_credentials import ServerCredentials
 from websockets.client import WebSocketClientProtocol
-from websockets.server import ServerConnection
 from websockets.http11 import Request, Response
-from http import HTTPStatus
-import websockets
-from server.model.error import Error, ErrorCode
+from websockets.server import ServerConnection
 
 
 class PanelSenseServer:
 
-    def __init__(self, loop: AbstractEventLoop):
-        loop.create_task(self.start_sense_server())
+    client_authenticator: ClientAuthenticator
 
     SENSE_SERVER_PORT = 8652
 
@@ -31,8 +31,20 @@ class PanelSenseServer:
     connected_clients = set()
     callback = None
 
+    def __init__(self, loop: AbstractEventLoop, server_credentials: ServerCredentials):
+        loop.create_task(self.start_sense_server())
+        self.client_authenticator = ClientAuthenticator(server_credentials)
+
     async def message_handler(self, websocket: WebSocketClientProtocol):
-        self.connected_clients.add(websocket)
+        auth_message = await websocket.recv()
+        try:
+            sense_client = await self.client_authenticator.authenticate(auth_message, websocket)
+            print(f"auth_message: {auth_message}")
+            self.connected_clients.add(websocket)
+        except BaseException as e:
+            await self.send_error_async(websocket, e)
+            await websocket.close()
+            return
         async for message in websocket:
             self.handle_message(websocket, message)
             print(f"Reveived message:\n {message}")
@@ -51,7 +63,7 @@ class PanelSenseServer:
 
     async def start_sense_server(self):
         print(f"Server starting at ws://localhost:{self.SENSE_SERVER_PORT}")
-        self.websocket_server = await websockets.serve(self.message_handler, "0.0.0.0", self.SENSE_SERVER_PORT, process_request=self.process_request1)
+        self.websocket_server = await websockets.serve(self.message_handler, "0.0.0.0", self.SENSE_SERVER_PORT)
         await self.websocket_server.serve_forever()
 
     async def send_message_async(self, message: BaseComponent):
@@ -59,7 +71,7 @@ class PanelSenseServer:
             print(f"SERVER ->: {message.getSenseServerMessage()}\n")
             await client.send(json.dumps(message.getSenseServerMessage().model_dump(exclude_none=True)))
 
-    async def send_error_async(self, client: WebSocketClientProtocol, error: Error):
+    async def send_error_async(self, client: WebSocketClientProtocol, error: ErrorResponse):
         await client.send(error.model_dump_json(exclude_none=True))
 
     def send_message(self, component: BaseComponent):
@@ -67,7 +79,7 @@ class PanelSenseServer:
 
     def send_error(self, client: WebSocketClientProtocol, error_code: ErrorCode, error_message: str):
         asyncio.create_task(self.send_error_async(
-            client, Error(error_code=error_code, message=error_message)))
+            client, ErrorResponse(error_code=error_code, message=error_message)))
 
     def handle_message(self, client: WebSocketClientProtocol, message):
         server_message: ServerMessage

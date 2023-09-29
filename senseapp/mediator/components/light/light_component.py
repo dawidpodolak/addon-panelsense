@@ -6,7 +6,7 @@ from homeassistant.model.ha_outcome_message import *
 from mediator.components.base_component import BaseComponent
 from mediator.components.light.light_model import LightModel
 from mediator.components.light.light_state import LightState
-from server.model.server_message import LightMessage
+from server.model.light import LightMessage
 
 
 class Light(BaseComponent):

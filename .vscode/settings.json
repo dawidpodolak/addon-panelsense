@@ -3,13 +3,7 @@
         "editor.defaultFormatter": "ms-python.autopep8"
     },
     "python.pythonPath": "./python/venv/bin/python",
-    // "python.formatting.provider": "autopep8",
-    "python.languageServer": "Pylance",
-    // "python.analysis.extraPaths": [
-    //     "app",
-    //     "another/path/etc"
-    // ],
-    // "python.analysis.diagnosticsSeverityOverrides": {
-    //     "reportMissingImports": "none",
-    // }
+    // "python.formatting.provider": "Black Formatter",
+    "python.formatting.provider": "black",
+    "python.languageServer": "Pylance"
 }

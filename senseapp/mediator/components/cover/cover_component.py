@@ -6,7 +6,7 @@ from homeassistant.model.ha_outcome_message import *
 from mediator.components.base_component import BaseComponent
 from mediator.components.cover.cover_model import CoverModel
 from mediator.components.cover.cover_state import CoverState, State
-from server.model.server_cover_message import CoverMessage
+from server.model.cover import CoverMessage
 
 
 class Cover(BaseComponent):

@@ -1,6 +1,6 @@
 from typing import Optional
 
-from server.model.server_message import ServerMessage
+from server.model.light import ServerMessage
 
 
 class CoverModel(ServerMessage):
