@@ -12,7 +12,6 @@ from mediator.components.light.light_component import Light
 
 
 class HomeAssistantClient:
-
     HOME_ASSISTANT_URL = "ws://172.30.32.1:8123/api/websocket"
     websocket = None
     MESSAGE_TYPE = "type"
@@ -63,11 +62,11 @@ class HomeAssistantClient:
     async def process_state_changed(self, event: HaEvent):
         entity = event.data.entity_id
         state: HaEventData = event.data
-        domain = entity.split('.')[0]
-        if domain == 'light' and self.callback_message:
+        domain = entity.split(".")[0]
+        if domain == "light" and self.callback_message:
             light = Light(state)
             self.callback_message(light)
-        elif domain == 'cover' and self.callback_message:
+        elif domain == "cover" and self.callback_message:
             cover = Cover(state)
             self.callback_message(cover)
 

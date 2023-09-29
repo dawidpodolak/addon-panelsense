@@ -3,7 +3,6 @@ from websockets.client import WebSocketClientProtocol
 
 
 class SenseClient(WebSocketClientProtocol):
-
     name: str
     version_name: str
     version_code: int

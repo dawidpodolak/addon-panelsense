@@ -7,17 +7,18 @@ from server.sense_server import PanelSenseServer
 
 
 class Mediator:
-
     home_assistnat_client: HomeAssistantClient
     sense_server: PanelSenseServer
 
     def __init__(self, ha_client: HomeAssistantClient, sense_server: PanelSenseServer):
         self.home_assistnat_client = ha_client
         self.home_assistnat_client.set_message_callback(
-            self.home_assistant_client_income_message_callback)
+            self.home_assistant_client_income_message_callback
+        )
         self.sense_server = sense_server
         self.sense_server.set_message_callback(
-            self.server_client_income_message_callbck)
+            self.server_client_income_message_callbck
+        )
 
     def home_assistant_client_income_message_callback(self, component: BaseComponent):
         self.sense_server.send_message(component)

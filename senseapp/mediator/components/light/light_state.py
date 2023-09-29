@@ -4,7 +4,6 @@ from pydantic import BaseModel
 
 
 class LightState(BaseModel):
-
     on: bool = False
     brightness: Optional[int] = None
     color_mode: Optional[str] = None

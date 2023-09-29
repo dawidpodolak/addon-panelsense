@@ -1,4 +1,3 @@
-
 class ServerCredentials:
     username: str
     password: str

@@ -7,11 +7,13 @@ class MessageType(Enum):
     AUTH = "auth"
     ERROR = "error"
 
+
 # extended class should implement type: MessageType
 
 
 class ClientIncomingMessage(BaseModel):
     pass
+
 
 # extended class should implement type: MessageType
 

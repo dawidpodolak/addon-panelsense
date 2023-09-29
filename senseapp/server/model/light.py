@@ -9,7 +9,7 @@ class ServerMessage(BaseModel):
 
 class LightState(BaseModel):
     on: bool = False
-    brightness: int = 0,
+    brightness: int = 0
     color_mode: Optional[str] = None
     rgb_color: Optional[List[int]] = None
     color_temp_kelvin: Optional[int] = None

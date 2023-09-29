@@ -10,10 +10,13 @@ from server.model.cover import CoverMessage
 
 
 class Cover(BaseComponent):
-
     cover_state = CoverState()
 
-    def __init__(self, haEventData: Optional[HaEventData] = None, cover_message: Optional[CoverMessage] = None):
+    def __init__(
+        self,
+        haEventData: Optional[HaEventData] = None,
+        cover_message: Optional[CoverMessage] = None,
+    ):
         if haEventData:
             self.update_state_from_ha(haEventData)
         elif cover_message:
@@ -21,7 +24,9 @@ class Cover(BaseComponent):
 
     def update_state_from_ha(self, haEventData: HaEventData):
         self.entity_id = haEventData.entity_id
-        self.cover_state.current_position = haEventData.new_state.attributes.current_position
+        self.cover_state.current_position = (
+            haEventData.new_state.attributes.current_position
+        )
         self.cover_state.state = self.parse_state(haEventData.new_state.state)
 
     def update_state_from_server(self, cover_message: CoverMessage):
@@ -41,12 +46,10 @@ class Cover(BaseComponent):
     def getHomeAssistantMessage(self) -> HaOutcomeMessage:
         return HaCallServiceMessage(
             id=get_message_id(),
-            domain='cover',
+            domain="cover",
             service=self.get_cover_service_data(),
             # TODO change to cover service data
-            service_data=LightServiceData(
-                position=self.cover_state.current_position
-            ),
+            service_data=LightServiceData(position=self.cover_state.current_position),
             target=Target(entity_id=self.entity_id),
         )
 
@@ -54,19 +57,19 @@ class Cover(BaseComponent):
         return CoverModel(
             entity_id=self.entity_id,
             state=self.cover_state.state.value,
-            position=self.cover_state.current_position
+            position=self.cover_state.current_position,
         )
 
     def get_cover_service_data(self) -> str:
         state = self.cover_state.state
         position = self.cover_state.current_position
         if state == State.CLOSED:
-            return 'close_cover'
+            return "close_cover"
         elif state == State.OPEN:
-            return 'open_cover'
+            return "open_cover"
         elif state == State.STOP:
-            return 'stop_cover'
+            return "stop_cover"
         elif position:
-            return 'set_cover_position'
+            return "set_cover_position"
         else:
-            return 'open_cover'
+            return "open_cover"

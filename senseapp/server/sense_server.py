@@ -21,7 +21,6 @@ from websockets.server import ServerConnection
 
 
 class PanelSenseServer:
-
     client_authenticator: ClientAuthenticator
 
     SENSE_SERVER_PORT = 8652
@@ -38,7 +37,9 @@ class PanelSenseServer:
     async def message_handler(self, websocket: WebSocketClientProtocol):
         auth_message = await websocket.recv()
         try:
-            sense_client = await self.client_authenticator.authenticate(auth_message, websocket)
+            sense_client = await self.client_authenticator.authenticate(
+                auth_message, websocket
+            )
             print(f"auth_message: {auth_message}")
             self.connected_clients.add(websocket)
         except BaseException as e:
@@ -49,37 +50,50 @@ class PanelSenseServer:
             self.handle_message(websocket, message)
             print(f"Reveived message:\n {message}")
 
-    async def process_request(self, function: Callable[[ServerConnection, Request], Optional[Response]]):
-
+    async def process_request(
+        self, function: Callable[[ServerConnection, Request], Optional[Response]]
+    ):
         print(f"Connection request!")
         pass
 
     async def process_request1(self, path, request_headers):
         authorization = request_headers["Authorization"]
-        print(
-            f"Connection request1!path: {path}, request_headers: {authorization}")
+        print(f"Connection request1!path: {path}, request_headers: {authorization}")
         if authorization is None:
             return HTTPStatus.UNAUTHORIZED, [], b"Missing token\n"
 
     async def start_sense_server(self):
         print(f"Server starting at ws://localhost:{self.SENSE_SERVER_PORT}")
-        self.websocket_server = await websockets.serve(self.message_handler, "0.0.0.0", self.SENSE_SERVER_PORT)
+        self.websocket_server = await websockets.serve(
+            self.message_handler, "0.0.0.0", self.SENSE_SERVER_PORT
+        )
         await self.websocket_server.serve_forever()
 
     async def send_message_async(self, message: BaseComponent):
         for client in self.connected_clients:
             print(f"SERVER ->: {message.getSenseServerMessage()}\n")
-            await client.send(json.dumps(message.getSenseServerMessage().model_dump(exclude_none=True)))
+            await client.send(
+                json.dumps(
+                    message.getSenseServerMessage().model_dump(exclude_none=True)
+                )
+            )
 
-    async def send_error_async(self, client: WebSocketClientProtocol, error: ErrorResponse):
+    async def send_error_async(
+        self, client: WebSocketClientProtocol, error: ErrorResponse
+    ):
         await client.send(error.model_dump_json(exclude_none=True))
 
     def send_message(self, component: BaseComponent):
         asyncio.create_task(self.send_message_async(component))
 
-    def send_error(self, client: WebSocketClientProtocol, error_code: ErrorCode, error_message: str):
-        asyncio.create_task(self.send_error_async(
-            client, ErrorResponse(error_code=error_code, message=error_message)))
+    def send_error(
+        self, client: WebSocketClientProtocol, error_code: ErrorCode, error_message: str
+    ):
+        asyncio.create_task(
+            self.send_error_async(
+                client, ErrorResponse(error_code=error_code, message=error_message)
+            )
+        )
 
     def handle_message(self, client: WebSocketClientProtocol, message):
         server_message: ServerMessage
@@ -87,14 +101,13 @@ class PanelSenseServer:
             server_message = ServerMessage.model_validate_json(message)
         except ValidationError as e:
             print(f"SERVER ERROR -> {message}")
-            self.send_error(client, ErrorCode.MISSING_ENTITY_ID,
-                            "Missing entity_id")
+            self.send_error(client, ErrorCode.MISSING_ENTITY_ID, "Missing entity_id")
             return
 
-        domain = server_message.entity_id.split('.')[0]
-        if domain == 'light':
+        domain = server_message.entity_id.split(".")[0]
+        if domain == "light":
             self.handle_light(client, message)
-        elif domain == 'cover':
+        elif domain == "cover":
             self.handle_cover(client, message)
 
     def set_message_callback(self, callback):
@@ -106,8 +119,7 @@ class PanelSenseServer:
             light_message = LightMessage.model_validate_json(message)
         except ValidationError as e:
             print(f"SERVER ERROR -> {message}")
-            self.send_error(client, ErrorCode.INVALID_DATA,
-                            "Invalid light data")
+            self.send_error(client, ErrorCode.INVALID_DATA, "Invalid light data")
             return
 
         light = Light(None, light_message=light_message)
@@ -119,8 +131,7 @@ class PanelSenseServer:
             cover_message = CoverMessage.model_validate_json(message)
         except ValidationError as e:
             print(f"SERVER ERROR -> {message}")
-            self.send_error(client, ErrorCode.INVALID_DATA,
-                            "Invalid cover data")
+            self.send_error(client, ErrorCode.INVALID_DATA, "Invalid cover data")
             return
 
         cover = Cover(cover_message=cover_message)

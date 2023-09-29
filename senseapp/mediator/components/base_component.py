@@ -4,7 +4,7 @@ from pydantic import BaseModel
 from server.model.light import ServerMessage
 
 
-class BaseComponent():
+class BaseComponent:
     entity_id: str
 
     def getHomeAssistantMessage(self) -> HaOutcomeMessage:

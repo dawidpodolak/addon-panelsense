@@ -17,7 +17,7 @@ async def get_steam_reader(pipe) -> str:
     await loop.connect_read_pipe(lambda: protocol, pipe)
     line = await reader.readline()
 
-    return line.decode('utf-8').rstrip('\n')
+    return line.decode("utf-8").rstrip("\n")
 
 
 async def listening_user_input():
