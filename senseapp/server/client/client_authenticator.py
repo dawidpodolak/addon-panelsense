@@ -10,6 +10,7 @@ from server.model.authentication import (
 )
 from server.model.server_credentials import ServerCredentials
 from websockets.client import WebSocketClientProtocol
+from loging.logger import _LOGGER
 
 
 class AuthenticationError(Exception):
@@ -20,9 +21,10 @@ class ClientAuthenticator:
     encoded_credentials: str
 
     def __init__(self, server_credentials: ServerCredentials):
+        _LOGGER.info(
+            f"Initializing ClientAuthenticator")
         self.user_name = server_credentials.username
         self.password = server_credentials.password
-        print(f"User name: {self.user_name}, password: {self.password}")
         self.encoded_credentials = base64.b64encode(
             f"{self.user_name}:{self.password}".encode("utf-8")
         ).decode("utf-8")
@@ -33,7 +35,8 @@ class ClientAuthenticator:
         print(f"Authenticating client with message: {message}")
         auth_message: AuthenticationIncomingMessage
         try:
-            auth_message = AuthenticationIncomingMessage.model_validate_json(message)
+            auth_message = AuthenticationIncomingMessage.model_validate_json(
+                message)
         except Exception as e:
             await websocket.send(
                 AuthenticationRespone(auth_result=AuthResult.FAILURE).model_dump_json(
