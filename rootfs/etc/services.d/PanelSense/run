@@ -1,0 +1,10 @@
+#!/command/with-contenv bashio
+# shellcheck shell=bash
+# ==============================================================================
+# Home Assistant Community Add-on: Example
+# Runs example1 script
+# ==============================================================================
+
+bashio::log.info "Starting Example1..."
+
+exec python3 /usr/src/app/senseapp/sense.py
