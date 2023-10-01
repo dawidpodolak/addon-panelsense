@@ -4,7 +4,7 @@ import json
 from websockets import WebSocketClientProtocol
 
 AUTH_REQUIRED = "auth_required"
-AUTH_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiI3OTg2Y2NkZDQ2MDU0N2NiYjM2ZmQ1MTY5NDNkNTQ3OCIsImlhdCI6MTY5MzI0MDk0MCwiZXhwIjoyMDA4NjAwOTQwfQ.uTESAQpwckfE7YgvFc_8emK2Ge5XupFzRMBaUzvln8A"
+AUTH_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJkMjU5OTM5N2NhNTU0ZjU3YWFmOWQ2NGNlMzFlYjQyZSIsImlhdCI6MTY5NjE3ODk4MiwiZXhwIjoyMDExNTM4OTgyfQ.n6p7E7lKyE2uKYZvnahTcNen_qhskkpsdOQvA9od_4I"
 AUTH_MESSAGE = {"type": "auth", "access_token": AUTH_TOKEN}
 
 
