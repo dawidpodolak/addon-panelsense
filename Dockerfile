@@ -1,28 +1,21 @@
 ARG BUILD_FROM
 FROM $BUILD_FROM
-
+# FROM ghcr.io/home-assistant/amd64-base:3.15
 WORKDIR /usr/src/app
 
-# Add Bashio
-ARG BASHIO_VERSION="0.13.1"
-RUN curl -L -s -o /usr/lib/bashio.tar.gz \
-    "https://github.com/hassio-addons/bashio/archive/v${BASHIO_VERSION}.tar.gz" \
-    && tar xzf /usr/lib/bashio.tar.gz -C /usr/lib \
-    && rm /usr/lib/bashio.tar.gz
-
-LABEL \
-  io.hass.version="VERSION" \
-  io.hass.type="addon" \
-  io.hass.arch="armhf|aarch64|i386|amd64"
+# Install dependencies
+RUN apk add --no-cache \
+    python3 \
+    py3-pip
 
 COPY senseapp /usr/src/app/senseapp
 COPY requirements.txt /tmp/requirements.txt
 COPY config.yaml /
+ENV SENSE_APP=/usr/src/app/senseapp/sense.py
+
+# Install python dependencies
+RUN pip3 install --upgrade pip
+RUN pip3 install --no-cache-dir -r /tmp/requirements.txt
 
 # Copy data for add-on
-COPY run.sh /
-RUN chmod a+x /run.sh
-
-RUN pip install --no-cache-dir -r /tmp/requirements.txt
-
-CMD ["/run.sh"]
+CMD ["python3", "senseapp/sense.py"]
