@@ -5,6 +5,7 @@ WORKDIR /usr/src/app
 
 # Copy in the root filesystem for s6-overlay
 COPY rootfs /
+RUN chmod a+x /etc/services.d/PanelSense/run
 
 # Install dependencies
 RUN apk add --no-cache \
