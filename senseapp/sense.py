@@ -31,7 +31,7 @@ def main():
     server_credentials = ServerCredentials("admin", "admin")
     panel_sense_server = PanelSenseServer(loop, server_credentials)
     mediator = Mediator(ha_client, panel_sense_server)
-    loop.create_task(listening_user_input())
+    # loop.create_task(listening_user_input())
     loop.run_forever()
 
 

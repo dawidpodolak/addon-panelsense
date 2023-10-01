@@ -45,7 +45,7 @@ class PanelSenseServer:
             await websocket.close()
             return
 
-        self.connected_clients.add(sense_client)
+        self.connected_clients.add(websocket)
 
         async for message in websocket:
             self.handle_message(websocket, message)
