@@ -5,6 +5,6 @@
 # Runs python sense.py script
 # ==============================================================================
 
-bashio::log.info "Starting Example1..."
+bashio::log.info "Starting PanelSense..."
 
 exec python3 /usr/src/app/senseapp/sense.py
