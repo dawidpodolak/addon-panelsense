@@ -8,7 +8,6 @@ arch:
 url: "https://github.com/dawidpodolak/PanelSense-Ha-addon"
 ports:
   123/tcp: 123
-  8652/tcp: 8652
 map:
   - config:rw
   - ssl
