@@ -14,3 +14,4 @@ map:
   - ssl
 init: false
 hassio_api: true
+hassio_role: default
