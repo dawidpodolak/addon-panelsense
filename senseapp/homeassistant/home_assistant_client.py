@@ -42,7 +42,7 @@ class HomeAssistantClient:
 
         response = await websocket.recv()
         await self.handle_message(response)
-        await self.event_observer.subscribe_to_state(websocket)
+        # await self.event_observer.subscribe_to_state(websocket)
         await self.listen_for_message()
 
     async def listen_for_message(self):
