@@ -2,15 +2,12 @@ import base64
 import json
 from typing import Optional
 
+from loging.logger import _LOGGER
 from server.client.sense_client import SenseClient
-from server.model.authentication import (
-    AuthenticationIncomingMessage,
-    AuthenticationRespone,
-    AuthResult,
-)
+from server.model.authentication import (AuthenticationIncomingMessage,
+                                         AuthenticationRespone, AuthResult)
 from server.model.server_credentials import ServerCredentials
 from websockets.client import WebSocketClientProtocol
-from loging.logger import _LOGGER
 
 
 class AuthenticationError(Exception):

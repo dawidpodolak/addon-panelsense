@@ -4,12 +4,13 @@ import logging
 from asyncio import AbstractEventLoop
 
 import websockets
-from homeassistant.auth_ha import auth
 from homeassistant.components.event_observer import EventObserver
+from homeassistant.home_assistant_authenticator import auth
 from homeassistant.model.ha_income_message import *
+from loging.logger import _LOGGER
 from mediator.components.cover.cover_component import Cover
 from mediator.components.light.light_component import Light
-from loging.logger import _LOGGER
+
 
 class HomeAssistantClient:
     HOME_ASSISTANT_URL = "ws://172.30.32.1:8123/api/websocket"

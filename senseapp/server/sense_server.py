@@ -5,6 +5,7 @@ from http import HTTPStatus
 from typing import Callable, Optional
 
 import websockets
+from loging.logger import _LOGGER
 from mediator.components.base_component import BaseComponent
 from mediator.components.cover.cover_component import Cover
 from mediator.components.light.light_component import Light
@@ -18,7 +19,6 @@ from server.model.server_credentials import ServerCredentials
 from websockets.client import WebSocketClientProtocol
 from websockets.http11 import Request, Response
 from websockets.server import ServerConnection
-from loging.logger import _LOGGER
 
 
 class PanelSenseServer:
