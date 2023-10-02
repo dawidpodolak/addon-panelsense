@@ -4,12 +4,14 @@ import logging
 from asyncio import AbstractEventLoop
 
 import websockets
+import os
 from homeassistant.components.event_observer import EventObserver
 from homeassistant.home_assistant_authenticator import auth
 from homeassistant.model.ha_income_message import *
 from loging.logger import _LOGGER
 from mediator.components.cover.cover_component import Cover
 from mediator.components.light.light_component import Light
+from websockets.datastructures import HeadersLike
 
 
 class HomeAssistantClient:
@@ -30,8 +32,12 @@ class HomeAssistantClient:
         #     format="%(message)s",
         #     level=logging.DEBUG,
         # )
+        token = os.getenv('SUPERVISOR_TOKEN')
         _LOGGER.info(f"Starting HomeAssistant client websocket ....")
-        websocket = await websockets.connect(self.HOME_ASSISTANT_URL)
+        headers = [
+            ("Authorization", f"Bearer {token}")
+        ]
+        websocket = await websockets.connect(self.HOME_ASSISTANT_URL, extra_headers =headers)
         _LOGGER.info(f"HomeAssistant websockent client started!")
 
         response = await websocket.recv()
