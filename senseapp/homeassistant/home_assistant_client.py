@@ -1,10 +1,10 @@
 import asyncio
 import json
 import logging
+import os
 from asyncio import AbstractEventLoop
 
 import websockets
-import os
 from homeassistant.components.event_observer import EventObserver
 from homeassistant.home_assistant_authenticator import auth
 from homeassistant.model.ha_income_message import *
@@ -15,8 +15,7 @@ from websockets.datastructures import HeadersLike
 
 
 class HomeAssistantClient:
-    # HOME_ASSISTANT_URL = "ws://172.30.32.1:8123/api/websocket"
-    HOME_ASSISTANT_URL = "ws://supervisor/core/websocket"
+    HOME_ASSISTANT_URL = os.getenv('HASS_WS_ADDRESS')
     websocket = None
     MESSAGE_TYPE = "type"
     event_observer: EventObserver
@@ -28,21 +27,16 @@ class HomeAssistantClient:
 
     async def start_haws_client(self):
         global websocket
-        # logging.basicConfig(
-        #     format="%(message)s",
-        #     level=logging.DEBUG,
-        # )
-        token = os.getenv('SUPERVISOR_TOKEN')
         _LOGGER.info(f"Starting HomeAssistant client websocket ....")
-        headers = [
-            ("Authorization", f"Bearer {token}")
-        ]
-        websocket = await websockets.connect(self.HOME_ASSISTANT_URL, extra_headers =headers)
+        websocket = await websockets.connect(self.HOME_ASSISTANT_URL)
         _LOGGER.info(f"HomeAssistant websockent client started!")
 
         response = await websocket.recv()
+        result = await auth(websocket)
+        if result == False:
+            return
         await self.handle_message(response)
-        # await self.event_observer.subscribe_to_state(websocket)
+        await self.event_observer.subscribe_to_state(websocket)
         await self.listen_for_message()
 
     async def listen_for_message(self):
@@ -62,9 +56,7 @@ class HomeAssistantClient:
     async def handle_message(self, message):
         _LOGGER.info(f"HA ->: {message}\n")
         ha_message = HaIncomeMessage.model_validate_json(message)
-        if ha_message.type == "auth_required":
-            await auth(websocket, message)
-        elif ha_message.type == "event" and ha_message.event:
+        if ha_message.type == "event" and ha_message.event:
             await self.process_state_changed(ha_message.event)
 
     async def process_state_changed(self, event: HaEvent):
