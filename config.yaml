@@ -13,3 +13,4 @@ map:
   - config:rw
   - ssl
 init: false
+hassio_api: true
