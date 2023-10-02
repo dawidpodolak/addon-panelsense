@@ -13,7 +13,8 @@ from mediator.components.light.light_component import Light
 
 
 class HomeAssistantClient:
-    HOME_ASSISTANT_URL = "ws://172.30.32.1:8123/api/websocket"
+    # HOME_ASSISTANT_URL = "ws://172.30.32.1:8123/api/websocket"
+    HOME_ASSISTANT_URL = "ws://supervisor/core/websocket"
     websocket = None
     MESSAGE_TYPE = "type"
     event_observer: EventObserver
