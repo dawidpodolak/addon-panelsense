@@ -25,6 +25,7 @@ async def listening_user_input():
     while True:
         user_input = await get_steam_reader(sys.stdin)
 
+
 def get_server_credentails() -> ServerCredentials:
     server_credentials = ServerCredentials("admin", "admin")
     env_server_user = os.getenv("OPTIONS_SERVER_USER")
@@ -36,8 +37,11 @@ def get_server_credentails() -> ServerCredentials:
     if env_server_password:
         server_credentials.password = env_server_password
 
-    _LOGGER.debug(f"Credentials: user: {server_credentials.username}, pswd: {server_credentials.password}")
+    _LOGGER.debug(
+        f"Credentials: user: {server_credentials.username}, pswd: {server_credentials.password}"
+    )
     return server_credentials
+
 
 def main():
     ha_event_observer = EventObserver()

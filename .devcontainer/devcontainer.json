@@ -1,5 +1,5 @@
 {
-    "name": "Example devcontainer for add-on repositories",
+    "name": "PanelSense devcontainer for home assistant add-on",
     "image": "ghcr.io/home-assistant/devcontainer:addons",
     "appPort": [
         "7123:8123",

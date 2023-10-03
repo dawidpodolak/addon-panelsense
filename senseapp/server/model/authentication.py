@@ -5,12 +5,16 @@ from pydantic import BaseModel
 from .base import ClientIncomingMessage, MessageType, ServerOutgoingMessage
 
 
-class AuthenticationIncomingMessage(ClientIncomingMessage):
-    type: MessageType
+class AuthData(BaseModel):
     token: str
     name: str
     version_code: int
     version_name: str
+
+
+class AuthenticationIncomingMessage(ClientIncomingMessage):
+    type: MessageType
+    data: AuthData
 
 
 class AuthResult(Enum):
@@ -18,6 +22,10 @@ class AuthResult(Enum):
     FAILURE = "FAILURE"
 
 
-class AuthenticationRespone(ServerOutgoingMessage):
+class AuthResponseData(BaseModel):
     auth_result: AuthResult
+
+
+class AuthenticationRespone(ServerOutgoingMessage):
+    data: AuthResponseData
     type: MessageType = MessageType.AUTH

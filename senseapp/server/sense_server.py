@@ -38,7 +38,9 @@ class PanelSenseServer:
     async def message_handler(self, websocket: WebSocketClientProtocol):
         auth_message = await websocket.recv()
 
-        sense_client = await self.client_authenticator.authenticate(auth_message, websocket)
+        sense_client = await self.client_authenticator.authenticate(
+            auth_message, websocket
+        )
 
         if not sense_client:
             _LOGGER.info(f"Client not authenticated! Close connection.")
@@ -59,8 +61,7 @@ class PanelSenseServer:
 
     async def process_request1(self, path, request_headers):
         authorization = request_headers["Authorization"]
-        print(
-            f"Connection request1!path: {path}, request_headers: {authorization}")
+        print(f"Connection request1!path: {path}, request_headers: {authorization}")
         if authorization is None:
             return HTTPStatus.UNAUTHORIZED, [], b"Missing token\n"
 
@@ -93,8 +94,7 @@ class PanelSenseServer:
     ):
         asyncio.create_task(
             self.send_error_async(
-                client, ErrorResponse(
-                    error_code=error_code, message=error_message)
+                client, ErrorResponse(error_code=error_code, message=error_message)
             )
         )
 
@@ -104,8 +104,7 @@ class PanelSenseServer:
             server_message = ServerMessage.model_validate_json(message)
         except ValidationError as e:
             print(f"SERVER ERROR -> {message}")
-            self.send_error(client, ErrorCode.MISSING_ENTITY_ID,
-                            "Missing entity_id")
+            self.send_error(client, ErrorCode.MISSING_ENTITY_ID, "Missing entity_id")
             return
 
         domain = server_message.entity_id.split(".")[0]
@@ -123,8 +122,7 @@ class PanelSenseServer:
             light_message = LightMessage.model_validate_json(message)
         except ValidationError as e:
             print(f"SERVER ERROR -> {message}")
-            self.send_error(client, ErrorCode.INVALID_DATA,
-                            "Invalid light data")
+            self.send_error(client, ErrorCode.INVALID_DATA, "Invalid light data")
             return
 
         light = Light(None, light_message=light_message)
@@ -136,8 +134,7 @@ class PanelSenseServer:
             cover_message = CoverMessage.model_validate_json(message)
         except ValidationError as e:
             print(f"SERVER ERROR -> {message}")
-            self.send_error(client, ErrorCode.INVALID_DATA,
-                            "Invalid cover data")
+            self.send_error(client, ErrorCode.INVALID_DATA, "Invalid cover data")
             return
 
         cover = Cover(cover_message=cover_message)

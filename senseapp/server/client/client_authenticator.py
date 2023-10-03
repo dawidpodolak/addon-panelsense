@@ -4,8 +4,7 @@ from typing import Optional
 
 from loging.logger import _LOGGER
 from server.client.sense_client import SenseClient
-from server.model.authentication import (AuthenticationIncomingMessage,
-                                         AuthenticationRespone, AuthResult)
+from server.model.authentication import *
 from server.model.server_credentials import ServerCredentials
 from websockets.client import WebSocketClientProtocol
 
@@ -30,13 +29,12 @@ class ClientAuthenticator:
         print(f"Authenticating client with message: {message}")
         auth_message: AuthenticationIncomingMessage
         try:
-            auth_message = AuthenticationIncomingMessage.model_validate_json(
-                message)
+            auth_message = AuthenticationIncomingMessage.model_validate_json(message)
         except Exception as e:
             await websocket.send(
-                AuthenticationRespone(auth_result=AuthResult.FAILURE).model_dump_json(
-                    exclude_none=True
-                )
+                AuthenticationRespone(
+                    data=AuthResponseData(auth_result=AuthResult.FAILURE)
+                ).model_dump_json(exclude_none=True)
             )
             return None
 
@@ -44,16 +42,16 @@ class ClientAuthenticator:
             sense_client = SenseClient(websocket)
             sense_client.set_client_data(auth_message)
             await websocket.send(
-                AuthenticationRespone(auth_result=AuthResult.SUCCESS).model_dump_json(
-                    exclude_none=True
-                )
+                AuthenticationRespone(
+                    data=AuthResponseData(auth_result=AuthResult.SUCCESS)
+                ).model_dump_json(exclude_none=True)
             )
             return sense_client
         else:
             await websocket.send(
-                AuthenticationRespone(auth_result=AuthResult.FAILURE).model_dump_json(
-                    exclude_none=True
-                )
+                AuthenticationRespone(
+                    data=AuthResponseData(auth_result=AuthResult.SUCCESS)
+                ).model_dump_json(exclude_none=True)
             )
             return None
 
@@ -61,4 +59,4 @@ class ClientAuthenticator:
         print(
             f"Authenticating client with message: {auth_message} == {self.encoded_credentials}"
         )
-        return auth_message.token == self.encoded_credentials
+        return auth_message.data.token == self.encoded_credentials

@@ -15,7 +15,7 @@ from websockets.datastructures import HeadersLike
 
 
 class HomeAssistantClient:
-    HOME_ASSISTANT_URL = os.getenv('HASS_WS_ADDRESS')
+    HOME_ASSISTANT_URL = os.getenv("HASS_WS_ADDRESS")
     websocket = None
     MESSAGE_TYPE = "type"
     event_observer: EventObserver

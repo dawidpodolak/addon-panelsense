@@ -12,6 +12,6 @@ class SenseClient(WebSocketClientProtocol):
         self.websocket = websocket
 
     def set_client_data(self, auth_message: AuthenticationIncomingMessage):
-        self.name = auth_message.name
-        self.version_name = auth_message.version_name
-        self.version_code = auth_message.version_code
+        self.name = auth_message.data.name
+        self.version_name = auth_message.data.version_name
+        self.version_code = auth_message.data.version_code
