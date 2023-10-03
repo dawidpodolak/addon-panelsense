@@ -43,7 +43,7 @@ class Cover(BaseComponent):
         else:
             return None
 
-    def getHomeAssistantMessage(self) -> HaOutcomeMessage:
+    def get_message_for_home_assistant(self) -> HaOutcomeMessage:
         return HaCallServiceMessage(
             id=get_message_id(),
             domain="cover",
@@ -53,7 +53,7 @@ class Cover(BaseComponent):
             target=Target(entity_id=self.entity_id),
         )
 
-    def getSenseServerMessage(self):
+    def get_message_for_client(self):
         return CoverModel(
             entity_id=self.entity_id,
             state=self.cover_state.state.value,

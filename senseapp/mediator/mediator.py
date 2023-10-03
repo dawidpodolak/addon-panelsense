@@ -24,5 +24,5 @@ class Mediator:
         self.sense_server.send_message(component)
 
     def server_client_income_message_callbck(self, message):
-        self.home_assistnat_client.send_data(message.getHomeAssistantMessage())
+        self.home_assistnat_client.send_data(message.get_message_for_home_assistant())
         print(f"server_client_message_callbck: {message}")

@@ -6,13 +6,12 @@ from pydantic import BaseModel
 class MessageType(Enum):
     AUTH = "auth"
     ERROR = "error"
+    HA_ACTION_LIGHT = "ha_action_light"
 
 
 # extended class should implement type: MessageType
-
-
 class ClientIncomingMessage(BaseModel):
-    pass
+    type: MessageType
 
 
 # extended class should implement type: MessageType

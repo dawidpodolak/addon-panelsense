@@ -11,6 +11,7 @@ from mediator.components.cover.cover_component import Cover
 from mediator.components.light.light_component import Light
 from pydantic import ValidationError
 from server.client.client_authenticator import ClientAuthenticator
+from server.model.base import ServerOutgoingMessage
 from server.model.cover import CoverMessage
 from server.model.error import ErrorCode, ErrorResponse
 from server.model.light import *
@@ -74,11 +75,9 @@ class PanelSenseServer:
 
     async def send_message_async(self, message: BaseComponent):
         for client in self.connected_clients:
-            print(f"SERVER ->: {message.getSenseServerMessage()}\n")
+            print(f"SERVER ->: {message.get_message_for_client()}\n")
             await client.send(
-                json.dumps(
-                    message.getSenseServerMessage().model_dump(exclude_none=True)
-                )
+                message.get_message_for_client().model_dump_json(exclude_none=True)
             )
 
     async def send_error_async(
@@ -99,19 +98,25 @@ class PanelSenseServer:
         )
 
     def handle_message(self, client: WebSocketClientProtocol, message):
-        server_message: ServerMessage
         try:
-            server_message = ServerMessage.model_validate_json(message)
+            client_message = ClientIncomingMessage.model_validate_json(message)
+            self.process_client_message_ha_action(client, client_message.type, message)
+            _LOGGER.debug(f"CLIENT -> handle_message type: {client_message}")
         except ValidationError as e:
             print(f"SERVER ERROR -> {message}")
-            self.send_error(client, ErrorCode.MISSING_ENTITY_ID, "Missing entity_id")
+            self.send_error(client, ErrorCode.INVALID_DATA, "Invalid data")
             return
 
-        domain = server_message.entity_id.split(".")[0]
-        if domain == "light":
-            self.handle_light(client, message)
-        elif domain == "cover":
-            self.handle_cover(client, message)
+    def process_client_message_ha_action(
+        self, client: WebSocketClientProtocol, type: MessageType, message
+    ):
+        if type == MessageType.HA_ACTION_LIGHT:
+            light_incoming_message = LightIncomingMessage.model_validate_json(message)
+            light = Light(None, light_incoming_message=light_incoming_message)
+            self.callback(light)
+            _LOGGER.debug(
+                f"CLIENT -> process_client_message_ha_action: {light_incoming_message}"
+            )
 
     def set_message_callback(self, callback):
         self.callback = callback
@@ -124,9 +129,6 @@ class PanelSenseServer:
             print(f"SERVER ERROR -> {message}")
             self.send_error(client, ErrorCode.INVALID_DATA, "Invalid light data")
             return
-
-        light = Light(None, light_message=light_message)
-        self.callback(light)
 
     def handle_cover(self, client: WebSocketClientProtocol, message):
         cover_message: CoverMessage

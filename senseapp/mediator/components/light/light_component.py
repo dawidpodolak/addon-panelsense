@@ -4,50 +4,50 @@ from homeassistant.ids import get_message_id
 from homeassistant.model.ha_income_message import HaEventData
 from homeassistant.model.ha_outcome_message import *
 from mediator.components.base_component import BaseComponent
-from mediator.components.light.light_model import LightModel
-from mediator.components.light.light_state import LightState
-from server.model.light import LightMessage
+from server.model.light import *
 
 
 class Light(BaseComponent):
-    state = LightState()
+    on: bool = False
+    brightness: Optional[int] = 0
+    color_mode: Optional[str] = None
+    rgb_color: Optional[List[int]] = None
+    color_temp_kelvin: Optional[int] = None
 
     def __init__(
         self,
         haEventData: Optional[HaEventData] = None,
-        light_message: Optional[LightMessage] = None,
+        light_incoming_message: Optional[LightIncomingMessage] = None,
     ):
         if haEventData:
             self.updateState(haEventData)
-        elif light_message:
-            self.update_state_from_server(light_message)
+        elif light_incoming_message:
+            self.update_state_from_server(light_incoming_message.data)
 
     def updateState(self, haEventData: HaEventData):
         self.entity_id = haEventData.entity_id
-        self.state.on = haEventData.new_state.state == "on"
-        self.state.brightness = haEventData.new_state.attributes.brightness
-        self.state.color_mode = haEventData.new_state.attributes.color_mode
-        self.state.effect = haEventData.new_state.attributes.effect
-        self.state.effect_list = haEventData.new_state.attributes.effect_list
-        self.state.friendly_name = haEventData.new_state.attributes.friendly_name
-        self.state.hs_color = haEventData.new_state.attributes.hs_color
-        self.state.min_color_temp_kelvin = (
+        self.on = haEventData.new_state.state == "on"
+        self.brightness = haEventData.new_state.attributes.brightness
+        self.color_mode = haEventData.new_state.attributes.color_mode
+        self.effect = haEventData.new_state.attributes.effect
+        self.effect_list = haEventData.new_state.attributes.effect_list
+        self.friendly_name = haEventData.new_state.attributes.friendly_name
+        self.hs_color = haEventData.new_state.attributes.hs_color
+        self.min_color_temp_kelvin = (
             haEventData.new_state.attributes.min_color_temp_kelvin
         )
-        self.state.max_color_temp_kelvin = (
+        self.max_color_temp_kelvin = (
             haEventData.new_state.attributes.max_color_temp_kelvin
         )
-        self.state.min_mireds = haEventData.new_state.attributes.min_mireds
-        self.state.max_mireds = haEventData.new_state.attributes.max_mireds
-        self.state.rgb_color = haEventData.new_state.attributes.rgb_color
-        self.state.supported_color_modes = (
+        self.min_mireds = haEventData.new_state.attributes.min_mireds
+        self.max_mireds = haEventData.new_state.attributes.max_mireds
+        self.rgb_color = haEventData.new_state.attributes.rgb_color
+        self.supported_color_modes = (
             haEventData.new_state.attributes.supported_color_modes
         )
-        self.state.supported_features = (
-            haEventData.new_state.attributes.supported_features
-        )
+        self.supported_features = haEventData.new_state.attributes.supported_features
 
-    def getHomeAssistantMessage(self) -> HaOutcomeMessage:
+    def get_message_for_home_assistant(self) -> HaOutcomeMessage:
         return HaCallServiceMessage(
             id=get_message_id(),
             domain="light",
@@ -56,33 +56,40 @@ class Light(BaseComponent):
             target=Target(entity_id=self.entity_id),
         )
 
-    def getSenseServerMessage(self):
-        return LightModel(entity_id=self.entity_id, state=self.state)
-
-    def update_state_from_server(self, light_message: LightMessage):
-        self.entity_id = light_message.entity_id
-        self.state.on = light_message.state.on
-        self.state.brightness = light_message.state.brightness
-        self.state.color_mode = light_message.state.color_mode
-        self.state.rgb_color = light_message.state.rgb_color
-        self.state.color_temp_kelvin = light_message.state.color_temp_kelvin
-        print(
-            f"update_state_from_server: entity_id: {self.entity_id}, state: {self.state.on}"
+    def get_message_for_client(self) -> LightOutcomingMessage:
+        data = LightOutcomingDataMessage(
+            entity_id=self.entity_id,
+            on=self.on,
+            brightness=self.brightness,
+            color_mode=self.color_mode,
+            rgb_color=self.rgb_color,
+            color_temp_kelvin=self.color_temp_kelvin,
         )
+        return LightOutcomingMessage(data=data)
+
+    def update_state_from_server(
+        self, light_incoming_message: LightIncomingDataMessage
+    ):
+        self.entity_id = light_incoming_message.entity_id
+        self.on = light_incoming_message.on
+        self.brightness = light_incoming_message.brightness
+        self.color_mode = light_incoming_message.color_mode
+        self.rgb_color = light_incoming_message.rgb_color
+        self.color_temp_kelvin = light_incoming_message.color_temp_kelvin
 
     def get_ha_service(self) -> str:
-        if self.state.on:
+        if self.on:
             return "turn_on"
         else:
             return "turn_off"
 
     def get_service_data(self) -> Optional[LightServiceData]:
-        if self.state.brightness or self.state.color_mode or self.state.rgb_color:
+        if self.brightness or self.color_mode or self.rgb_color:
             return LightServiceData(
                 # color_mode=self.state.color_mode,
-                rgb_color=self.state.rgb_color,
-                brightness=self.state.brightness,
-                color_temp_kelvin=self.state.color_temp_kelvin,
+                rgb_color=self.rgb_color,
+                brightness=self.brightness,
+                color_temp_kelvin=self.color_temp_kelvin,
             )
         else:
             return None

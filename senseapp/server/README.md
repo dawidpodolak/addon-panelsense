@@ -15,7 +15,7 @@ Each model used to communication with websockets should inherit from ServerOutgo
 | ------------- | ----------- |
 | auth          | Message type used for authentication websocket client |
 | error         | If received message containt corrupted or not complete data, then message with this type should be returned |
-| ha_action     | Message that contains action from or to Home Assistant |
+| ha_action_light     | Message that contains ligth action from or to Home Assistant |
 
 #### Message structure
 Below message structure relates incoming message as well as outcoming message.
@@ -23,5 +23,16 @@ Below message structure relates incoming message as well as outcoming message.
 | --------- | ---------     | ------------- |
 | type      | MessageType   | type of message |
 | data      | Object        | Depends on message type |
+
+#### Authentication Message
+
+##### Incoming message data
+| Field     | Type      | Description       |
+| --------- | --------- | ----------------- |
+| access_token      | str       | generated the combination of username:password at Base64 |
+| name              | str       | name of the device |
+| version_name      | str       | Name of the app version |
+| version_code      | int       | Build number of the app |
+| installation_id   | str       | Unique UUID that represents given app on given device |
 
 ## Authorization and credentials
