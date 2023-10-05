@@ -13,6 +13,11 @@ class Light(BaseComponent):
     color_mode: Optional[str] = None
     rgb_color: Optional[List[int]] = None
     color_temp_kelvin: Optional[int] = None
+    supported_color_modes: Optional[List[str]] = None
+    friendly_name: Optional[str] = None
+    min_color_temp_kelvin: Optional[int] = None
+    max_color_temp_kelvin: Optional[int] = None
+    color_temp_kelvin: Optional[int] = None
 
     def __init__(
         self,
@@ -39,6 +44,7 @@ class Light(BaseComponent):
         self.max_color_temp_kelvin = (
             haEventData.new_state.attributes.max_color_temp_kelvin
         )
+        self.color_temp_kelvin = haEventData.new_state.attributes.color_temp_kelvin
         self.min_mireds = haEventData.new_state.attributes.min_mireds
         self.max_mireds = haEventData.new_state.attributes.max_mireds
         self.rgb_color = haEventData.new_state.attributes.rgb_color
@@ -63,7 +69,11 @@ class Light(BaseComponent):
             brightness=self.brightness,
             color_mode=self.color_mode,
             rgb_color=self.rgb_color,
+            supported_color_modes=self.supported_color_modes,
+            max_color_temp_kelvin=self.max_color_temp_kelvin,
+            min_color_temp_kelvin=self.min_color_temp_kelvin,
             color_temp_kelvin=self.color_temp_kelvin,
+            friendly_name=self.friendly_name,
         )
         return LightOutcomingMessage(data=data)
 
@@ -76,6 +86,11 @@ class Light(BaseComponent):
         self.color_mode = light_incoming_message.color_mode
         self.rgb_color = light_incoming_message.rgb_color
         self.color_temp_kelvin = light_incoming_message.color_temp_kelvin
+        self.supported_color_modes = light_incoming_message.supported_color_modes
+        self.max_color_temp_kelvin = light_incoming_message.max_color_temp_kelvin
+        self.min_color_temp_kelvin = light_incoming_message.min_color_temp_kelvin
+        self.color_temp_kelvin = light_incoming_message.color_temp_kelvin
+        self.friendly_name = light_incoming_message.friendly_name
 
     def get_ha_service(self) -> str:
         if self.on:

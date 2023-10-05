@@ -16,6 +16,7 @@ class StateAttributes(BaseModel):
     hs_color: Optional[List[float]] = None
     min_color_temp_kelvin: Optional[int] = None
     max_color_temp_kelvin: Optional[int] = None
+    color_temp_kelvin: Optional[int] = None
     min_mireds: Optional[int] = None
     max_mireds: Optional[int] = None
     rgb_color: Optional[List[int]] = None

@@ -25,6 +25,7 @@ Below message structure relates incoming message as well as outcoming message.
 | data      | Object        | Depends on message type |
 
 #### Authentication Message
+ `type: auth`
 
 ##### Incoming message data
 | Field     | Type      | Description       |
@@ -34,5 +35,21 @@ Below message structure relates incoming message as well as outcoming message.
 | version_name      | str       | Name of the app version |
 | version_code      | int       | Build number of the app |
 | installation_id   | str       | Unique UUID that represents given app on given device |
+
+### Home Assistant Action Light
+
+`type: ha_action_light`
+
+| Field     | Type      | Description       |
+| --------- | --------- | ----------------- |
+| entity_id | str       | Id of Home Assistant entity   |
+| on        | bool      | true if light is on   |
+| brightness    | int   | Value from 0 to 255. 0 dark, 255 ligth    |
+| color_mode    | str   | hs: hue mode <br>  color_temp: temperature mode <br> white|
+| rgb_color | IntArray  | Array of integers represents RGB values from 0 to 255
+| supported_color_modes | List<str> | Available mode: hs color_temp |
+| max_color_temp_kelvin | int   | max value for color_temp_kelvin |
+| min_color_temp_kelvin | int   | min value for color_temp_kelvin|
+| max_color_temp_kelvin | int   | current light temperature, set if color_mode is color_temp|
 
 ## Authorization and credentials
