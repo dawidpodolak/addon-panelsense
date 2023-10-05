@@ -4,72 +4,65 @@ from homeassistant.ids import get_message_id
 from homeassistant.model.ha_income_message import HaEventData
 from homeassistant.model.ha_outcome_message import *
 from mediator.components.base_component import BaseComponent
-from mediator.components.cover.cover_model import CoverModel
-from mediator.components.cover.cover_state import CoverState, State
-from server.model.cover import CoverMessage
+from server.model.cover import *
 
 
 class Cover(BaseComponent):
-    cover_state = CoverState()
+    entity_id: str
+    state: Optional[str] = None
+    position: Optional[int] = None
 
     def __init__(
         self,
         haEventData: Optional[HaEventData] = None,
-        cover_message: Optional[CoverMessage] = None,
+        cover_message: Optional[CoverIncomingMessage] = None,
     ):
         if haEventData:
             self.update_state_from_ha(haEventData)
         elif cover_message:
-            self.update_state_from_server(cover_message)
+            self.update_state_from_server(cover_message.data)
 
     def update_state_from_ha(self, haEventData: HaEventData):
         self.entity_id = haEventData.entity_id
-        self.cover_state.current_position = (
-            haEventData.new_state.attributes.current_position
-        )
-        self.cover_state.state = self.parse_state(haEventData.new_state.state)
+        self.position = haEventData.new_state.attributes.current_position
+        self.state = haEventData.new_state.state
 
-    def update_state_from_server(self, cover_message: CoverMessage):
+    def update_state_from_server(self, cover_message: CoverIncomingDataMessage):
         self.entity_id = cover_message.entity_id
-        self.cover_state.current_position = cover_message.position
-        self.cover_state.state = self.parse_state(cover_message.state)
-
-    def parse_state(self, state: str) -> Optional[State]:
-        if state:
-            try:
-                return State(state)
-            except ValueError:
-                return State.OPEN
-        else:
-            return None
+        self.position = cover_message.position
+        self.state = cover_message.state
 
     def get_message_for_home_assistant(self) -> HaOutcomeMessage:
-        return HaCallServiceMessage(
+        call_service = HaCallServiceMessage(
             id=get_message_id(),
             domain="cover",
             service=self.get_cover_service_data(),
             # TODO change to cover service data
-            service_data=LightServiceData(position=self.cover_state.current_position),
+            service_data=CoverServiceData(position=self.position),
             target=Target(entity_id=self.entity_id),
         )
-
-    def get_message_for_client(self):
-        return CoverModel(
-            entity_id=self.entity_id,
-            state=self.cover_state.state.value,
-            position=self.cover_state.current_position,
+        print(f"Set posistion -----> {self.position} --> {call_service.service_data}")
+        print(
+            f"model is -----> {call_service.service_data} --> {call_service.model_dump_json(exclude_none=True)}"
         )
+        return call_service
+
+    def get_message_for_client(self) -> CoverOutcomingMessage:
+        data = CoverOutcomingDataMessage(
+            entity_id=self.entity_id,
+            state=self.state,
+            position=self.position,
+        )
+        return CoverOutcomingMessage(type=MessageType.HA_ACTION_COVER, data=data)
 
     def get_cover_service_data(self) -> str:
-        state = self.cover_state.state
-        position = self.cover_state.current_position
-        if state == State.CLOSED:
+        if self.state == "close":
             return "close_cover"
-        elif state == State.OPEN:
+        elif self.state == "open":
             return "open_cover"
-        elif state == State.STOP:
+        elif self.state == "stop":
             return "stop_cover"
-        elif position:
+        elif self.position:
             return "set_cover_position"
         else:
             return "open_cover"

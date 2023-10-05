@@ -7,6 +7,7 @@ class MessageType(Enum):
     AUTH = "auth"
     ERROR = "error"
     HA_ACTION_LIGHT = "ha_action_light"
+    HA_ACTION_COVER = "ha_action_cover"
 
 
 # extended class should implement type: MessageType

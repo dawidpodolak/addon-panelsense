@@ -12,10 +12,10 @@ from mediator.components.light.light_component import Light
 from pydantic import ValidationError
 from server.client.client_authenticator import ClientAuthenticator
 from server.model.base import ServerOutgoingMessage
+from server.model.cover import *
 from server.model.cover import CoverMessage
 from server.model.error import ErrorCode, ErrorResponse
 from server.model.light import *
-from server.model.light import ServerMessage
 from server.model.server_credentials import ServerCredentials
 from websockets.client import WebSocketClientProtocol
 from websockets.http11 import Request, Response
@@ -76,7 +76,7 @@ class PanelSenseServer:
     async def send_message_async(self, message: BaseComponent):
         _LOGGER.info(f"Connected clients: {len(self.connected_clients)}")
         for client in self.connected_clients:
-            print(f"SERVER ->: {message.get_message_for_client()}\n")
+            _LOGGER.info(f"SERVER ->: {message.get_message_for_client()}\n")
             await client.send(
                 message.get_message_for_client().model_dump_json(exclude_none=True)
             )
@@ -115,30 +115,33 @@ class PanelSenseServer:
             light_incoming_message = LightIncomingMessage.model_validate_json(message)
             light = Light(None, light_incoming_message=light_incoming_message)
             self.callback(light)
-            _LOGGER.debug(
-                f"CLIENT -> process_client_message_ha_action: {light_incoming_message}"
-            )
+        elif type == MessageType.HA_ACTION_COVER:
+            cover_incoming_message = CoverIncomingMessage.model_validate_json(message)
+            cover = Cover(None, cover_message=cover_incoming_message)
+            self.callback(cover)
+
+        _LOGGER.debug(f"CLIENT -> process_client_message_ha_action: {type}")
 
     def set_message_callback(self, callback):
         self.callback = callback
 
-    def handle_light(self, client: WebSocketClientProtocol, message):
-        light_message: LightMessage
-        try:
-            light_message = LightMessage.model_validate_json(message)
-        except ValidationError as e:
-            print(f"SERVER ERROR -> {message}")
-            self.send_error(client, ErrorCode.INVALID_DATA, "Invalid light data")
-            return
+    # def handle_light(self, client: WebSocketClientProtocol, message):
+    #     light_message: LightMessage
+    #     try:
+    #         light_message = LightMessage.model_validate_json(message)
+    #     except ValidationError as e:
+    #         print(f"SERVER ERROR -> {message}")
+    #         self.send_error(client, ErrorCode.INVALID_DATA, "Invalid light data")
+    #         return
 
-    def handle_cover(self, client: WebSocketClientProtocol, message):
-        cover_message: CoverMessage
-        try:
-            cover_message = CoverMessage.model_validate_json(message)
-        except ValidationError as e:
-            print(f"SERVER ERROR -> {message}")
-            self.send_error(client, ErrorCode.INVALID_DATA, "Invalid cover data")
-            return
+    # def handle_cover(self, client: WebSocketClientProtocol, message):
+    #     cover_message: CoverMessage
+    #     try:
+    #         cover_message = CoverMessage.model_validate_json(message)
+    #     except ValidationError as e:
+    #         print(f"SERVER ERROR -> {message}")
+    #         self.send_error(client, ErrorCode.INVALID_DATA, "Invalid cover data")
+    #         return
 
-        cover = Cover(cover_message=cover_message)
-        self.callback(cover)
+    #     cover = Cover(cover_message=cover_message)
+    #     self.callback(cover)

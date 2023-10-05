@@ -1,18 +1,18 @@
-from typing import List, Optional
+from typing import List, Optional, Union
 
 from pydantic import BaseModel
 
 
-class ServiceData(BaseModel):
-    pass
-
-
-class LightServiceData(ServiceData):
+class LightServiceData(BaseModel):
     color_name: Optional[str] = None
     color_mode: Optional[str] = None
     rgb_color: Optional[List[int]] = None
     color_temp_kelvin: Optional[int] = None
     brightness: Optional[int] = None
+    position: Optional[int] = None
+
+
+class CoverServiceData(BaseModel):
     position: Optional[int] = None
 
 
@@ -30,5 +30,5 @@ class HaCallServiceMessage(HaOutcomeMessage):
     type: str = "call_service"
     domain: str
     service: str
-    service_data: Optional[LightServiceData] = None
+    service_data: Optional[Union[CoverServiceData, LightServiceData]] = None
     target: Optional[Target] = None

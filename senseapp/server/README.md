@@ -15,7 +15,8 @@ Each model used to communication with websockets should inherit from ServerOutgo
 | ------------- | ----------- |
 | auth          | Message type used for authentication websocket client |
 | error         | If received message containt corrupted or not complete data, then message with this type should be returned |
-| ha_action_light     | Message that contains ligth action from or to Home Assistant |
+| ha_action_light     | Message that contains light action from or to Home Assistant |
+| ha_action_cover     | Message that contains cover action from or to Home Assistant |
 
 #### Message structure
 Below message structure relates incoming message as well as outcoming message.
@@ -40,6 +41,22 @@ Below message structure relates incoming message as well as outcoming message.
 ### Home Assistant Action Light
 
 `type: ha_action_light`
+
+| Field     | Type      | Description       |
+| --------- | --------- | ----------------- |
+| entity_id | str       | Id of Home Assistant entity   |
+| on        | bool      | true if light is on   |
+| brightness    | int   | Value from 0 to 255. 0 dark, 255 ligth    |
+| color_mode    | str   | hs: hue mode <br>  color_temp: temperature mode <br> white|
+| rgb_color | IntArray  | Array of integers represents RGB values from 0 to 255
+| supported_color_modes | List<str> | Available mode: hs color_temp |
+| max_color_temp_kelvin | int   | max value for color_temp_kelvin |
+| min_color_temp_kelvin | int   | min value for color_temp_kelvin|
+| max_color_temp_kelvin | int   | current light temperature, set if color_mode is color_temp|
+
+### Home Assistant Action Cover
+
+`type: ha_action_cover`
 
 | Field     | Type      | Description       |
 | --------- | --------- | ----------------- |
