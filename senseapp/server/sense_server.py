@@ -57,19 +57,14 @@ class PanelSenseServer:
         except websockets.exceptions.ConnectionClosedError as e:
             _LOGGER.error(f"Client disconnected! {e}")
         finally:
-            _LOGGER.info(f"Client disconnected!")
+            self.connected_clients.remove(sense_client)
+            _LOGGER.info(f"Client disconnected! {sense_client.name}")
 
     async def process_request(
         self, function: Callable[[ServerConnection, Request], Optional[Response]]
     ):
         print(f"Connection request!")
         pass
-
-    async def process_request1(self, path, request_headers):
-        authorization = request_headers["Authorization"]
-        print(f"Connection request1!path: {path}, request_headers: {authorization}")
-        if authorization is None:
-            return HTTPStatus.UNAUTHORIZED, [], b"Missing token\n"
 
     async def start_sense_server(self):
         print(f"Server starting at ws://localhost:{self.SENSE_SERVER_PORT}")
