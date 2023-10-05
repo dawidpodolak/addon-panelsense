@@ -25,6 +25,7 @@ Below message structure relates incoming message as well as outcoming message.
 | data      | Object        | Depends on message type |
 
 #### Authentication Message
+
  `type: auth`
 
 ##### Incoming message data

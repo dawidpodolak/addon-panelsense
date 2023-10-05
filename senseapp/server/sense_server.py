@@ -48,11 +48,16 @@ class PanelSenseServer:
             await websocket.close()
             return
 
-        self.connected_clients.add(websocket)
+        self.connected_clients.add(sense_client)
 
-        async for message in websocket:
-            self.handle_message(websocket, message)
-            print(f"Reveived message:\n {message}")
+        try:
+            async for message in websocket:
+                self.handle_message(websocket, message)
+                print(f"Reveived message:\n {message}")
+        except websockets.exceptions.ConnectionClosedError as e:
+            _LOGGER.error(f"Client disconnected! {e}")
+        finally:
+            _LOGGER.info(f"Client disconnected!")
 
     async def process_request(
         self, function: Callable[[ServerConnection, Request], Optional[Response]]
@@ -74,6 +79,7 @@ class PanelSenseServer:
         await self.websocket_server.serve_forever()
 
     async def send_message_async(self, message: BaseComponent):
+        _LOGGER.info(f"Connected clients: {len(self.connected_clients)}")
         for client in self.connected_clients:
             print(f"SERVER ->: {message.get_message_for_client()}\n")
             await client.send(
