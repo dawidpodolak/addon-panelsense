@@ -29,7 +29,6 @@ class LightIncomingDataMessage(BaseModel):
     min_color_temp_kelvin: Optional[int] = None
     color_temp_kelvin: Optional[int] = None
     supported_color_modes: Optional[List[str]] = None
-    friendly_name: Optional[str] = None
 
 
 class LightIncomingMessage(ClientIncomingMessage):
@@ -50,6 +49,7 @@ class LightOutcomingDataMessage(BaseModel):
     color_temp_kelvin: Optional[int] = None
     supported_color_modes: Optional[List[str]] = None
     friendly_name: Optional[str] = None
+    icon: Optional[str] = None
 
 
 class LightOutcomingMessage(ServerOutgoingMessage):

@@ -11,7 +11,7 @@ from homeassistant.model.ha_income_message import *
 from loging.logger import _LOGGER
 from mediator.components.cover.cover_component import Cover
 from mediator.components.light.light_component import Light
-from websockets.datastructures import HeadersLike
+from mediator.components.switch.switch_component import Switch
 
 
 class HomeAssistantClient:
@@ -69,6 +69,9 @@ class HomeAssistantClient:
         elif domain == "cover" and self.callback_message:
             cover = Cover(state)
             self.callback_message(cover)
+        elif domain == "switch" and self.callback_message:
+            switch = Switch(state)
+            self.callback_message(switch)
 
     def set_message_callback(self, callback):
         self.callback_message = callback

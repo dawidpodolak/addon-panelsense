@@ -6,8 +6,9 @@ from pydantic import BaseModel
 class MessageType(Enum):
     AUTH = "auth"
     ERROR = "error"
-    HA_ACTION_LIGHT = "ha_action_light"
     HA_ACTION_COVER = "ha_action_cover"
+    HA_ACTION_LIGHT = "ha_action_light"
+    HA_ACTION_SWITCH = "ha_action_switch"
 
 
 # extended class should implement type: MessageType

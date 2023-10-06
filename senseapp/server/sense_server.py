@@ -9,14 +9,14 @@ from loging.logger import _LOGGER
 from mediator.components.base_component import BaseComponent
 from mediator.components.cover.cover_component import Cover
 from mediator.components.light.light_component import Light
+from mediator.components.switch.switch_component import Switch
 from pydantic import ValidationError
 from server.client.client_authenticator import ClientAuthenticator
-from server.model.base import ServerOutgoingMessage
 from server.model.cover import *
-from server.model.cover import CoverMessage
 from server.model.error import ErrorCode, ErrorResponse
 from server.model.light import *
 from server.model.server_credentials import ServerCredentials
+from server.model.switch import *
 from websockets.client import WebSocketClientProtocol
 from websockets.http11 import Request, Response
 from websockets.server import ServerConnection
@@ -119,29 +119,12 @@ class PanelSenseServer:
             cover_incoming_message = CoverIncomingMessage.model_validate_json(message)
             cover = Cover(None, cover_message=cover_incoming_message)
             self.callback(cover)
+        elif type == MessageType.HA_ACTION_SWITCH:
+            switch_incoming_message = SwitchIncomingMessage.model_validate_json(message)
+            switch = Switch(switch_message=switch_incoming_message)
+            self.callback(switch)
 
         _LOGGER.debug(f"CLIENT -> process_client_message_ha_action: {type}")
 
     def set_message_callback(self, callback):
         self.callback = callback
-
-    # def handle_light(self, client: WebSocketClientProtocol, message):
-    #     light_message: LightMessage
-    #     try:
-    #         light_message = LightMessage.model_validate_json(message)
-    #     except ValidationError as e:
-    #         print(f"SERVER ERROR -> {message}")
-    #         self.send_error(client, ErrorCode.INVALID_DATA, "Invalid light data")
-    #         return
-
-    # def handle_cover(self, client: WebSocketClientProtocol, message):
-    #     cover_message: CoverMessage
-    #     try:
-    #         cover_message = CoverMessage.model_validate_json(message)
-    #     except ValidationError as e:
-    #         print(f"SERVER ERROR -> {message}")
-    #         self.send_error(client, ErrorCode.INVALID_DATA, "Invalid cover data")
-    #         return
-
-    #     cover = Cover(cover_message=cover_message)
-    #     self.callback(cover)

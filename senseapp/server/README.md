@@ -30,7 +30,7 @@ Below message structure relates incoming message as well as outcoming message.
 
  `type: auth`
 
-##### Incoming message data
+##### Authentication message data
 | Field     | Type      | Description       |
 | --------- | --------- | ----------------- |
 | access_token      | str       | generated the combination of username:password at Base64 |
@@ -43,32 +43,43 @@ Below message structure relates incoming message as well as outcoming message.
 
 `type: ha_action_light`
 
-| Field     | Type      | Description       |
-| --------- | --------- | ----------------- |
-| entity_id | str       | Id of Home Assistant entity   |
-| on        | bool      | true if light is on   |
-| brightness    | int   | Value from 0 to 255. 0 dark, 255 ligth    |
-| color_mode    | str   | hs: hue mode <br>  color_temp: temperature mode <br> white|
-| rgb_color | IntArray  | Array of integers represents RGB values from 0 to 255
-| supported_color_modes | List<str> | Available mode: hs color_temp |
-| max_color_temp_kelvin | int   | max value for color_temp_kelvin |
-| min_color_temp_kelvin | int   | min value for color_temp_kelvin|
-| max_color_temp_kelvin | int   | current light temperature, set if color_mode is color_temp|
+| Field                 | Type      | Direction     | Description       |
+| ---------             | --------- | ---------     | ----------------- |
+| brightness            | int       | both          | Value from 0 to 255. 0 dark, 255 ligth    |
+| color_mode            | str       | both          | hs: hue mode <br>  color_temp: temperature mode <br> white|
+| color_temp_kelvin     | int       | both          | current light temperature, set if color_mode is color_temp|
+| entity_id             | str       | both          | Id of Home Assistant entity   |
+| friendly_name         | str       | outcoming     | default entuty name
+| icon                  | int       | outcoming     | default entity icon
+| max_color_temp_kelvin | int       | outcoming     | max value for color_temp_kelvin |
+| min_color_temp_kelvin | int       | outcoming     | min value for color_temp_kelvin|
+| on                    | bool      | both          | true if light is on   |
+| rgb_color             | IntArray  | both          | Array of integers represents RGB values from 0 to 255
+| supported_color_modes | List<str> | outcoming     | Available mode: hs color_temp |
 
 ### Home Assistant Action Cover
 
 `type: ha_action_cover`
 
-| Field     | Type      | Description       |
-| --------- | --------- | ----------------- |
-| entity_id | str       | Id of Home Assistant entity   |
-| on        | bool      | true if light is on   |
-| brightness    | int   | Value from 0 to 255. 0 dark, 255 ligth    |
-| color_mode    | str   | hs: hue mode <br>  color_temp: temperature mode <br> white|
-| rgb_color | IntArray  | Array of integers represents RGB values from 0 to 255
-| supported_color_modes | List<str> | Available mode: hs color_temp |
-| max_color_temp_kelvin | int   | max value for color_temp_kelvin |
-| min_color_temp_kelvin | int   | min value for color_temp_kelvin|
-| max_color_temp_kelvin | int   | current light temperature, set if color_mode is color_temp|
+| Field                 | Type      | Direction     | Description       |
+| ---------             | --------- | ------------- | ----------------- |
+| entity_id             | str       | both          | Id of Home Assistant entity   |
+| friendly_name         | str       | outcoming     | default entity name |
+| icon                  | str       | outcoming     | default entity icon |
+| position              | int       | both          | Value in percenage from 0 to 100 |
+| tilt_position         | str       | both          | Value in percenage from 0 to 100 |
+| state                 | str       | both          | closing, closed, opened, opening   |
+| supported_features    | int       | outcoming     | Available mode: hs color_temp |
+
+### Home Assistant Action Switch
+
+`type: ha_action_switch`
+
+| Field                 | Type      | Direction     | Description       |
+| ---------             | --------- | ------------- | ----------------- |
+| entity_id             | str       | both          | Id of Home Assistant entity   |
+| friendly_name         | str       | outcoming     | default entity name |
+| icon                  | str       | outcoming     | default entity icon |
+| on                    | bool      | both          | true or false   |
 
 ## Authorization and credentials

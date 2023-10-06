@@ -13,6 +13,7 @@ class Cover(BaseComponent):
     state: Optional[str] = None
     position: Optional[int] = None
     tils_position: Optional[int] = None
+    supported_features: Optional[int] = None
 
     def __init__(
         self,
@@ -30,6 +31,7 @@ class Cover(BaseComponent):
         self.position = attributes.current_position
         self.tils_position = attributes.current_tilt_position
         self.state = haEventData.new_state.state
+        self.supported_features = attributes.supported_features
 
     def update_state_from_server(self, cover_message: CoverIncomingDataMessage):
         self.entity_id = cover_message.entity_id
@@ -57,6 +59,7 @@ class Cover(BaseComponent):
             state=self.state,
             position=self.position,
             tilt_position=self.tils_position,
+            supported_features=self.supported_features,
         )
         return CoverOutcomingMessage(type=MessageType.HA_ACTION_COVER, data=data)
 

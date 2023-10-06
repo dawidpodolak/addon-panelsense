@@ -17,7 +17,7 @@ class Light(BaseComponent):
     friendly_name: Optional[str] = None
     min_color_temp_kelvin: Optional[int] = None
     max_color_temp_kelvin: Optional[int] = None
-    color_temp_kelvin: Optional[int] = None
+    icon: Optional[str] = None
 
     def __init__(
         self,
@@ -47,6 +47,7 @@ class Light(BaseComponent):
         self.rgb_color = attributes.rgb_color
         self.supported_color_modes = attributes.supported_color_modes
         self.supported_features = attributes.supported_features
+        self.icon = attributes.icon
 
     def get_message_for_home_assistant(self) -> HaOutcomeMessage:
         return HaCallServiceMessage(
@@ -69,6 +70,7 @@ class Light(BaseComponent):
             min_color_temp_kelvin=self.min_color_temp_kelvin,
             color_temp_kelvin=self.color_temp_kelvin,
             friendly_name=self.friendly_name,
+            icon=self.icon,
         )
         return LightOutcomingMessage(data=data)
 
@@ -85,7 +87,6 @@ class Light(BaseComponent):
         self.max_color_temp_kelvin = light_incoming_message.max_color_temp_kelvin
         self.min_color_temp_kelvin = light_incoming_message.min_color_temp_kelvin
         self.color_temp_kelvin = light_incoming_message.color_temp_kelvin
-        self.friendly_name = light_incoming_message.friendly_name
 
     def get_ha_service(self) -> str:
         if self.on:
@@ -96,7 +97,6 @@ class Light(BaseComponent):
     def get_service_data(self) -> Optional[LightServiceData]:
         if self.brightness or self.color_mode or self.rgb_color:
             return LightServiceData(
-                # color_mode=self.state.color_mode,
                 rgb_color=self.rgb_color,
                 brightness=self.brightness,
                 color_temp_kelvin=self.color_temp_kelvin,

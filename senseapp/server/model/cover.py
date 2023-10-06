@@ -35,6 +35,9 @@ class CoverOutcomingDataMessage(BaseModel):
     state: Optional[str] = None
     position: Optional[int] = None
     tilt_position: Optional[int] = None
+    icon: Optional[str] = None
+    friendly_name: Optional[str] = None
+    supported_features: Optional[int] = None
 
 
 class CoverOutcomingMessage(ServerOutgoingMessage):
