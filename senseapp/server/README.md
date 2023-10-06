@@ -17,6 +17,7 @@ Each model used to communication with websockets should inherit from ServerOutgo
 | error         | If received message containt corrupted or not complete data, then message with this type should be returned |
 | ha_action_light     | Message that contains light action from or to Home Assistant |
 | ha_action_cover     | Message that contains cover action from or to Home Assistant |
+| ha_action_switch     | Message that contains cover action from or to Home Assistant |
 
 #### Message structure
 Below message structure relates incoming message as well as outcoming message.

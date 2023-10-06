@@ -1,8 +1,9 @@
 from typing import Optional
 
 from homeassistant.ids import get_message_id
-from homeassistant.model.ha_income_message import HaEventData
+from homeassistant.model.ha_income_message import CoverAttributes, HaEventData
 from homeassistant.model.ha_outcome_message import *
+from loging.logger import _LOGGER
 from mediator.components.base_component import BaseComponent
 from server.model.cover import *
 
@@ -11,6 +12,7 @@ class Cover(BaseComponent):
     entity_id: str
     state: Optional[str] = None
     position: Optional[int] = None
+    tils_position: Optional[int] = None
 
     def __init__(
         self,
@@ -23,8 +25,10 @@ class Cover(BaseComponent):
             self.update_state_from_server(cover_message.data)
 
     def update_state_from_ha(self, haEventData: HaEventData):
+        attributes = CoverAttributes(**haEventData.new_state.attributes)
         self.entity_id = haEventData.entity_id
-        self.position = haEventData.new_state.attributes.current_position
+        self.position = attributes.current_position
+        self.tils_position = attributes.current_tilt_position
         self.state = haEventData.new_state.state
 
     def update_state_from_server(self, cover_message: CoverIncomingDataMessage):
@@ -52,6 +56,7 @@ class Cover(BaseComponent):
             entity_id=self.entity_id,
             state=self.state,
             position=self.position,
+            tilt_position=self.tils_position,
         )
         return CoverOutcomingMessage(type=MessageType.HA_ACTION_COVER, data=data)
 

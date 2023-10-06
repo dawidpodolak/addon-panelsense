@@ -1,7 +1,7 @@
 from typing import Optional
 
 from homeassistant.ids import get_message_id
-from homeassistant.model.ha_income_message import HaEventData
+from homeassistant.model.ha_income_message import HaEventData, LigthAttributes
 from homeassistant.model.ha_outcome_message import *
 from mediator.components.base_component import BaseComponent
 from server.model.light import *
@@ -30,28 +30,23 @@ class Light(BaseComponent):
             self.update_state_from_server(light_incoming_message.data)
 
     def updateState(self, haEventData: HaEventData):
+        attributes = LigthAttributes(**haEventData.new_state.attributes)
         self.entity_id = haEventData.entity_id
         self.on = haEventData.new_state.state == "on"
-        self.brightness = haEventData.new_state.attributes.brightness
-        self.color_mode = haEventData.new_state.attributes.color_mode
-        self.effect = haEventData.new_state.attributes.effect
-        self.effect_list = haEventData.new_state.attributes.effect_list
-        self.friendly_name = haEventData.new_state.attributes.friendly_name
-        self.hs_color = haEventData.new_state.attributes.hs_color
-        self.min_color_temp_kelvin = (
-            haEventData.new_state.attributes.min_color_temp_kelvin
-        )
-        self.max_color_temp_kelvin = (
-            haEventData.new_state.attributes.max_color_temp_kelvin
-        )
-        self.color_temp_kelvin = haEventData.new_state.attributes.color_temp_kelvin
-        self.min_mireds = haEventData.new_state.attributes.min_mireds
-        self.max_mireds = haEventData.new_state.attributes.max_mireds
-        self.rgb_color = haEventData.new_state.attributes.rgb_color
-        self.supported_color_modes = (
-            haEventData.new_state.attributes.supported_color_modes
-        )
-        self.supported_features = haEventData.new_state.attributes.supported_features
+        self.brightness = attributes.brightness
+        self.color_mode = attributes.color_mode
+        self.effect = attributes.effect
+        self.effect_list = attributes.effect_list
+        self.friendly_name = attributes.friendly_name
+        self.hs_color = attributes.hs_color
+        self.min_color_temp_kelvin = attributes.min_color_temp_kelvin
+        self.max_color_temp_kelvin = attributes.max_color_temp_kelvin
+        self.color_temp_kelvin = attributes.color_temp_kelvin
+        self.min_mireds = attributes.min_mireds
+        self.max_mireds = attributes.max_mireds
+        self.rgb_color = attributes.rgb_color
+        self.supported_color_modes = attributes.supported_color_modes
+        self.supported_features = attributes.supported_features
 
     def get_message_for_home_assistant(self) -> HaOutcomeMessage:
         return HaCallServiceMessage(

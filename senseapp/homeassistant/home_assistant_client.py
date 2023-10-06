@@ -55,7 +55,7 @@ class HomeAssistantClient:
 
     async def handle_message(self, message):
         _LOGGER.info(f"HA ->: {message}\n")
-        ha_message = HaIncomeMessage.model_validate_json(message)
+        ha_message = HaIncomeMessage.model_validate_json(message, strict=False)
         if ha_message.type == "event" and ha_message.event:
             await self.process_state_changed(ha_message.event)
 

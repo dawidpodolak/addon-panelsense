@@ -34,6 +34,7 @@ class CoverOutcomingDataMessage(BaseModel):
     entity_id: str
     state: Optional[str] = None
     position: Optional[int] = None
+    tilt_position: Optional[int] = None
 
 
 class CoverOutcomingMessage(ServerOutgoingMessage):
