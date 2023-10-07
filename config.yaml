@@ -22,6 +22,6 @@ schema:
   server_user: str
   server_password: str
 
-ingress: true
-ingress_port: 5000
-ingress_entry:
+# ingress: true
+# ingress_port: 5000
+# ingress_entry:
