@@ -28,6 +28,7 @@ class HomeAssistantClient:
     async def start_haws_client(self):
         global websocket
         _LOGGER.info(f"Starting HomeAssistant client websocket ....")
+        _LOGGER.info(f"Websocket address: {self.HOME_ASSISTANT_URL}")
         websocket = await websockets.connect(self.HOME_ASSISTANT_URL)
         _LOGGER.info(f"HomeAssistant websockent client started!")
 

@@ -3,7 +3,8 @@
     "image": "ghcr.io/home-assistant/devcontainer:addons",
     "appPort": [
         "7123:8123",
-        "7357:4357"
+        "7357:4357",
+        "8921:5000"
     ],
     "postStartCommand": "bash devcontainer_bootstrap",
     "runArgs": [
@@ -12,7 +13,8 @@
         "--privileged"
     ],
     "containerEnv": {
-        "WORKSPACE_DIRECTORY": "${containerWorkspaceFolder}"
+        "WORKSPACE_DIRECTORY": "${containerWorkspaceFolder}",
+        "HASS_WS_ADDRESS": "ws://172.30.32.1:8123/api/websocket"
     },
     "extensions": [
         "timonwong.shellcheck",
