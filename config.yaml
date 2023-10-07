@@ -21,4 +21,3 @@ options:
 schema:
   server_user: str
   server_password: str
-webui: "http://localhost:5000"
