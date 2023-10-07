@@ -3,13 +3,13 @@ import os
 import sys
 import threading
 
+from ui.dashboard import *
 from homeassistant.components.event_observer import EventObserver
 from homeassistant.home_assistant_client import HomeAssistantClient
 from loging.logger import _LOGGER
 from mediator.mediator import Mediator
 from server.model.server_credentials import ServerCredentials
 from server.sense_server import PanelSenseServer
-from ui.dashboard import *
 
 loop = asyncio.get_event_loop()
 mediator: Mediator
@@ -45,7 +45,6 @@ def get_server_credentails() -> ServerCredentials:
     )
     return server_credentials
 
-
 def setup_server():
     ha_event_observer = EventObserver()
     ha_client = HomeAssistantClient(loop, ha_event_observer)
@@ -53,15 +52,10 @@ def setup_server():
     mediator = Mediator(ha_client, panel_sense_server)
     loop.run_forever()
 
-
 def main():
     server_thread = threading.Thread(target=setup_server)
-    web_ui_thread = threading.Thread(target=start_web_app)
-
-    # web_ui_thread.start()
     server_thread.start()
     start_web_app()
-
 
 if __name__ == "__main__":
     main()
