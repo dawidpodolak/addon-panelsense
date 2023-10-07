@@ -17,8 +17,8 @@ hassio_api: true
 homeassistant_api: true
 hassio_role: default
 options:
-  server_user: ""
-  server_password: ""
+  server_user: "admin"
+  server_password: "adim"
 schema:
-  server_user: "str"
-  server_password: "str"
+  server_user: str
+  server_password: str
