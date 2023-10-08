@@ -1,3 +1,4 @@
+import argparse
 import asyncio
 import os
 import sys
@@ -7,14 +8,19 @@ from homeassistant.components.event_observer import EventObserver
 from homeassistant.home_assistant_client import HomeAssistantClient
 from loging.logger import _LOGGER
 from mediator.mediator import Mediator
+from server.client_connection_helper import ClientConectionHelper
+from server.fake_sense_server import FakeSenseServer
 from server.model.server_credentials import ServerCredentials
 from server.sense_server import PanelSenseServer
 from ui.dashboard import *
 
+parser = argparse.ArgumentParser(description="Start the application")
+parser.add_argument("--debugUI", action="store_true", help="Enable debug UI")
+args = parser.parse_args()
+
 loop = asyncio.get_event_loop()
 mediator: Mediator
-server_started = False
-panel_sense_server: PanelSenseServer
+client_connection_helper: ClientConectionHelper
 
 
 async def get_steam_reader(pipe) -> str:
@@ -49,29 +55,37 @@ def get_server_credentails() -> ServerCredentials:
 
 
 def setup_server():
-    global server_started
-    global panel_sense_server
-    if server_started == True:
-        # TODO not work as expected
-        return
+    if args.debugUI:
+        setup_fake_server()
+    else:
+        setup_real_server()
 
-    server_started = True
+
+def setup_real_server():
+    global client_connection_helper
+
     ha_event_observer = EventObserver()
     ha_client = HomeAssistantClient(loop, ha_event_observer)
     panel_sense_server = PanelSenseServer(loop, get_server_credentails())
+    client_connection_helper = panel_sense_server
     mediator = Mediator(ha_client, panel_sense_server)
     loop.run_forever()
 
 
-def sense_serve_callback() -> PanelSenseServer:
-    global panel_sense_server
-    return panel_sense_server
+def setup_fake_server():
+    global client_connection_helper
+    client_connection_helper = FakeSenseServer()
+
+
+def sense_serve_callback() -> ClientConectionHelper:
+    global client_connection_helper
+    return client_connection_helper
 
 
 def main():
     server_thread = threading.Thread(target=setup_server)
     server_thread.start()
-    start_web_app(server_callback=sense_serve_callback)
+    start_web_app(args.debugUI, server_callback=sense_serve_callback)
 
 
 if __name__ == "__main__":

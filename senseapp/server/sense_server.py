@@ -23,17 +23,16 @@ from websockets.exceptions import ConnectionClosedError
 from websockets.http11 import Request, Response
 from websockets.server import ServerConnection
 
+from .client_connection_helper import ClientConectionHelper
 
-class PanelSenseServer:
+
+class PanelSenseServer(ClientConectionHelper):
     client_authenticator: ClientAuthenticator
 
     SENSE_SERVER_PORT = 8652
 
     websocket_server: WebSocketClientProtocol
 
-    connected_clients: Set[SenseClient] = set()
-    client_connected_callbacks: Set[Callable[[SenseClient], None]] = set()
-    client_diconnected_callbacks: Set[Callable[[SenseClient], None]] = set()
     callback: Callable[[BaseComponent], None]
 
     def __init__(self, loop: AbstractEventLoop, server_credentials: ServerCredentials):
@@ -63,16 +62,6 @@ class PanelSenseServer:
         finally:
             _LOGGER.info(f"Client disconnected! {sense_client.details.name}")
             self.remove_client(sense_client)
-
-    def add_client(self, client: SenseClient):
-        self.connected_clients.add(client)
-        for callback in self.client_connected_callbacks:
-            callback(client)
-
-    def remove_client(self, client: SenseClient):
-        self.connected_clients.remove(client)
-        for callback in self.client_diconnected_callbacks:
-            callback(client)
 
     async def start_sense_server(self):
         print(f"Server starting at ws://localhost:{self.SENSE_SERVER_PORT}")

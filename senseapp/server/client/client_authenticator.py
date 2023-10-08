@@ -39,7 +39,8 @@ class ClientAuthenticator:
             return None
 
         if self._is_authenticated(auth_message):
-            sense_client = SenseClient(websocket)
+            sense_client = SenseClient()
+            sense_client.set_websocket(websocket)
             sense_client.set_client_data(auth_message)
             await websocket.send(
                 AuthenticationRespone(

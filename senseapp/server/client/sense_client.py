@@ -1,4 +1,5 @@
 import json
+from typing import Optional
 
 from pydantic import BaseModel
 from server.model.authentication import AuthenticationIncomingMessage
@@ -17,11 +18,19 @@ class SenseClienDetails(BaseModel):
 
 class SenseClient:
     details: SenseClienDetails
-    websocket: WebSocketClientProtocol
+    websocket: Optional[WebSocketClientProtocol] = None
 
-    def __init__(self, websocket: WebSocketClientProtocol):
-        super().__init__()
+    def set_websocket(self, websocket: WebSocketClientProtocol):
         self.websocket = websocket
+
+    def clear_websocket(self):
+        self.websocket = None
+
+    def is_connectect(self) -> bool:
+        if self.websocket:
+            return True
+        else:
+            return False
 
     def set_client_data(self, auth_message: AuthenticationIncomingMessage):
         self.details = SenseClienDetails(
@@ -32,7 +41,8 @@ class SenseClient:
         )
 
     async def send(self, message: str):
-        await self.websocket.send(message)
+        if self.websocket:
+            await self.websocket.send(message)
 
     def get_sense_client_json(self) -> str:
         return self.details.model_dump_json()
