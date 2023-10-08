@@ -74,7 +74,8 @@ def setup_real_server():
 
 def setup_fake_server():
     global client_connection_helper
-    client_connection_helper = FakeSenseServer()
+    client_connection_helper = FakeSenseServer(loop)
+    loop.run_forever()
 
 
 def sense_serve_callback() -> ClientConectionHelper:
