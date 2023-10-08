@@ -10,6 +10,7 @@ class AuthData(BaseModel):
     name: str
     version_code: int
     version_name: str
+    installation_id: str
 
 
 class AuthenticationIncomingMessage(ClientIncomingMessage):

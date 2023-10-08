@@ -2,7 +2,7 @@ import asyncio
 import json
 from asyncio import AbstractEventLoop
 from http import HTTPStatus
-from typing import Callable, Optional
+from typing import Callable, Optional, Set
 
 import websockets
 from loging.logger import _LOGGER
@@ -12,12 +12,14 @@ from mediator.components.light.light_component import Light
 from mediator.components.switch.switch_component import Switch
 from pydantic import ValidationError
 from server.client.client_authenticator import ClientAuthenticator
+from server.client.sense_client import SenseClient
 from server.model.cover import *
 from server.model.error import ErrorCode, ErrorResponse
 from server.model.light import *
 from server.model.server_credentials import ServerCredentials
 from server.model.switch import *
 from websockets.client import WebSocketClientProtocol
+from websockets.exceptions import ConnectionClosedError
 from websockets.http11 import Request, Response
 from websockets.server import ServerConnection
 
@@ -29,8 +31,10 @@ class PanelSenseServer:
 
     websocket_server: WebSocketClientProtocol
 
-    connected_clients = set()
-    callback = None
+    connected_clients: Set[SenseClient] = set()
+    client_connected_callbacks: Set[Callable[[SenseClient], None]] = set()
+    client_diconnected_callbacks: Set[Callable[[SenseClient], None]] = set()
+    callback: Callable[[BaseComponent], None]
 
     def __init__(self, loop: AbstractEventLoop, server_credentials: ServerCredentials):
         loop.create_task(self.start_sense_server())
@@ -48,7 +52,7 @@ class PanelSenseServer:
             await websocket.close()
             return
 
-        self.connected_clients.add(sense_client)
+        self.add_client(sense_client)
 
         try:
             async for message in websocket:
@@ -57,14 +61,18 @@ class PanelSenseServer:
         except websockets.exceptions.ConnectionClosedError as e:
             _LOGGER.error(f"Client disconnected! {e}")
         finally:
-            self.connected_clients.remove(sense_client)
-            _LOGGER.info(f"Client disconnected! {sense_client.name}")
+            _LOGGER.info(f"Client disconnected! {sense_client.details.name}")
+            self.remove_client(sense_client)
 
-    async def process_request(
-        self, function: Callable[[ServerConnection, Request], Optional[Response]]
-    ):
-        print(f"Connection request!")
-        pass
+    def add_client(self, client: SenseClient):
+        self.connected_clients.add(client)
+        for callback in self.client_connected_callbacks:
+            callback(client)
+
+    def remove_client(self, client: SenseClient):
+        self.connected_clients.remove(client)
+        for callback in self.client_diconnected_callbacks:
+            callback(client)
 
     async def start_sense_server(self):
         print(f"Server starting at ws://localhost:{self.SENSE_SERVER_PORT}")
@@ -126,5 +134,5 @@ class PanelSenseServer:
 
         _LOGGER.debug(f"CLIENT -> process_client_message_ha_action: {type}")
 
-    def set_message_callback(self, callback):
+    def set_message_callback(self, callback: Callable[[BaseComponent], None]):
         self.callback = callback

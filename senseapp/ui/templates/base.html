@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Home Assistant - Panel Sense</title>
+
+        <link rel="stylesheet" type="text/css" media="screen" href="/static/css/main.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="/static/css/fonts.css" />
+
+            <!-- Fonts -->
+        <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        {{ turbo() }}
+    </head>
+    <body>
+            <!-- Top Bar -->
+        <div class="top-bar">
+            <span>PanelSense devices</span>
+        </div>
+        {% block content %}{% endblock %}
+    </body>
+</html>
