@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block header %}
+<link rel="stylesheet" type="text/css" media="screen" href="/static/css/device_page.css" />
+{% endblock %}
+
+{% block content %}
+
+    <div class="device_header">
+        <div class="device_header_info">
+            <span style="font-size: 24px; margin-bottom: 10px;">Details: </span>
+            <span class="text_device_detail">Name: {{ device["name"]}}</span>
+            <span class="text_device_detail">Installation ID: {{ device["installation_id"]}}</span>
+            <span class="text_device_detail">Application version name: {{ device["version_name"]}}</span>
+            <span class="text_device_detail">Application version code: {{ device["version_code"]}}</span>
+        </div>
+        <div class="device_header_button">
+            <button>Send configuration</button>
+        </div>git p
+    </div>
+        <div class="device_input_text_layout" id="editor"></div>
+            <script src="/static/js/ace/src/ace.js" type="text/javascript" charset="utf-8"></script>
+            <script src="/static/js/ace/src/theme-github.js" type="text/javascript" charset="utf-8"></script>
+            <script src="/static/js/ace/src/mode-yaml.js" type="text/javascript" charset="utf-8"></script>
+            <script>
+                var editor = ace.edit("editor");
+                editor.setTheme("ace/theme/github");
+                editor.session.setMode("ace/mode/yaml");
+            </script>
+        </div>
+{% endblock %}

@@ -1,0 +1,47 @@
+.device_body{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+.device_header{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    background-color: white;
+    border-bottom: 1px solid #ddd;
+    padding-left: 60px;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    margin-top: 56px;
+    position: fixed;
+}
+.device_header_info{
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+}
+.device_header_button{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+.text_device_detail{
+    height: 100%;
+    font-size: 14px;
+    color: grey;
+    margin-top: 2px;
+    margin-bottom: 5px;
+}
+.device_input_text_layout{
+    width: 100%;
+    height: 100%;
+    margin-top: 260px;
+}
+#editor {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}

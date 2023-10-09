@@ -55,7 +55,12 @@ def device_page(installation_id):
     if client == None:
         raise
 
-    return render_template("device.html", show_top_bar=True, title=client.details.name)
+    return render_template(
+        "device.html",
+        show_top_bar=True,
+        title=client.details.name,
+        device=client.details,
+    )
 
 
 def get_index_renderer():
