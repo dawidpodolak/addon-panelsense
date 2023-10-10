@@ -58,7 +58,8 @@ def setup_server():
     if args.debugUI:
         setup_fake_server()
     else:
-        setup_real_server()
+        server_thread = threading.Thread(target=setup_real_server)
+        server_thread.start()
 
 
 def setup_real_server():
@@ -75,7 +76,6 @@ def setup_real_server():
 def setup_fake_server():
     global client_connection_helper
     client_connection_helper = FakeSenseServer(loop)
-    loop.run_forever()
 
 
 def sense_serve_callback() -> ClientConectionHelper:
@@ -84,8 +84,7 @@ def sense_serve_callback() -> ClientConectionHelper:
 
 
 def main():
-    server_thread = threading.Thread(target=setup_server)
-    server_thread.start()
+    setup_server()
     start_web_app(args.debugUI, server_callback=sense_serve_callback)
 
 

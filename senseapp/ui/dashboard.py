@@ -1,6 +1,6 @@
 from typing import Callable, Optional, Set
 
-from flask import Flask, render_template, request
+from flask import Flask, jsonify, render_template, request
 from flask_babel import Babel
 from loging.logger import _LOGGER
 from server.client.sense_client import SenseClienDetails, SenseClient
@@ -48,7 +48,6 @@ def dashboard():
     return get_index_renderer()
 
 
-# <!-- <div class="device-item" onclick="location.href= '{{ url_for('device_page', installation_id=client['installation_id']) }}'"> -->
 @app.route("/device/<installation_id>")
 def device_page(installation_id):
     client = get_sense_client(installation_id)
@@ -59,8 +58,17 @@ def device_page(installation_id):
         "device.html",
         show_top_bar=True,
         title=client.details.name,
-        device=client.details,
+        configuration=client.get_configuration_yaml(),
+        device_details=client.details,
     )
+
+
+@app.route("/receive_text", methods=["POST"])
+def receive_text():
+    data = request.get_json()
+    editor_text = data.get("editor_text", "")
+    _LOGGER.info(f"Text from page: {editor_text}")
+    return jsonify({"status": "success"}), 200
 
 
 def get_index_renderer():

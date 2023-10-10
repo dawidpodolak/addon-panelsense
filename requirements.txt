@@ -4,3 +4,4 @@ pydantic
 Flask
 Flask-Babel
 turbo-flask
+pyyaml

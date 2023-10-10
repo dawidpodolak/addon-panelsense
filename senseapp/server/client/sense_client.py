@@ -1,8 +1,10 @@
-import json
 from typing import Optional
 
+import yaml
+from loging.logger import _LOGGER
 from pydantic import BaseModel
 from server.model.authentication import AuthenticationIncomingMessage
+from server.model.configuration import Configuration
 from websockets.client import WebSocketClientProtocol
 
 
@@ -19,6 +21,10 @@ class SenseClienDetails(BaseModel):
 class SenseClient:
     details: SenseClienDetails
     websocket: Optional[WebSocketClientProtocol] = None
+    configuration: Configuration
+
+    def set_configuration(self, configuration: Configuration):
+        self.configuration = configuration
 
     def set_websocket(self, websocket: WebSocketClientProtocol):
         self.websocket = websocket
@@ -46,3 +52,10 @@ class SenseClient:
 
     def get_sense_client_json(self) -> str:
         return self.details.model_dump_json()
+
+    def get_configuration_yaml(self):
+        configuration_dict = self.configuration.model_dump()
+        yaml_message = yaml.dump(configuration_dict)
+        string_array = yaml_message.split("\n")
+        _LOGGER.info(f"get_configuration_yaml: {string_array}")
+        return string_array

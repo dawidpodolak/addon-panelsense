@@ -10,6 +10,7 @@
     align-content: center;
     display: flex;
     position: fixed;
+    z-index: 1000;
 }
 .nav-icon{
     height: 30px;
