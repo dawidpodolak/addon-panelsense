@@ -4,6 +4,7 @@ from typing import Optional
 
 from loging.logger import _LOGGER
 from server.client.sense_client import SenseClient
+from server.database.sense_database import SenseDatabase
 from server.model.authentication import *
 from server.model.server_credentials import ServerCredentials
 from websockets.client import WebSocketClientProtocol
@@ -15,8 +16,10 @@ class AuthenticationError(Exception):
 
 class ClientAuthenticator:
     encoded_credentials: str
+    database: SenseDatabase
 
-    def __init__(self, server_credentials: ServerCredentials):
+    def __init__(self, server_credentials: ServerCredentials, database: SenseDatabase):
+        self.database = database
         self.user_name = server_credentials.username
         self.password = server_credentials.password
         self.encoded_credentials = base64.b64encode(
@@ -42,6 +45,7 @@ class ClientAuthenticator:
             sense_client = SenseClient()
             sense_client.set_websocket(websocket)
             sense_client.set_client_data(auth_message)
+            self.database.create_or_update_sense_client(sense_client)
             await websocket.send(
                 AuthenticationRespone(
                     data=AuthResponseData(auth_result=AuthResult.SUCCESS)

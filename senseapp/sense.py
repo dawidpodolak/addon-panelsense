@@ -9,6 +9,7 @@ from homeassistant.home_assistant_client import HomeAssistantClient
 from loging.logger import _LOGGER
 from mediator.mediator import Mediator
 from server.client_connection_helper import ClientConectionHelper
+from server.database.sense_database import SenseDatabase
 from server.fake_sense_server import FakeSenseServer
 from server.model.server_credentials import ServerCredentials
 from server.sense_server import PanelSenseServer
@@ -21,6 +22,7 @@ args = parser.parse_args()
 loop = asyncio.get_event_loop()
 mediator: Mediator
 client_connection_helper: ClientConectionHelper
+database = SenseDatabase()
 
 
 async def get_steam_reader(pipe) -> str:
@@ -67,7 +69,7 @@ def setup_real_server():
 
     ha_event_observer = EventObserver()
     ha_client = HomeAssistantClient(loop, ha_event_observer)
-    panel_sense_server = PanelSenseServer(loop, get_server_credentails())
+    panel_sense_server = PanelSenseServer(loop, get_server_credentails(), database)
     client_connection_helper = panel_sense_server
     mediator = Mediator(ha_client, panel_sense_server)
     loop.run_forever()
@@ -75,7 +77,7 @@ def setup_real_server():
 
 def setup_fake_server():
     global client_connection_helper
-    client_connection_helper = FakeSenseServer(loop)
+    client_connection_helper = FakeSenseServer(loop, database)
 
 
 def sense_serve_callback() -> ClientConectionHelper:

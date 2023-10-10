@@ -5,13 +5,18 @@ from typing import List
 from loging.logger import _LOGGER
 from server.client.sense_client import SenseClienDetails, SenseClient
 from server.client_connection_helper import ClientConectionHelper
+from server.database.sense_database import SenseDatabase
 from server.model.authentication import AuthData, AuthenticationIncomingMessage
 from server.model.base import MessageType
 from server.model.configuration import *
 
 
 class FakeSenseServer(ClientConectionHelper):
-    def __init__(self, loop: AbstractEventLoop):
+    database: SenseDatabase
+
+    def __init__(self, loop: AbstractEventLoop, database: SenseDatabase):
+        self.database = database
+        database.get_sense_clients()
         self.add_fake_client("Test android devices", "test Ad inId")
         loop.create_task(self.add_fake_client_with_delay())
 
@@ -30,6 +35,7 @@ class FakeSenseServer(ClientConectionHelper):
         )
         fake_sense_client.set_client_data(authIncomingMessage)
         self.add_client(fake_sense_client)
+        self.database.create_or_update_sense_client(fake_sense_client)
 
     async def add_fake_client_with_delay(self):
         await asyncio.sleep(5)

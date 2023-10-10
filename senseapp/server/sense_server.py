@@ -13,6 +13,7 @@ from mediator.components.switch.switch_component import Switch
 from pydantic import ValidationError
 from server.client.client_authenticator import ClientAuthenticator
 from server.client.sense_client import SenseClient
+from server.database.sense_database import SenseDatabase
 from server.model.cover import *
 from server.model.error import ErrorCode, ErrorResponse
 from server.model.light import *
@@ -35,9 +36,14 @@ class PanelSenseServer(ClientConectionHelper):
 
     callback: Callable[[BaseComponent], None]
 
-    def __init__(self, loop: AbstractEventLoop, server_credentials: ServerCredentials):
+    def __init__(
+        self,
+        loop: AbstractEventLoop,
+        server_credentials: ServerCredentials,
+        database: SenseDatabase,
+    ):
         loop.create_task(self.start_sense_server())
-        self.client_authenticator = ClientAuthenticator(server_credentials)
+        self.client_authenticator = ClientAuthenticator(server_credentials, database)
 
     async def message_handler(self, websocket: WebSocketClientProtocol):
         auth_message = await websocket.recv()

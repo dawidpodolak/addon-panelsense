@@ -21,7 +21,7 @@ class SenseClienDetails(BaseModel):
 class SenseClient:
     details: SenseClienDetails
     websocket: Optional[WebSocketClientProtocol] = None
-    configuration: Configuration
+    configuration_str: str = ""
 
     def set_configuration(self, configuration: Configuration):
         self.configuration = configuration
@@ -59,3 +59,22 @@ class SenseClient:
         string_array = yaml_message.split("\n")
         _LOGGER.info(f"get_configuration_yaml: {string_array}")
         return string_array
+
+
+def create_sense_client(
+    name: str,
+    installation_id: str,
+    version_name: str,
+    version_code: int,
+    configuration: str,
+) -> SenseClient:
+    details = SenseClienDetails(
+        name=name,
+        installation_id=installation_id,
+        version_name=version_name,
+        version_code=version_code,
+    )
+    sense_client = SenseClient()
+    sense_client.configuration_str = configuration
+    sense_client.details = details
+    return sense_client
