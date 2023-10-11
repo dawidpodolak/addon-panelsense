@@ -16,9 +16,10 @@ class FakeSenseServer(ClientConectionHelper):
 
     def __init__(self, loop: AbstractEventLoop, database: SenseDatabase):
         self.database = database
-        database.get_sense_clients()
-        self.add_fake_client("Test android devices", "test Ad inId")
-        loop.create_task(self.add_fake_client_with_delay())
+        self.connected_clients = database.get_sense_clients()
+        _LOGGER.info(f"Sense clients: {len(self.connected_clients)}")
+        # self.add_fake_client("Test android devices", "test Ad inId")
+        # loop.create_task(self.add_fake_client_with_delay())
 
     def add_fake_client(self, name: str, installation_id: str):
         fake_sense_client = SenseClient()
@@ -63,3 +64,16 @@ class FakeSenseServer(ClientConectionHelper):
         panel_list: List[ConfigurationPanel] = list()
         panel_list.append(panel)
         return Configuration(system=system_configuration, panel_list=panel_list)
+
+    def update_sense_client_config(self, installation_id: str, config: str):
+        sense_client: Optional[SenseClient] = None
+
+        for sc in self.connected_clients:
+            if sc.details.installation_id == installation_id:
+                sense_client = sc
+
+        _LOGGER.info(f"Updadate sense client {installation_id} with config: {config}")
+        if sense_client:
+            # self.connected_clients.update(sense_client)
+            sense_client.configuration_str = config
+            self.database.update_sense_client_configuration(installation_id, config)

@@ -30,10 +30,9 @@
                 editor.session.setMode("ace/mode/yaml");
                 editor.setSession(yamyConfig);
                 function myFunction() {
-                    console.log("asddsa")
                     $.ajax({
-                        url: '/receive_text', // Flask route where data will be sent
-                        data: JSON.stringify({'editor_text': editor.getValue()}),
+                        url: '/update_configuration',
+                        data: JSON.stringify({'configuration': editor.getValue(), 'installation_id': "{{ device_details["installation_id"] }}" }),
                         contentType: 'application/json;charset=UTF-8',
                         type: 'POST',
                         success: function(response) {

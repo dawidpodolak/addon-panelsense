@@ -1,3 +1,4 @@
+import base64
 from typing import Set
 
 from loging.logger import _LOGGER
@@ -25,12 +26,15 @@ class SenseDatabase:
 
         if result == False:
             _LOGGER.debug("Add sense client")
+            base64_config = base64.b64encode(
+                sense_client.configuration_str.encode("utf-8")
+            ).decode("utf-8")
             sense_client_database = SenseClientDatabase(
                 installation_id=sense_client.details.installation_id,
                 name=sense_client.details.name,
                 version_name=sense_client.details.version_name,
                 version_code=sense_client.details.version_code,
-                configuration=sense_client.configuration_str,
+                configuration=base64_config,
             )
             self.session.add(sense_client_database)
 
@@ -48,11 +52,29 @@ class SenseDatabase:
                 [sense_client.details.installation_id]
             )
         )
+
         sense_client_database = self.session.execute(statement).scalar_one()
         sense_client_database.name = sense_client.details.name
         sense_client_database.version_code = sense_client.details.version_code
         sense_client_database.version_name = sense_client.details.version_name
+
         _LOGGER.debug(f"update sense client result: {sense_client_database}")
+
+        try:
+            self.session.commit()
+        except Exception as e:
+            _LOGGER.error(e)
+            self.session.rollback()
+
+    def update_sense_client_configuration(
+        self, installation_id: str, configuration: str
+    ):
+        statement = select(SenseClientDatabase).where(
+            SenseClientDatabase.installation_id.in_([installation_id])
+        )
+        base64_config = base64.b64encode(configuration.encode("utf-8")).decode("utf-8")
+        sense_client_database = self.session.execute(statement).scalar_one()
+        sense_client_database.configuration = base64_config
 
         try:
             self.session.commit()
@@ -62,18 +84,20 @@ class SenseDatabase:
 
     def get_sense_clients(self) -> Set[SenseClient]:
         statement = select(SenseClientDatabase)
-        # results = self.session.execute(statement)
         sense_client_set = set()
 
         for result in self.session.scalars(statement):
-            _LOGGER.info(f"Result ---> {result.name}")
+            config_str = base64.b64decode(result.configuration.encode("utf-8")).decode(
+                "utf-8"
+            )
+            _LOGGER.info(f"base config -> {result.configuration} -> {config_str}")
             sense_client_set.add(
                 create_sense_client(
                     name=result.name,
                     installation_id=result.installation_id,
                     version_code=result.version_code,
                     version_name=result.version_name,
-                    configuration=result.configuration,
+                    configuration=config_str,
                 )
             )
         return sense_client_set

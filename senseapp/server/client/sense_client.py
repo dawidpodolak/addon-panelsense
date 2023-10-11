@@ -12,7 +12,7 @@ class SenseClienDetails(BaseModel):
     name: str
     version_name: str
     version_code: int
-    installation_id: str
+    installation_id: str  # base64
 
     def __hash__(self):
         return hash((self.installation_id,))
@@ -21,7 +21,7 @@ class SenseClienDetails(BaseModel):
 class SenseClient:
     details: SenseClienDetails
     websocket: Optional[WebSocketClientProtocol] = None
-    configuration_str: str = ""
+    configuration_str: str = "system:\npanel_item:"
 
     def set_configuration(self, configuration: Configuration):
         self.configuration = configuration
@@ -53,12 +53,8 @@ class SenseClient:
     def get_sense_client_json(self) -> str:
         return self.details.model_dump_json()
 
-    def get_configuration_yaml(self):
-        configuration_dict = self.configuration.model_dump()
-        yaml_message = yaml.dump(configuration_dict)
-        string_array = yaml_message.split("\n")
-        _LOGGER.info(f"get_configuration_yaml: {string_array}")
-        return string_array
+    def get_configuration(self):
+        return self.configuration_str
 
 
 def create_sense_client(

@@ -12,6 +12,7 @@ turbo = Turbo(app)
 
 app.config["LANGUAGES"] = {"en": "English", "pl": "Polski"}
 sense_server_callback: Callable[[], ClientConectionHelper]
+update_sense_client_config_callback: Callable[[str], None]
 
 
 def start_web_app(isDebug: bool, server_callback: Callable[[], ClientConectionHelper]):
@@ -58,16 +59,18 @@ def device_page(installation_id):
         "device.html",
         show_top_bar=True,
         title=client.details.name,
-        configuration=client.get_configuration_yaml(),
+        configuration=client.get_configuration().split("\n"),
         device_details=client.details,
     )
 
 
-@app.route("/receive_text", methods=["POST"])
+@app.route("/update_configuration", methods=["POST"])
 def receive_text():
     data = request.get_json()
-    editor_text = data.get("editor_text", "")
-    _LOGGER.info(f"Text from page: {editor_text}")
+    configuration = data.get("configuration", "")
+    installation_id = data.get("installation_id", "")
+    sense_server_callback().update_sense_client_config(installation_id, configuration)
+    _LOGGER.info(f"Text from page: {configuration}")
     return jsonify({"status": "success"}), 200
 
 

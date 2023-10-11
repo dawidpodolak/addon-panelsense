@@ -17,3 +17,6 @@ class ClientConectionHelper:
         self.connected_clients.remove(client)
         for callback in self.client_diconnected_callbacks:
             callback(client)
+
+    def update_sense_client_config(self, installation_id: str, config: str):
+        pass
