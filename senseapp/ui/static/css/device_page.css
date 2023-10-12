@@ -53,6 +53,23 @@
     height: 100%;
     margin-top: 260px;
 }
+.device_button_style{
+    background-color: #1a488d;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    transition-duration: 0.4s;
+}
+.device_button_style:active {
+    background-color: #133260;
+}
+.text_configuration_sent{
+    margin-bottom: 15px;
+}
 #editor {
     position: absolute;
     width: 100%;

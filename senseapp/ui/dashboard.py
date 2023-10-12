@@ -34,21 +34,16 @@ def start_web_app(isDebug: bool):
 def set_client_callback(server_callback: Callable[[], ClientConectionHelper]):
     global sense_server_callback
     sense_server_callback = server_callback
-    server_callback().client_connected_callbacks.add(on_client_connected)
-    server_callback().client_diconnected_callbacks.add(on_client_disconnected)
+    server_callback().client_connected_callbacks.add(on_client_state_changed)
+    server_callback().client_diconnected_callbacks.add(on_client_state_changed)
 
 
-def on_client_connected(senseClient: SenseClient):
+def on_client_state_changed(senseClient: SenseClient):
     if current_user_page == "/":
         update_index()
     elif "device" in current_user_page:
-        update_device(senseClient.details.installation_id)
-
-
-def on_client_disconnected(senseClient: SenseClient):
-    if current_user_page == "/":
-        update_index()
-    elif "device" in current_user_page:
+        pass
+        # TODO issue with refreshing device page
         update_device(senseClient.details.installation_id)
 
 
@@ -66,7 +61,7 @@ def update_device(installation_id: str):
     _LOGGER.info(f"Update device: {installation_id}")
     with app.app_context():
         turbo.push(
-            turbo.replace(
+            turbo.update(
                 get_device_renderer(installation_id),
                 "device_status",
             )
@@ -124,7 +119,7 @@ def get_device_renderer(installation_id: str):
     with app.app_context():
         return render_template(
             "device.html",
-            show_top_bar=False,
+            show_top_bar=True,
             title=ui_client.name,
             configuration=client.get_configuration().split("\n"),
             device_details=ui_client,
