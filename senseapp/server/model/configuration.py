@@ -3,6 +3,8 @@ from typing import List, Optional, Set
 
 from pydantic import BaseModel
 
+from .base import *
+
 
 class ConfigurationSystem(BaseModel):
     main_panel_id: Optional[str] = None
@@ -34,12 +36,12 @@ class ConfigurationPanel(BaseModel):
     def __hash__(self):
         return hash(self.id)
 
-    # def model_dump1(self):
-    #     dict = self.model_dump()
-    #     dict["type"] = self.type.value
-    #     return dict
-
 
 class Configuration(BaseModel):
     system: ConfigurationSystem
     panel_list: List[ConfigurationPanel] = list()
+
+
+class ConfigurationOutcomingMessage(ServerOutgoingMessage):
+    type: MessageType = MessageType.CONFIGURATION
+    data: Configuration

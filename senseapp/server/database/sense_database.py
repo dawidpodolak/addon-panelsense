@@ -9,7 +9,7 @@ from sqlalchemy.orm import sessionmaker
 
 
 class SenseDatabase:
-    engine = create_engine("sqlite:///sense_database.db", echo=True)
+    engine = create_engine("sqlite:///sense_database.db")
     Base.metadata.create_all(engine)
 
     Session = sessionmaker(bind=engine)
@@ -58,8 +58,6 @@ class SenseDatabase:
         sense_client_database.version_code = sense_client.details.version_code
         sense_client_database.version_name = sense_client.details.version_name
 
-        _LOGGER.debug(f"update sense client result: {sense_client_database}")
-
         try:
             self.session.commit()
         except Exception as e:
@@ -90,7 +88,6 @@ class SenseDatabase:
             config_str = base64.b64decode(result.configuration.encode("utf-8")).decode(
                 "utf-8"
             )
-            _LOGGER.info(f"base config -> {result.configuration} -> {config_str}")
             sense_client_set.add(
                 create_sense_client(
                     name=result.name,

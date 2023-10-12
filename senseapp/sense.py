@@ -71,6 +71,7 @@ def setup_real_server():
     ha_client = HomeAssistantClient(loop, ha_event_observer)
     panel_sense_server = PanelSenseServer(loop, get_server_credentails(), database)
     client_connection_helper = panel_sense_server
+    set_client_callback(sense_serve_callback)
     mediator = Mediator(ha_client, panel_sense_server)
     loop.run_forever()
 
@@ -78,16 +79,18 @@ def setup_real_server():
 def setup_fake_server():
     global client_connection_helper
     client_connection_helper = FakeSenseServer(loop, database)
+    set_client_callback(sense_serve_callback)
 
 
 def sense_serve_callback() -> ClientConectionHelper:
     global client_connection_helper
+
     return client_connection_helper
 
 
 def main():
     setup_server()
-    start_web_app(args.debugUI, server_callback=sense_serve_callback)
+    start_web_app(args.debugUI)
 
 
 if __name__ == "__main__":

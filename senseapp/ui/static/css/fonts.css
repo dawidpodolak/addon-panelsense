@@ -9,3 +9,13 @@
     font-size: 12px;
     color: grey;
 }
+.online {
+    font-weight: 600;
+    font-size: 12px;
+    color: lime;
+}
+.offline {
+    font-weight: 600;
+    font-size: 12px;
+    color: crimson;
+}

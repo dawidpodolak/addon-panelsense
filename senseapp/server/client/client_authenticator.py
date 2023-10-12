@@ -1,6 +1,6 @@
 import base64
 import json
-from typing import Optional
+from typing import Callable, Optional, Set
 
 from loging.logger import _LOGGER
 from server.client.sense_client import SenseClient
@@ -27,7 +27,10 @@ class ClientAuthenticator:
         ).decode("utf-8")
 
     async def authenticate(
-        self, message: str, websocket: WebSocketClientProtocol
+        self,
+        message: str,
+        websocket: WebSocketClientProtocol,
+        client_callback: Callable[[], Set[SenseClient]],
     ) -> Optional[SenseClient]:
         print(f"Authenticating client with message: {message}")
         auth_message: AuthenticationIncomingMessage
@@ -42,7 +45,20 @@ class ClientAuthenticator:
             return None
 
         if self._is_authenticated(auth_message):
-            sense_client = SenseClient()
+            sense_client = next(
+                (
+                    client
+                    for client in client_callback()
+                    if client.details.installation_id
+                    == auth_message.data.installation_id
+                ),
+                None,
+            )
+            _LOGGER.info(f"authentication: sense client found: {sense_client != None}")
+            if not sense_client:
+                _LOGGER.info(f"create new sense client")
+                sense_client = SenseClient()
+
             sense_client.set_websocket(websocket)
             sense_client.set_client_data(auth_message)
             self.database.create_or_update_sense_client(sense_client)

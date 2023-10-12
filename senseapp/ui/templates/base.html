@@ -12,7 +12,23 @@
             <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+        <script>
+            document.addEventListener("turbo:load", () => {
+                console.log("page loaded!")
+              fetch("/user_current_page", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ current_page: window.location.pathname })
+              });
+            });
+        </script>
+
+
         {{ turbo() }}
+
         {% block header %}{% endblock %}
     </head>
     <body>

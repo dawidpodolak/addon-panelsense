@@ -33,8 +33,9 @@ class PanelSenseServer(ClientConectionHelper):
     SENSE_SERVER_PORT = 8652
 
     websocket_server: WebSocketClientProtocol
-
+    loop: AbstractEventLoop
     callback: Callable[[BaseComponent], None]
+    database: SenseDatabase
 
     def __init__(
         self,
@@ -42,14 +43,20 @@ class PanelSenseServer(ClientConectionHelper):
         server_credentials: ServerCredentials,
         database: SenseDatabase,
     ):
+        self.database = database
+        self.loop = loop
         loop.create_task(self.start_sense_server())
+        self.connected_clients = database.get_sense_clients()
         self.client_authenticator = ClientAuthenticator(server_credentials, database)
+
+    def get_client(self) -> Set[SenseClient]:
+        return self.connected_clients
 
     async def message_handler(self, websocket: WebSocketClientProtocol):
         auth_message = await websocket.recv()
 
         sense_client = await self.client_authenticator.authenticate(
-            auth_message, websocket
+            auth_message, websocket, self.get_client
         )
 
         if not sense_client:
@@ -57,7 +64,7 @@ class PanelSenseServer(ClientConectionHelper):
             await websocket.close()
             return
 
-        self.add_client(sense_client)
+        self.on_client_connected(sense_client)
 
         try:
             async for message in websocket:
@@ -67,7 +74,7 @@ class PanelSenseServer(ClientConectionHelper):
             _LOGGER.error(f"Client disconnected! {e}")
         finally:
             _LOGGER.info(f"Client disconnected! {sense_client.details.name}")
-            self.remove_client(sense_client)
+            self.on_client_disconnected(sense_client)
 
     async def start_sense_server(self):
         print(f"Server starting at ws://localhost:{self.SENSE_SERVER_PORT}")
@@ -100,6 +107,21 @@ class PanelSenseServer(ClientConectionHelper):
                 client, ErrorResponse(error_code=error_code, message=error_message)
             )
         )
+
+    def update_sense_client_config(self, installation_id: str, config: str):
+        sense_client: Optional[SenseClient] = None
+
+        for sc in self.connected_clients:
+            if sc.details.installation_id == installation_id:
+                sense_client = sc
+
+        _LOGGER.info(
+            f"Updadate sense client {installation_id} with config: {sense_client == None}"
+        )
+        if sense_client:
+            sense_client.configuration_str = config
+            self.database.update_sense_client_configuration(installation_id, config)
+            self.loop.create_task(sense_client.send_config())
 
     def handle_message(self, client: WebSocketClientProtocol, message):
         try:

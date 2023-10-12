@@ -4,7 +4,8 @@ import yaml
 from loging.logger import _LOGGER
 from pydantic import BaseModel
 from server.model.authentication import AuthenticationIncomingMessage
-from server.model.configuration import Configuration
+from server.model.configuration import (Configuration,
+                                        ConfigurationOutcomingMessage)
 from websockets.client import WebSocketClientProtocol
 
 
@@ -22,6 +23,7 @@ class SenseClient:
     details: SenseClienDetails
     websocket: Optional[WebSocketClientProtocol] = None
     configuration_str: str = "system:\npanel_item:"
+    is_online = False
 
     def set_configuration(self, configuration: Configuration):
         self.configuration = configuration
@@ -55,6 +57,22 @@ class SenseClient:
 
     def get_configuration(self):
         return self.configuration_str
+
+    async def send_config(self):
+        try:
+            yaml_config = yaml.safe_load(self.configuration_str)
+            configuration_message = ConfigurationOutcomingMessage(
+                data=Configuration(**yaml_config)
+            )
+            _LOGGER.info(
+                f"Client <- Send configuration to device: -> {configuration_message.model_dump_json(exclude_none=True)}"
+            )
+            if self.websocket:
+                await self.websocket.send(
+                    configuration_message.model_dump_json(exclude_none=True)
+                )
+        except Exception as e:
+            _LOGGER.error(e)
 
 
 def create_sense_client(

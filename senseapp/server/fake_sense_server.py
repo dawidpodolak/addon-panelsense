@@ -35,7 +35,7 @@ class FakeSenseServer(ClientConectionHelper):
             ),
         )
         fake_sense_client.set_client_data(authIncomingMessage)
-        self.add_client(fake_sense_client)
+        self.on_client_connected(fake_sense_client)
         self.database.create_or_update_sense_client(fake_sense_client)
 
     async def add_fake_client_with_delay(self):
@@ -74,6 +74,5 @@ class FakeSenseServer(ClientConectionHelper):
 
         _LOGGER.info(f"Updadate sense client {installation_id} with config: {config}")
         if sense_client:
-            # self.connected_clients.update(sense_client)
             sense_client.configuration_str = config
             self.database.update_sense_client_configuration(installation_id, config)
