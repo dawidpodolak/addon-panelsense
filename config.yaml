@@ -1,5 +1,5 @@
 name: "PanelSense"
-version: "0.0.4"
+version: "0.0.5"
 slug: panel_sense
 description: "Add-on helps to manage PanelSense Android app, that can be used to work with Home Assistant."
 arch:
@@ -24,4 +24,4 @@ schema:
 
 ingress: true
 ingress_port: 5000
-# ingress_entry:
+panel_icon: home-circle-outline
