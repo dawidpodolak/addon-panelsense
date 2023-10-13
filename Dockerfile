@@ -7,11 +7,14 @@ WORKDIR /usr/src/app
 COPY rootfs /
 RUN chmod a+x /etc/services.d/PanelSense/run
 RUN chmod a+x /etc/services.d/PanelSense/finish
+RUN chmod a+x /etc/nginx/http.d/ingress.conf
 
 # Install dependencies
 RUN apk add --no-cache \
     python3 \
     py3-pip
+
+RUN apk add nginx
 
 COPY senseapp /usr/src/app/senseapp
 COPY requirements.txt /tmp/requirements.txt
@@ -23,4 +26,4 @@ ENV HASS_WS_ADDRESS="ws://supervisor/core/websocket"
 RUN pip3 install --upgrade pip
 RUN pip3 install --no-cache-dir -r /tmp/requirements.txt
 
-CMD [ "nginx","-g","daemon off;error_log /dev/stdout debug;" ]
+# CMD [ "nginx","-g","daemon off;error_log /dev/stdout debug;" ]
