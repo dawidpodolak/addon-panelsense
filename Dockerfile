@@ -22,3 +22,5 @@ ENV HASS_WS_ADDRESS="ws://supervisor/core/websocket"
 # Install python dependencies
 RUN pip3 install --upgrade pip
 RUN pip3 install --no-cache-dir -r /tmp/requirements.txt
+
+CMD [ "nginx","-g","daemon off;error_log /dev/stdout debug;" ]
