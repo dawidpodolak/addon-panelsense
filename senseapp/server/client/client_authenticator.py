@@ -67,6 +67,7 @@ class ClientAuthenticator:
                     data=AuthResponseData(auth_result=AuthResult.SUCCESS)
                 ).model_dump_json(exclude_none=True)
             )
+            await sense_client.send_config()
             return sense_client
         else:
             await websocket.send(
