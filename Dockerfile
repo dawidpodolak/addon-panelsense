@@ -20,9 +20,3 @@ ENV SENSE_APP=/usr/src/app/senseapp/sense.py
 # Install python dependencies
 RUN pip3 install --upgrade pip
 RUN pip3 install --no-cache-dir -r /tmp/requirements.txt
-
-# # Copy data for add-on
-# CMD ["python3", "senseapp/sense.py"]
-COPY run.sh /
-RUN chmod a+x /run.sh
-CMD [ "/run.sh" ]
