@@ -6,6 +6,7 @@ WORKDIR /usr/src/app
 # Copy in the root filesystem for s6-overlay
 COPY rootfs /
 RUN chmod a+x /etc/services.d/PanelSense/run
+RUN chmod a+x /etc/services.d/PanelSense/finish
 
 # Install dependencies
 RUN apk add --no-cache \
@@ -16,6 +17,7 @@ COPY senseapp /usr/src/app/senseapp
 COPY requirements.txt /tmp/requirements.txt
 COPY config.yaml /
 ENV SENSE_APP=/usr/src/app/senseapp/sense.py
+ENV HASS_WS_ADDRESS="ws://supervisor/core/websocket"
 
 # Install python dependencies
 RUN pip3 install --upgrade pip
