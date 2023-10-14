@@ -19,8 +19,13 @@ RUN apk add nginx
 COPY senseapp /usr/src/app/senseapp
 COPY requirements.txt /tmp/requirements.txt
 COPY config.yaml /
+
 ENV SENSE_APP=/usr/src/app/senseapp/sense.py
 ENV HASS_WS_ADDRESS="ws://supervisor/core/websocket"
+
+# for debug only
+RUN apk add git nano curl zsh
+RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
 # Install python dependencies
 RUN pip3 install --upgrade pip
