@@ -23,5 +23,5 @@ schema:
   server_password: str
 
 ingress: true
-ingress_port: 5000
+ingress_port: 8099
 panel_icon: mdi:home-circle-outline
