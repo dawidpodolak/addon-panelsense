@@ -29,4 +29,3 @@ else
     python senseapp/sense.py
   fi
 fi
-
