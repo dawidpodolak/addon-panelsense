@@ -1,9 +1,13 @@
 name: "PanelSense"
 version: "0.0.4"
-slug: panel_sense
+slug: "panel_sense"
 description: "Add-on helps to manage PanelSense Android app, that can be used to work with Home Assistant."
 arch:
+  - aarch64
   - amd64
+  - armhf
+  - armv7
+  - i386
 url: "https://github.com/dawidpodolak/PanelSense-Ha-addon"
 ports:
   123/tcp: 123
