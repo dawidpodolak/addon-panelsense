@@ -9,6 +9,8 @@ ports:
   80/tcp: null
   123/tcp: 123
   8652/tcp: 8652
+ports_description:
+  80/tcp: Web interface (Not required for Ingress)
 map:
   - config:rw
   - ssl
@@ -18,10 +20,12 @@ homeassistant_api: true
 hassio_role: default
 options:
   server_user: "admin"
-  server_password: "adim"
+  server_password: "admin"
+  ssl: false
 schema:
   server_user: str
   server_password: str
+  ssl: bool
 
 ingress: true
 ingress_port: 0
