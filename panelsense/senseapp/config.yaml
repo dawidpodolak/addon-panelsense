@@ -1,0 +1,33 @@
+name: "PanelSense"
+version: "0.0.5"
+slug: panel_sense
+description: "Add-on helps to manage PanelSense Android app, that can be used to work with Home Assistant."
+arch:
+  - amd64
+url: "https://github.com/dawidpodolak/PanelSense-Ha-addon"
+ports:
+  80/tcp: null
+  123/tcp: 123
+  8652/tcp: 8652
+ports_description:
+  80/tcp: Web interface (Not required for Ingress)
+map:
+  - config:rw
+  - ssl
+init: false
+hassio_api: true
+homeassistant_api: true
+hassio_role: default
+options:
+  server_user: "admin"
+  server_password: "admin"
+  ssl: false
+schema:
+  server_user: str
+  server_password: str
+  ssl: bool
+
+ingress: true
+ingress_port: 0
+ingress_stream: true
+panel_icon: mdi:home-circle-outline
