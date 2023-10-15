@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 TAG=panel_sense
 USE_DOCKER=false
