@@ -5,6 +5,7 @@ body {
     flex-direction: column;
     align-items: center;
     font-family: Arial, sans-serif;
+    background-color: azure;
 }
 .device-list {
     width: 70%;

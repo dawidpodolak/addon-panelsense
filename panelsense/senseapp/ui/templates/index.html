@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <div class="device-list">
+        {% for client in clients %}
+        <div class="device-item">
+            <span class="primary-text">{{ client["name"]}}</span>
+            <span class="secondary-text">{{ client["version_name"] }} ( {{ client["version_code"] }})</span>
+            {% if client.is_online %}
+                <span class="online" style="font-size: 14px;">Online</span>
+            {% else %}
+                <span class="offline" style="font-size: 14px;">Offline</span>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+
+{% endblock %}
