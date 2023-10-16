@@ -24,9 +24,9 @@ if [ "$USE_DOCKER" = "true" ]; then
   docker run -p 8652:8652 panel_sense
 else
   if [ "$DEBUG_UI" = "true" ]; then
-    python senseapp/sense.py --debugUI
+    python panelsense/senseapp/sense.py --debugUI
   else
-    python senseapp/sense.py
+    python panelsense/senseapp/sense.py
   fi
 fi
 
