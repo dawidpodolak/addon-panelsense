@@ -21,7 +21,7 @@ RUN apk add --no-cache \
 RUN apk add nginx
 
 COPY senseapp /usr/src/app/senseapp
-COPY requirements.txt /tmp/requirements.txt
+# COPY requirements.txt /tmp/requirements.txt
 COPY config.yaml /
 
 ENV SENSE_APP=/usr/src/app/senseapp/sense.py
@@ -34,5 +34,6 @@ RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master
 # Install python dependencies
 RUN pip3 install --upgrade pip
 RUN pip3 install --no-cache-dir -r /tmp/requirements.txt
+RUN pip3 install --no-cache-dir -r asyncio websockets pydantic Flask Flask-Babel turbo-flask pyyaml SQLAlchemy
 
 # CMD [ "nginx","-g","daemon off;error_log /dev/stdout debug;" ]
