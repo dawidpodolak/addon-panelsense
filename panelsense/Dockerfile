@@ -33,7 +33,7 @@ RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master
 
 # Install python dependencies
 RUN pip3 install --upgrade pip
-RUN pip3 install --no-cache-dir -r /tmp/requirements.txt
+# RUN pip3 install --no-cache-dir -r /tmp/requirements.txt
 RUN pip3 install --no-cache-dir -r asyncio websockets pydantic Flask Flask-Babel turbo-flask pyyaml SQLAlchemy
 
 # CMD [ "nginx","-g","daemon off;error_log /dev/stdout debug;" ]
