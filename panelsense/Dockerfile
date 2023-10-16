@@ -10,7 +10,6 @@ COPY rootfs /
 RUN chmod a+x /etc/services.d/PanelSense/run
 RUN chmod a+x /etc/services.d/PanelSense/finish
 RUN chmod a+x /etc/nginx/http.d/ingress.conf
-RUN chmod a+x /etc/cont-init.d/nginx.sh
 RUN chmod a+x /etc/nginx/includes/mime.types
 
 # Install dependencies
