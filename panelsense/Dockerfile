@@ -27,7 +27,7 @@ ENV SENSE_APP=/usr/src/app/senseapp/sense.py
 ENV HASS_WS_ADDRESS="ws://supervisor/core/websocket"
 
 # for debug only
-RUN apk add git nano curl zsh
+RUN apk add git nano curl zsh vim
 RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
 # Install python dependencies
