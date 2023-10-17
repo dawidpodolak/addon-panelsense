@@ -5,9 +5,9 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <title>Home Assistant - Panel Sense</title>
 
-        <link rel="stylesheet" type="text/css" media="screen" href="static/css/main.css" />
-        <link rel="stylesheet" type="text/css" media="screen" href="static/css/fonts.css" />
-        <link rel="stylesheet" type="text/css" media="screen" href="static/css/top_bar.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="/static/css/main.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="/static/css/fonts.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="/static/css/top_bar.css" />
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
@@ -35,7 +35,7 @@
             <!-- Top Bar -->
         <div class="top-bar" data-turbo-suppress-warning>
             {% if show_top_bar %}
-                <img class="nav-icon" src="static/icons/arrow_left_white.png" alt="Navigate" onclick="location.href='{{ url_for('dashboard') }}'">
+                <img class="nav-icon" src="/static/icons/arrow_left_white.png" alt="Navigate" onclick="location.href='{{ url_for('dashboard') }}'">
             {% else %}
                 <div class="nav-space"></div>
             {% endif %}
