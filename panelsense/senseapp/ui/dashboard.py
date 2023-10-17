@@ -78,7 +78,7 @@ def device_page(installation_id):
     return get_device_renderer(installation_id)
 
 
-@app.route("/update_configuration", methods=["POST"])
+@app.route("/device/update_configuration", methods=["POST"])
 def receive_text():
     data = request.get_json()
     configuration = data.get("configuration", "")
