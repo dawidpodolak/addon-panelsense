@@ -51,7 +51,7 @@
             })
             function myFunction() {
                 $.ajax({
-                    url: '/update_configuration',
+                    url: 'update_configuration',
                     data: JSON.stringify({'configuration': editor.getValue(), 'installation_id': "{{ device_details["installation_id"] }}" }),
                     contentType: 'application/json;charset=UTF-8',
                     type: 'POST',
