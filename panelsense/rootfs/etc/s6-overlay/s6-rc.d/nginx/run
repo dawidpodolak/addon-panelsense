@@ -8,5 +8,5 @@
 # Wait for PanelSense to be available
 bashio::net.wait_for 5000
 
-bashio.log.info "Start NGinx..."
+bashio::log.info "Start NGinx..."
 exec nginx
