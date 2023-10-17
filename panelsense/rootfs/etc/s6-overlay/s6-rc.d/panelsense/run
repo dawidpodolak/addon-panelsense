@@ -7,4 +7,4 @@
 
 bashio::log.info "Starting PanelSense..."
 
-exec python3 /usr/src/app/senseapp/panelsense/sense.py
+exec python3 /usr/src/app/senseapp/sense.py
