@@ -10,7 +10,7 @@
         <div class="device-list" id="device_list">
             {% for client in clients %}
 
-            <div class="device-item" onclick="window.location.href='/device/{{ client['installation_id'] }}'">
+            <div class="device-item" onclick="window.location.href='device/{{ client['installation_id'] }}'">
                 <div class="device-subitem">
                     <span class="primary-text">{{ client["name"]}}</span>
                     <span class="secondary-text">{{ client["version_name"] }} ( {{ client["version_code"] }})</span>
