@@ -29,4 +29,3 @@ else
     python panelsense/senseapp/sense.py
   fi
 fi
-
