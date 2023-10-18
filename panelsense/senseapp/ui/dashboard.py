@@ -72,6 +72,10 @@ def update_device(installation_id: str):
 def dashboard():
     return get_index_renderer()
 
+@app.route("/index")
+def dashboard_index():
+    return get_index_renderer()
+
 
 @app.route("/device/<installation_id>")
 def device_page(installation_id):
