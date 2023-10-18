@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block header %}
+<link rel="stylesheet" type="text/css" media="screen" href="/static/css/device_page.css" />
+<script src="/static/js/jquery/src/jquery.js"></script>
+<script src="/static/js/ace/src/ace.js" type="text/javascript" charset="utf-8"></script>
+<script src="/static/js/ace/src/theme-github.js" type="text/javascript" charset="utf-8"></script>
+<script src="/static/js/ace/src/mode-yaml.js" type="text/javascript" charset="utf-8"></script>
+
+<script>
+
+</script>
+
+{% endblock %}
+
+{% block content %}
+
+    <div class="device_header">
+        <div class="device_header_info">
+            <span style="font-size: 24px; margin-bottom: 10px;">Details: </span>
+            <span class="text_device_detail">Name: {{ device_details["name"]}}</span>
+            <div class="device_status" id="device_status">
+                <span class="text_device_status" style="margin-right: 8px;">Status: </span>
+                {% if device_details.is_online %}
+                <span class="online" style="font-size: 14px;">Online</span>
+                {% else %}
+                <span class="offline" style="font-size: 14px;">Offline</span>
+                {% endif %}
+            </div>
+            <span class="text_device_detail">Installation ID: {{ device_details["installation_id"]}}</span>
+            <span class="text_device_detail">Application version name: {{ device_details["version_name"]}}</span>
+            <span class="text_device_detail">Application version code: {{ device_details["version_code"]}}</span>
+        </div>
+        <div class="device_header_button">
+            <span class="text_configuration_sent" id="configuration_send">Configuration has been sent!</span>
+            <button id="sendButton" class="device_button_style" onclick="myFunction()">Send configuration</button>
+        </div>
+    </div>
+    <div class="device_input_text_layout" id="editor"></div>
+        <script>
+            var configurationSentElement = document.getElementById("configuration_send")
+            configurationSentElement.style.visibility = 'hidden'
+            console.log("load editor script")
+            var yamyConfig = ace.createEditSession({{ configuration|tojson }});
+            var editor = ace.edit("editor");
+            editor.setTheme("ace/theme/github");
+            editor.session.setMode("ace/mode/yaml");
+            editor.setSession(yamyConfig);
+            editor.session.on('change', function(e){
+                configurationSentElement.style.visibility = 'hidden'
+            })
+            function myFunction() {
+                $.ajax({
+                    url: 'update_configuration',
+                    data: JSON.stringify({'configuration': editor.getValue(), 'installation_id': "{{ device_details["installation_id"] }}" }),
+                    contentType: 'application/json;charset=UTF-8',
+                    type: 'POST',
+                    success: function(response) {
+                        configurationSentElement.style.visibility = 'visible'
+                        console.log("Configuration updated!");
+                    },
+                    error: function(error) {
+                        console.log(error);
+                    }
+                });
+            }
+        </script>
+    </div>
+{% endblock %}
