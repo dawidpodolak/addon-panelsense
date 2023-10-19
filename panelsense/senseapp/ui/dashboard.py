@@ -23,11 +23,28 @@ class UiClient(BaseModel):
     name: str
     version_name: str
     version_code: int
+    configuration: str
+
+    def __hash__(self):
+        return hash(self.installation_id)
+
+    def __eq__(self, other):
+        if isinstance(other, UiClient):
+            return self.installation_id == other.installation_id
+        else:
+            return False
+
+
+class UiState(BaseModel):
+    selected_client: Optional[UiClient] = None
+    clients: Set[UiClient] = set()
+
+
+dashboard_state = UiState()
 
 
 def start_web_app(isDebug: bool):
     _LOGGER.info(f"Start web app. UI debug is on: {isDebug}")
-
     app.run(debug=isDebug, host="0.0.0.0", port=5000)
 
 
@@ -39,50 +56,65 @@ def set_client_callback(server_callback: Callable[[], ClientConectionHelper]):
 
 
 def on_client_state_changed(senseClient: SenseClient):
-    if current_user_page == "/":
-        update_index()
-    elif "device" in current_user_page:
-        pass
-        # TODO issue with refreshing device page
-        update_device(senseClient.details.installation_id)
+    _LOGGER.debug(
+        f"sense client {senseClient.details.name} online: {senseClient.is_online}"
+    )
+    update_connected_clients()
+    update_selected_client()
+    update_page()
 
 
-def update_index():
+def update_page():
+    global dashboard_state
+    _LOGGER.info(f"Update ui client {dashboard_state.selected_client}")
     with app.app_context():
-        turbo.push(
-            turbo.replace(
-                get_index_renderer(),
-                "device_list",
-            )
-        )
+        render_page = None
+        if dashboard_state.selected_client:
+            render_page = get_client_details_renderer()
+        else:
+            render_page = get_client_list_renderer()
 
-
-def update_device(installation_id: str):
-    _LOGGER.info(f"Update device: {installation_id}")
-    with app.app_context():
         turbo.push(
             turbo.update(
-                get_device_renderer(installation_id),
-                "device_status",
+                render_page,
+                "main_content",
             )
         )
+
+
+# START Route region
 
 
 @app.route("/")
 def dashboard():
-    return get_index_renderer()
-
-@app.route("/index")
-def dashboard_index():
-    return get_index_renderer()
+    return get_dashboard_renderer()
 
 
 @app.route("/device/<installation_id>")
-def device_page(installation_id):
-    return get_device_renderer(installation_id)
+def show_page(installation_id):
+    global dashboard_state
+    _LOGGER.info(f"show device: {installation_id}")
+    selected_client = get_ui_client(installation_id)
+    if selected_client:
+        dashboard_state = UiState(
+            selected_client=selected_client, clients=dashboard_state.clients
+        )
+        update_page()
+        return jsonify({"status": "success"}), 200
+    else:
+        return (jsonify({"status": "failue", "message": "Client not found"}),)
 
 
-@app.route("/device/update_configuration", methods=["POST"])
+@app.route("/list")
+def show_list():
+    global dashboard_state
+    _LOGGER.info(f"show list")
+    dashboard_state = UiState(clients=dashboard_state.clients)
+    update_page()
+    return jsonify({"status": "success"}), 200
+
+
+@app.route("/update_configuration", methods=["POST"])
 def receive_text():
     data = request.get_json()
     configuration = data.get("configuration", "")
@@ -102,32 +134,38 @@ def user_current_page():
     return jsonify({"status": "success"}), 200
 
 
-def get_index_renderer():
+# END Route region
+
+
+# START Renderer region
+def get_dashboard_renderer():
+    global dashboard_state
+    update_connected_clients()
+    _LOGGER.info(f"Client list {len(dashboard_state.clients)}")
     with app.app_context():
-        return render_template(
-            "index.html", title="PanelSense devices", clients=get_connected_clients()
-        )
+        return render_template("index.html", clients=dashboard_state.clients)
 
 
-def get_device_renderer(installation_id: str):
-    client = get_sense_client(installation_id)
-    if client == None:
-        raise
-    ui_client = UiClient(
-        is_online=client.is_online,
-        installation_id=client.details.installation_id,
-        name=client.details.name,
-        version_name=client.details.version_name,
-        version_code=client.details.version_code,
+def get_client_list_renderer():
+    global dashboard_state
+    update_connected_clients()
+    with app.app_context():
+        return render_template("client_list.html", clients=dashboard_state.clients)
+
+
+def get_client_details_renderer():
+    global dashboard_state
+    update_connected_clients()
+    _LOGGER.info(
+        f"Selected client {dashboard_state.selected_client.name}, is online: {dashboard_state.selected_client.is_online}"
     )
     with app.app_context():
         return render_template(
-            "device.html",
-            show_top_bar=True,
-            title=ui_client.name,
-            configuration=client.get_configuration().split("\n"),
-            device_details=ui_client,
+            "client_details.html", client=dashboard_state.selected_client
         )
+
+
+# END Renderer region
 
 
 def get_sense_client(installation_id: str) -> Optional[SenseClient]:
@@ -138,20 +176,48 @@ def get_sense_client(installation_id: str) -> Optional[SenseClient]:
     return None
 
 
-def get_connected_clients():
+# START Client util region
+def update_connected_clients():
     global sense_server_callback
+    global dashboard_state
 
-    clientSet: List[UiClient] = list()
+    client_set: Set[UiClient] = set()
 
     for client in sense_server_callback().connected_clients:
-        clientSet.append(
-            UiClient(
-                is_online=client.is_online,
-                installation_id=client.details.installation_id,
-                name=client.details.name,
-                version_name=client.details.version_name,
-                version_code=client.details.version_code,
-            )
-        )
+        client_set.add(sense_client_to_ui_client(client))
 
-    return [client.model_dump() for client in clientSet]
+    dashboard_state = UiState(
+        selected_client=dashboard_state.selected_client, clients=client_set
+    )
+    return [client.model_dump() for client in client_set]
+
+
+def sense_client_to_ui_client(client: SenseClient) -> UiClient:
+    return UiClient(
+        is_online=client.is_online,
+        installation_id=client.details.installation_id,
+        name=client.details.name,
+        version_name=client.details.version_name,
+        version_code=client.details.version_code,
+        configuration=client.configuration_str,
+    )
+
+
+def get_ui_client(installation_id: str) -> Optional[UiClient]:
+    global dashboard_state
+    selected_client = None
+    for ui_client in dashboard_state.clients:
+        if ui_client.installation_id == installation_id:
+            selected_client = ui_client
+    return selected_client
+
+
+def update_selected_client():
+    global dashboard_state
+    if dashboard_state.selected_client:
+        dashboard_state = UiState(
+            clients=dashboard_state.clients,
+            selected_client=get_ui_client(
+                dashboard_state.selected_client.installation_id
+            ),
+        )
