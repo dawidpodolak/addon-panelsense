@@ -32,15 +32,6 @@
         {% block header %}{% endblock %}
     </head>
     <body data-turbo-suppress-warning>
-            <!-- Top Bar -->
-        <div class="top-bar" data-turbo-suppress-warning>
-            {% if show_top_bar %}
-                <img class="nav-icon" src="/static/icons/arrow_left_white.png" alt="Navigate" onclick="location.href='/index'">
-            {% else %}
-                <div class="nav-space"></div>
-            {% endif %}
-            <span class="title"> {{ title }}</span>
-        </div>
         {% block content %}{% endblock %}
     </body>
 </html>
