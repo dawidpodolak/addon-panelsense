@@ -6,4 +6,4 @@
 # ==============================================================================
 
 bashio::log.info "Panel Sense setup ..."
-mkdir /config/panelsense
+mkdir -p /config/panelsense
