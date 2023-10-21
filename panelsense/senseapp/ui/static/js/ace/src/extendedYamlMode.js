@@ -1,5 +1,5 @@
 
-export default (ace) => {
+
     console.log("test ace log")
     ace.define("ace/mode/yaml_highlight_rules", ["require", "exports", "module", "ace/lib/oop", "ace/mode/text_highlight_rules"], function (require, exports, module) {
         "use strict";
@@ -252,12 +252,13 @@ export default (ace) => {
 
     ace.define("ace/mode/yaml", ["require", "exports", "module", "ace/lib/oop", "ace/mode/text", "ace/mode/yaml_highlight_rules", "ace/mode/matching_brace_outdent", "ace/mode/folding/coffee", "ace/worker/worker_client"], function (require, exports, module) {
         "use strict";
+        console.log("User ace mode yaml")
         var oop = require("../lib/oop");
         var TextMode = require("./text").Mode;
         var YamlHighlightRules = require("./yaml_highlight_rules").YamlHighlightRules;
         var MatchingBraceOutdent = require("./matching_brace_outdent").MatchingBraceOutdent;
         var FoldMode = require("./folding/coffee").FoldMode;
-        require("ace/config").set("workerPath", "/yaml_linter")
+        require("ace/config").set("workerPath", "static/yaml_linter")
         var WorkerClient = require("../worker/worker_client").WorkerClient;
         var Mode = function () {
             this.HighlightRules = YamlHighlightRules;
@@ -306,5 +307,3 @@ export default (ace) => {
             }
         });
     })();
-
-}

@@ -1341,7 +1341,7 @@ var Mirror = exports.Mirror = function(sender) {
 
 });
 
-importScripts(self.location.origin + '/yaml_linter/yaml_parse.js')
+importScripts(self.location.origin + '/static/yaml_linter/yaml_parse.js')
 ace.define("ace/mode/yaml/yaml_parse",[], yaml_parse);
 
 ace.define("ace/mode/yaml_worker",[], function(require, exports, module) {
