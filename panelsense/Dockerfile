@@ -31,8 +31,6 @@ RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master
 RUN pip3 install --upgrade pip
 RUN pip3 install --no-cache-dir -r /tmp/requirements.txt
 
-# CMD [ "nginx","-g","daemon off;error_log /dev/stdout debug;" ]
-
 LABEL \
   io.hass.version="VERSION" \
   io.hass.type="addon" \

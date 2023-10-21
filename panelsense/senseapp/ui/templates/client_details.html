@@ -25,15 +25,18 @@
     </div>
 </div>
 <div class="device_input_text_layout" id="editor"></div>
-<script>
+<script type="module">
     var configurationSentElement = document.getElementById("configuration_send")
     configurationSentElement.style.visibility = 'hidden'
     console.log("load editor script")
     var yamyConfig = ace.createEditSession({{ client.configuration|tojson }});
     var editor = ace.edit("editor");
     editor.setTheme("ace/theme/github");
-    editor.session.setMode("ace/mode/yaml");
     editor.setSession(yamyConfig);
+
+    import extendYamlMode from '/static/js/ace/src/extendedYamlMode.js'
+    extendYamlMode(ace);
+    editor.session.setMode("ace/mode/yaml");
     editor.session.on('change', function(e){
         configurationSentElement.style.visibility = 'hidden'
     })
