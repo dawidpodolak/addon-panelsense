@@ -7,3 +7,5 @@
 
 bashio::log.info "Panel Sense setup ..."
 mkdir /config/panelsense
+
+export PANEL_SENSE_DATABASE="/config/panelsense/sense_database.db"
