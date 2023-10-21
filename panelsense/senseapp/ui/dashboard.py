@@ -93,6 +93,10 @@ def dashboard():
 @app.route("/device/<installation_id>")
 def show_page(installation_id):
     global dashboard_state
+    headers = request.headers
+    for header, values in headers.items():
+        _LOGGER.info(f"header: {header}: {values}")
+
     _LOGGER.info(f"show device: {installation_id}")
     selected_client = get_ui_client(installation_id)
     if selected_client:
