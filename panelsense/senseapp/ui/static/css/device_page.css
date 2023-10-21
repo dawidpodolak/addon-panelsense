@@ -39,6 +39,7 @@
     align-items: center;
 }
 .device_header_button{
+    width: 50%;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
@@ -62,8 +63,10 @@
 }
 .device_button_style{
     background-color: #1a488d;
+    width: 300px;
     color: white;
     border: none;
+    margin-bottom: 30xp;
     padding: 10px 20px;
     text-align: center;
     text-decoration: none;
@@ -74,8 +77,12 @@
 .device_button_style:active {
     background-color: #133260;
 }
+.device_button_style:disabled,
+.device_button_style[disabled] {
+    background-color: #545454;
+}
 .text_configuration_sent{
-    margin-bottom: 15px;
+    margin-top: 15px;
 }
 #editor {
     position: absolute;

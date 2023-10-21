@@ -20,37 +20,58 @@
         <span class="text_device_detail">Application version code: {{ client.version_code }}</span>
     </div>
     <div class="device_header_button">
+        <button id="sendButton" class="device_button_style" onclick="sendConfig()">Send configuration</button>
         <span class="text_configuration_sent" id="configuration_send">Configuration has been sent!</span>
-        <button id="sendButton" class="device_button_style" onclick="myFunction()">Send configuration</button>
     </div>
 </div>
 <div class="device_input_text_layout" id="editor"></div>
 <script>
     var configurationSentElement = document.getElementById("configuration_send")
+    var sendButton = document.getElementById("sendButton")
     configurationSentElement.style.visibility = 'hidden'
     console.log("load editor script")
     var yamyConfig = ace.createEditSession({{ client.configuration|tojson }});
     var editor = ace.edit("editor");
+    var errorMessage = ""
     editor.setTheme("ace/theme/github");
-    editor.session.setMode("ace/mode/yaml");
     editor.setSession(yamyConfig);
+
+    editor.session.setMode("ace/mode/yaml");
     editor.session.on('change', function(e){
         configurationSentElement.style.visibility = 'hidden'
-    })
-    function myFunction() {
-        $.ajax({
-            url: 'update_configuration',
-            data: JSON.stringify({'configuration': editor.getValue(), 'installation_id': "{{ client.installation_id }}" }),
-            contentType: 'application/json;charset=UTF-8',
-            type: 'POST',
-            success: function(response) {
-                configurationSentElement.style.visibility = 'visible'
-                console.log("Configuration updated!");
-            },
-            error: function(error) {
-                console.log(error);
-            }
-        });
+    });
+    editor.session.on('changeAnnotation', function(e){
+        var annotations = editor.session.getAnnotations();
+        errorMessage = ""
+        for (var key in annotations){
+            if (annotations.hasOwnProperty(key))
+                var row = annotations[key].row + 1
+                var column = annotations[key].column
+                var errorText = "Error in line: " + row
+                errorMessage = errorText + "\n"
+                console.log(errorText)
+        }
+    });
+    function sendConfig() {
+        if (errorMessage === "") {
+            $.ajax({
+                url: 'update_configuration',
+                data: JSON.stringify({'configuration': editor.getValue(), 'installation_id': "{{ client.installation_id }}" }),
+                contentType: 'application/json;charset=UTF-8',
+                type: 'POST',
+                success: function(response) {
+                    configurationSentElement.textContent = "Configuration has been sent!"
+                    configurationSentElement.style.visibility = 'visible'
+                    console.log("Configuration updated!");
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+        } else {
+            configurationSentElement.textContent = errorMessage
+            configurationSentElement.style.visibility = 'visible'
+        }
     }
 </script>
 </div>
