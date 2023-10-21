@@ -1,6 +1,6 @@
 {% if client is not none %}
 <div class="top-bar" data-turbo-suppress-warning>
-    <img class="nav-icon" src="/static/icons/arrow_left_white.png" id="back_button" alt="Navigate" onclick="showList()">
+    <img class="nav-icon" src="{{static_path}}/icons/arrow_left_white.png" id="back_button" alt="Navigate" onclick="showList()">
     <span class="title"> {{ client.name }}</span>
 </div>
 <div class="device_header">
