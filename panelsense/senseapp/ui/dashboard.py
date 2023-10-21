@@ -15,7 +15,7 @@ app.config["LANGUAGES"] = {"en": "English", "pl": "Polski"}
 sense_server_callback: Callable[[], ClientConectionHelper]
 update_sense_client_config_callback: Callable[[str], None]
 current_user_page: str = "/"
-
+static_path = "/static"
 
 class UiClient(BaseModel):
     is_online: bool
@@ -93,6 +93,13 @@ def dashboard():
 @app.route("/device/<installation_id>")
 def show_page(installation_id):
     global dashboard_state
+    global static_path
+    headers = request.headers
+    for header, values in headers.items():
+        _LOGGER.info(f"header: {header}: {values}")
+        if header == "X-Ingress-Path":
+            static_path = f"{values}/static"
+
     _LOGGER.info(f"show device: {installation_id}")
     selected_client = get_ui_client(installation_id)
     if selected_client:
@@ -140,28 +147,31 @@ def user_current_page():
 # START Renderer region
 def get_dashboard_renderer():
     global dashboard_state
+    global static_path
     update_connected_clients()
     _LOGGER.info(f"Client list {len(dashboard_state.clients)}")
     with app.app_context():
-        return render_template("index.html", clients=dashboard_state.clients)
+        return render_template("index.html", clients=dashboard_state.clients, static_path=static_path)
 
 
 def get_client_list_renderer():
     global dashboard_state
+    global static_path
     update_connected_clients()
     with app.app_context():
-        return render_template("client_list.html", clients=dashboard_state.clients)
+        return render_template("client_list.html", clients=dashboard_state.clients, static_path=static_path)
 
 
 def get_client_details_renderer():
     global dashboard_state
+    global static_path
     update_connected_clients()
     _LOGGER.info(
         f"Selected client {dashboard_state.selected_client.name}, is online: {dashboard_state.selected_client.is_online}"
     )
     with app.app_context():
         return render_template(
-            "client_details.html", client=dashboard_state.selected_client
+            "client_details.html", client=dashboard_state.selected_client, static_path=static_path
         )
 
 

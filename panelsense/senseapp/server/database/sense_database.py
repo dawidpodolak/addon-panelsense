@@ -1,5 +1,6 @@
 import base64
 from typing import Set
+import os
 
 from loging.logger import _LOGGER
 from server.client.sense_client import SenseClient, create_sense_client
@@ -9,7 +10,8 @@ from sqlalchemy.orm import sessionmaker
 
 
 class SenseDatabase:
-    engine = create_engine("sqlite:///sense_database.db")
+    databasePath = os.getenv('PANEL_SENSE_DATABASE')
+    engine = create_engine(f"sqlite:///{databasePath}")
     Base.metadata.create_all(engine)
 
     Session = sessionmaker(bind=engine)
