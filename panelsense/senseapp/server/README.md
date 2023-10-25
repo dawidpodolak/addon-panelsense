@@ -15,6 +15,7 @@ Each model used to communication with websockets should inherit from ServerOutgo
 | ------------- | ----------- |
 | auth          | Message type used for authentication websocket client |
 | error         | If received message containt corrupted or not complete data, then message with this type should be returned |
+| configuration | Configuration for android client |
 | ha_action_light     | Message that contains light action from or to Home Assistant |
 | ha_action_cover     | Message that contains cover action from or to Home Assistant |
 | ha_action_switch     | Message that contains cover action from or to Home Assistant |
@@ -33,12 +34,16 @@ Below message structure relates incoming message as well as outcoming message.
 ##### Authentication message data
 | Field     | Type      | Description       |
 | --------- | --------- | ----------------- |
-| access_token      | str       | generated the combination of username:password at Base64 |
+| token      | str       | generated the combination of username:password at Base64 |
 | name              | str       | name of the device |
 | version_name      | str       | Name of the app version |
 | version_code      | int       | Build number of the app |
 | installation_id   | str       | Unique UUID that represents given app on given device |
 
+##### Authentication response data
+| Field          | Type         | Description       |
+| -------------- | ------------ | ----------------- |
+| auth_result    | enum         | SUCCESS or FAILURE|
 ### Home Assistant Action Light
 
 `type: ha_action_light`

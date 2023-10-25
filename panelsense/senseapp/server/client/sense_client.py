@@ -22,7 +22,7 @@ class SenseClienDetails(BaseModel):
 class SenseClient:
     details: SenseClienDetails
     websocket: Optional[WebSocketClientProtocol] = None
-    configuration_str: str = "system:\npanel_item:"
+    configuration_str: str = "system:\npanel_list:"
     is_online = False
 
     def set_configuration(self, configuration: Configuration):
