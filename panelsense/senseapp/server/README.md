@@ -62,7 +62,7 @@ This is a configuration for PanelSense client
 | ----------------- | --------------------- | ----------------- |
 | id                | str: optional         | Id of panel, can be set at main_panel_id |
 | type              | PanelType: mandatory  | Type of Panel |
-| coloumn_coutn     | int: optional         | specify for PanelType grid. Default is 2|
+| coloumn_count     | int: optional         | specify for PanelType grid. Default is 2|
 | name              | str: optional         | Name for panel |
 | item_list         | List<PanelItem>       | List of panel items |
 

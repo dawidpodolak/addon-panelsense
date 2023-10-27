@@ -2,10 +2,11 @@ from typing import Callable, List, Optional, Set
 
 from flask import Flask, jsonify, render_template, request
 from flask_babel import Babel
-from loging.logger import _LOGGER
-from pydantic import BaseModel
+from loguru import logger
+from pydantic import BaseModel, ValidationError
 from server.client.sense_client import SenseClienDetails, SenseClient
 from server.client_connection_helper import ClientConectionHelper
+from server.model.configuration import ConfigurationError
 from turbo_flask import Turbo
 
 app = Flask(__name__)
@@ -16,6 +17,7 @@ sense_server_callback: Callable[[], ClientConectionHelper]
 update_sense_client_config_callback: Callable[[str], None]
 current_user_page: str = "/"
 static_path = "/static"
+
 
 class UiClient(BaseModel):
     is_online: bool
@@ -44,7 +46,7 @@ dashboard_state = UiState()
 
 
 def start_web_app(isDebug: bool):
-    _LOGGER.info(f"Start web app. UI debug is on: {isDebug}")
+    logger.info(f"Start web app. UI debug is on: {isDebug}")
     app.run(debug=isDebug, host="0.0.0.0", port=5000)
 
 
@@ -56,7 +58,7 @@ def set_client_callback(server_callback: Callable[[], ClientConectionHelper]):
 
 
 def on_client_state_changed(senseClient: SenseClient):
-    _LOGGER.debug(
+    logger.debug(
         f"sense client {senseClient.details.name} online: {senseClient.is_online}"
     )
     update_connected_clients()
@@ -66,7 +68,7 @@ def on_client_state_changed(senseClient: SenseClient):
 
 def update_page():
     global dashboard_state
-    _LOGGER.info(f"Update ui client {dashboard_state.selected_client}")
+    logger.info(f"Update ui client {dashboard_state.selected_client}")
     with app.app_context():
         render_page = None
         if dashboard_state.selected_client:
@@ -96,11 +98,11 @@ def show_page(installation_id):
     global static_path
     headers = request.headers
     for header, values in headers.items():
-        _LOGGER.info(f"header: {header}: {values}")
+        logger.info(f"header: {header}: {values}")
         if header == "X-Ingress-Path":
             static_path = f"{values}/static"
 
-    _LOGGER.info(f"show device: {installation_id}")
+    logger.info(f"show device: {installation_id}")
     selected_client = get_ui_client(installation_id)
     if selected_client:
         dashboard_state = UiState(
@@ -115,7 +117,7 @@ def show_page(installation_id):
 @app.route("/list")
 def show_list():
     global dashboard_state
-    _LOGGER.info(f"show list")
+    logger.info(f"show list")
     dashboard_state = UiState(clients=dashboard_state.clients)
     update_page()
     return jsonify({"status": "success"}), 200
@@ -127,9 +129,21 @@ def receive_text():
     configuration = data.get("configuration", "")
     installation_id = data.get("installation_id", "")
 
-    _LOGGER.debug(f"Text from page: {sense_server_callback()}")
-    sense_server_callback().update_sense_client_config(installation_id, configuration)
-    return jsonify({"status": "success"}), 200
+    logger.debug(f"Text from page: {sense_server_callback()}")
+    try:
+        sense_server_callback().update_sense_client_config(
+            installation_id, configuration
+        )
+        return jsonify({"status": "success"}), 200
+    except Exception as e:
+        logger.error(e)
+        errorMessage = "Error!"
+        if isinstance(e, ValidationError):
+            errorMessage = f"Missing {e.errors()[0]['loc']}"
+        elif isinstance(e, ConfigurationError):
+            errorMessage = e
+
+        return jsonify({"status": "error", "errorMessage": f"{errorMessage}"}), 400
 
 
 @app.route("/user_current_page", methods=["POST"])
@@ -137,7 +151,7 @@ def user_current_page():
     global current_user_page
     data = request.get_json()
     current_user_page = data.get("current_page")
-    _LOGGER.info(f"Current user page: {current_user_page}")
+    logger.info(f"Current user page: {current_user_page}")
     return jsonify({"status": "success"}), 200
 
 
@@ -149,9 +163,11 @@ def get_dashboard_renderer():
     global dashboard_state
     global static_path
     update_connected_clients()
-    _LOGGER.info(f"Client list {len(dashboard_state.clients)}")
+    logger.info(f"Client list {len(dashboard_state.clients)}")
     with app.app_context():
-        return render_template("index.html", clients=dashboard_state.clients, static_path=static_path)
+        return render_template(
+            "index.html", clients=dashboard_state.clients, static_path=static_path
+        )
 
 
 def get_client_list_renderer():
@@ -159,19 +175,23 @@ def get_client_list_renderer():
     global static_path
     update_connected_clients()
     with app.app_context():
-        return render_template("client_list.html", clients=dashboard_state.clients, static_path=static_path)
+        return render_template(
+            "client_list.html", clients=dashboard_state.clients, static_path=static_path
+        )
 
 
 def get_client_details_renderer():
     global dashboard_state
     global static_path
     update_connected_clients()
-    _LOGGER.info(
+    logger.info(
         f"Selected client {dashboard_state.selected_client.name}, is online: {dashboard_state.selected_client.is_online}"
     )
     with app.app_context():
         return render_template(
-            "client_details.html", client=dashboard_state.selected_client, static_path=static_path
+            "client_details.html",
+            client=dashboard_state.selected_client,
+            static_path=static_path,
         )
 
 

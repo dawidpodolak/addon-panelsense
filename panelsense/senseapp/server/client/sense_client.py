@@ -1,12 +1,14 @@
 from typing import Optional
 
 import yaml
-from loging.logger import _LOGGER
-from pydantic import BaseModel
+from loguru import logger
+from pydantic import BaseModel, ValidationError
 from server.model.authentication import AuthenticationIncomingMessage
 from server.model.configuration import (Configuration,
                                         ConfigurationOutcomingMessage)
 from websockets.client import WebSocketClientProtocol
+
+from .configuration_parser import parse_configuration
 
 
 class SenseClienDetails(BaseModel):
@@ -24,6 +26,7 @@ class SenseClient:
     websocket: Optional[WebSocketClientProtocol] = None
     configuration_str: str = "system:\npanel_list:"
     is_online = False
+    configuration_message: Optional[ConfigurationOutcomingMessage] = None
 
     def set_configuration(self, configuration: Configuration):
         self.configuration = configuration
@@ -58,21 +61,26 @@ class SenseClient:
     def get_configuration(self):
         return self.configuration_str
 
+    def prepare_config(self):
+        self.configuration_message = parse_configuration(self.configuration_str)
+
     async def send_config(self):
         try:
-            yaml_config = yaml.safe_load(self.configuration_str)
-            configuration_message = ConfigurationOutcomingMessage(
-                data=Configuration(**yaml_config)
+            if self.configuration_message is None:
+                self.prepare_config()
+            configuration_message = self.configuration_message.model_dump_json(
+                exclude_none=True
             )
-            _LOGGER.info(
-                f"Client <- Send configuration to device: -> {configuration_message.model_dump_json(exclude_none=True)}"
+            logger.info(
+                f"Client: Send configuration to device: -> {configuration_message}"
             )
             if self.websocket:
-                await self.websocket.send(
-                    configuration_message.model_dump_json(exclude_none=True)
-                )
-        except Exception as e:
-            _LOGGER.error(e)
+                await self.websocket.send(configuration_message)
+                logger.info("Configuration has been sent!")
+        except ValidationError as e:
+            logger.error(e.errors()[0]["loc"])
+            logger.error(e)
+            logger.error(f"\n{self.configuration_str}")
 
 
 def create_sense_client(

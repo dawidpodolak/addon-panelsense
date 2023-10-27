@@ -6,3 +6,4 @@ Flask-Babel
 turbo-flask
 pyyaml
 SQLAlchemy
+loguru

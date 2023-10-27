@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import List, Optional, Set
+from typing import List, Optional, Set, Union
 
 from pydantic import BaseModel
 
@@ -11,8 +11,8 @@ class ConfigurationSystem(BaseModel):
 
 
 class ConfigurationItem(BaseModel):
-    id: str
-    entity_id: str
+    id: Optional[str] = None
+    entity: str
     title: Optional[str] = None
     icon: Optional[str] = None
     background: Optional[str] = None
@@ -27,21 +27,39 @@ class ConfigurationPanelType(Enum):
 
 
 class ConfigurationPanel(BaseModel):
-    id: str
+    id: Optional[str] = None
     type: str
-    column_count: int = 1
     background: Optional[str] = None
-    item_list: List[ConfigurationItem] = list()
 
     def __hash__(self):
         return hash(self.id)
 
 
+class ConfigurationGridPanel(ConfigurationPanel):
+    column_count: int = 1
+    item_list: List[ConfigurationItem] = list()
+
+
+class ConfigurationHomePanel(ConfigurationPanel):
+    weather_entity: Optional[str] = None
+    time24h: bool = False
+    item_left: Optional[ConfigurationItem] = None
+    item_right: Optional[ConfigurationItem] = None
+    background: Optional[str] = None
+
+
+ConfigurationPanelUnion = Union[ConfigurationGridPanel, ConfigurationHomePanel]
+
+
 class Configuration(BaseModel):
     system: ConfigurationSystem
-    panel_list: List[ConfigurationPanel] = list()
+    panel_list: List[ConfigurationPanelUnion] = list()
 
 
 class ConfigurationOutcomingMessage(ServerOutgoingMessage):
     type: MessageType = MessageType.CONFIGURATION
     data: Configuration
+
+
+class ConfigurationError(Exception):
+    message: str

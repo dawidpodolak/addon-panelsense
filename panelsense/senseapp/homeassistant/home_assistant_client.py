@@ -8,7 +8,7 @@ import websockets
 from homeassistant.components.event_observer import EventObserver
 from homeassistant.home_assistant_authenticator import auth
 from homeassistant.model.ha_income_message import *
-from loging.logger import _LOGGER
+from loguru import logger
 from mediator.components.cover.cover_component import Cover
 from mediator.components.light.light_component import Light
 from mediator.components.switch.switch_component import Switch
@@ -27,10 +27,10 @@ class HomeAssistantClient:
 
     async def start_haws_client(self):
         global websocket
-        _LOGGER.info(f"Starting HomeAssistant client websocket ....")
-        _LOGGER.info(f"Websocket address: {self.HOME_ASSISTANT_URL}")
+        logger.info(f"Starting HomeAssistant client websocket ....")
+        logger.info(f"Websocket address: {self.HOME_ASSISTANT_URL}")
         websocket = await websockets.connect(self.HOME_ASSISTANT_URL)
-        _LOGGER.info(f"HomeAssistant websockent client started!")
+        logger.info(f"HomeAssistant websockent client started!")
 
         response = await websocket.recv()
         result = await auth(websocket)
@@ -48,14 +48,14 @@ class HomeAssistantClient:
     def send_data(self, data):
         global websocket
         json_message = json.dumps(data.model_dump(exclude_none=True))
-        _LOGGER.info(f"-> HA: {json_message}\n")
+        logger.info(f"-> HA: {json_message}\n")
         if websocket:
             asyncio.create_task(websocket.send(json_message))
         else:
-            _LOGGER.info(f"websocket not initialized!")
+            loguru.info(f"websocket not initialized!")
 
     async def handle_message(self, message):
-        _LOGGER.info(f"HA ->: {message}\n")
+        logger.info(f"HA ->: {message}\n")
         ha_message = HaIncomeMessage.model_validate_json(message, strict=False)
         if ha_message.type == "event" and ha_message.event:
             await self.process_state_changed(ha_message.event)
