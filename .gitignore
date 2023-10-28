@@ -8,3 +8,4 @@ node_modules/
 .DS_store
 package*
 sense_database.db
+/None

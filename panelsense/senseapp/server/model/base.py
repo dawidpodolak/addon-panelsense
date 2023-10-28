@@ -10,6 +10,7 @@ class MessageType(Enum):
     HA_ACTION_COVER = "ha_action_cover"
     HA_ACTION_LIGHT = "ha_action_light"
     HA_ACTION_SWITCH = "ha_action_switch"
+    HA_STATE_REQUEST = "ha_state_request"
 
 
 # extended class should implement type: MessageType

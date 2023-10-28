@@ -9,6 +9,7 @@ from loguru import logger
 from mediator.components.base_component import BaseComponent
 from mediator.components.cover.cover_component import Cover
 from mediator.components.light.light_component import Light
+from mediator.components.state_request_component import StateRequest
 from mediator.components.switch.switch_component import Switch
 from pydantic import ValidationError
 from server.client.client_authenticator import ClientAuthenticator
@@ -77,7 +78,7 @@ class PanelSenseServer(ClientConectionHelper):
             self.on_client_disconnected(sense_client)
 
     async def start_sense_server(self):
-        print(f"Server starting at ws://localhost:{self.SENSE_SERVER_PORT}")
+        logger.info(f"Server starting at ws://localhost:{self.SENSE_SERVER_PORT}")
         self.websocket_server = await websockets.serve(
             self.message_handler, "0.0.0.0", self.SENSE_SERVER_PORT
         )
@@ -149,7 +150,9 @@ class PanelSenseServer(ClientConectionHelper):
             switch_incoming_message = SwitchIncomingMessage.model_validate_json(message)
             switch = Switch(switch_message=switch_incoming_message)
             self.callback(switch)
-
+        elif type == MessageType.HA_STATE_REQUEST:
+            state_request = StateRequest()
+            self.callback(state_request)
         logger.debug(f"CLIENT -> process_client_message_ha_action: {type}")
 
     def set_message_callback(self, callback: Callable[[BaseComponent], None]):
