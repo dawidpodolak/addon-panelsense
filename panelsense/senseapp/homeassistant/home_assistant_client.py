@@ -14,6 +14,7 @@ from mediator.components.base_component import BaseComponent
 from mediator.components.cover.cover_component import Cover
 from mediator.components.light.light_component import Light
 from mediator.components.switch.switch_component import Switch
+from mediator.components.weather_component import Weather
 
 from .home_assistant_state_helper import HomeAssistantStateRequestHelper
 from .model.ha_outcome_message import HaOutcomeMessage
@@ -66,7 +67,9 @@ class HomeAssistantClient:
         if ha_message.type == "event" and ha_message.event:
             await self.process_state_changed(ha_message.event)
         elif self.state_request_helper.is_state_request_message(ha_message):
-            await self.state_request_helper.process_message(ha_message, self.process_state_changed)
+            await self.state_request_helper.process_message(
+                ha_message, self.process_state_changed
+            )
 
     async def process_state_changed(self, event: HaEvent):
         entity = event.data.entity_id
@@ -81,6 +84,9 @@ class HomeAssistantClient:
         elif domain == "switch" and self.callback_message:
             switch = Switch(state)
             self.callback_message(switch)
+        elif domain == "weather" and self.callback_message:
+            weather = Weather(state)
+            self.callback_message(weather)
 
     def set_message_callback(self, callback: Callable[[BaseComponent], None]):
         self.callback_message = callback

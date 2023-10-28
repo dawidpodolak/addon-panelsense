@@ -4,7 +4,8 @@ import yaml
 from loguru import logger
 from pydantic import BaseModel, ValidationError
 from server.model.authentication import AuthenticationIncomingMessage
-from server.model.configuration import Configuration, ConfigurationOutcomingMessage
+from server.model.configuration import (Configuration,
+                                        ConfigurationOutcomingMessage)
 from websockets.client import WebSocketClientProtocol
 
 from .configuration_parser import parse_configuration

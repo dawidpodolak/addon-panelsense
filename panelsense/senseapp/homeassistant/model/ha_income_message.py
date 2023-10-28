@@ -34,6 +34,34 @@ class SwitchAttributes(BaseModel):
     state: str = "off"
 
 
+class WeatherForecast(BaseModel):
+    condition: str
+    datetime: str
+    wind_bearing: Optional[float] = None
+    temperature: Optional[float] = None
+    templow: Optional[float] = None
+    wind_speed: Optional[float] = None
+    humidity: Optional[float] = None
+
+
+class WeatherAttributes(BaseModel):
+    friendly_name: str
+    attribution: str
+    temperature: float
+    dew_point: Optional[float] = None
+    temperature_unit: str
+    humidity: Optional[float] = None
+    cloud_coverage: Optional[float] = None
+    pressure: Optional[float] = None
+    pressure_unit: str
+    wind_bearing: Optional[float] = None
+    wind_speed_unit: str
+    visibility_unit: str
+    precipitation_unit: str
+    forecast: List[WeatherForecast] = list()
+    supported_features: int
+
+
 class HaEventState(BaseModel):
     entity_id: str
     state: str

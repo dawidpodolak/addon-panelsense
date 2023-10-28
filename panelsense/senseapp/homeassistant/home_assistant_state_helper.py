@@ -2,11 +2,12 @@ from typing import Callable
 
 from loguru import logger
 
-from .model.ha_income_message import HaEvent, HaEventState, HaEventData, HaIncomeMessage
+from .model.ha_income_message import (HaEvent, HaEventData, HaEventState,
+                                      HaIncomeMessage)
 from .model.ha_outcome_message import HaOutcomeMessage
 
 
-class HomeAssistantStateRequestHelper():
+class HomeAssistantStateRequestHelper:
     reqest_message_id: int = -1
 
     def save_if_state_requested(self, message: HaOutcomeMessage):
@@ -25,18 +26,12 @@ class HomeAssistantStateRequestHelper():
 
         for result in result_array:
             state = HaEventState(
-                entity_id = result.entity_id,
-                state=result.state,
-                attributes=result.attributes
-            )
-            ha_event_data = HaEventData(
                 entity_id=result.entity_id,
-                new_state=state
+                state=result.state,
+                attributes=result.attributes,
             )
-            ha_event = HaEvent(
-                event_type= "event",
-                data = ha_event_data
-            )
+            ha_event_data = HaEventData(entity_id=result.entity_id, new_state=state)
+            ha_event = HaEvent(event_type="event", data=ha_event_data)
 
             await callback(ha_event)
 

@@ -43,7 +43,6 @@ class Cover(BaseComponent):
             id=get_message_id(),
             domain="cover",
             service=self.get_cover_service_data(),
-            # TODO change to cover service data
             service_data=CoverServiceData(position=self.position),
             target=Target(entity_id=self.entity_id),
         )
