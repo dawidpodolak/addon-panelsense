@@ -1,4 +1,4 @@
-from typing import List, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 
 from pydantic import BaseModel
 
@@ -37,7 +37,7 @@ class SwitchAttributes(BaseModel):
 class HaEventState(BaseModel):
     entity_id: str
     state: str
-    attributes: dict
+    attributes: Dict[str, Any]
 
 
 class HaEventData(BaseModel):
@@ -50,7 +50,16 @@ class HaEvent(BaseModel):
     data: HaEventData
 
 
+class Result(BaseModel):
+    entity_id: str
+    state: str
+    attributes: Dict[str, Any]
+    last_changed: str
+    last_updated: str
+
+
 class HaIncomeMessage(BaseModel):
     id: Optional[int] = None
     type: str
     event: Optional[HaEvent] = None
+    result: Optional[List[Result]] = None
