@@ -56,7 +56,7 @@ class ClientAuthenticator:
             )
             logger.info(f"authentication: sense client found: {sense_client != None}")
             if not sense_client:
-                logging.info(f"create new sense client")
+                logger.info(f"create new sense client")
                 sense_client = SenseClient()
 
             sense_client.set_websocket(websocket)
