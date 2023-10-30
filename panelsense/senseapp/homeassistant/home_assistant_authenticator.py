@@ -3,7 +3,7 @@ import json
 import os
 from typing import Optional
 
-from loging.logger import _LOGGER
+from loguru import logger
 from pydantic import BaseModel
 from websockets import WebSocketClientProtocol
 
@@ -29,5 +29,5 @@ async def auth(websocket) -> bool:
     if auth_response.type == "auth_ok":
         return True
     else:
-        _LOGGER.warn(f"Authentication error. {auth_response.message}")
+        loguru.warn(f"Authentication error. {auth_response.message}")
         return False

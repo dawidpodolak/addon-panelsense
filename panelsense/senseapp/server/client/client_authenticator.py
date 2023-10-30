@@ -2,7 +2,7 @@ import base64
 import json
 from typing import Callable, Optional, Set
 
-from loging.logger import _LOGGER
+from loguru import logger
 from server.client.sense_client import SenseClient
 from server.database.sense_database import SenseDatabase
 from server.model.authentication import *
@@ -32,7 +32,7 @@ class ClientAuthenticator:
         websocket: WebSocketClientProtocol,
         client_callback: Callable[[], Set[SenseClient]],
     ) -> Optional[SenseClient]:
-        print(f"Authenticating client with message: {message}")
+        logger.info(f"Authenticating client with message: {message}")
         auth_message: AuthenticationIncomingMessage
         try:
             auth_message = AuthenticationIncomingMessage.model_validate_json(message)
@@ -54,9 +54,9 @@ class ClientAuthenticator:
                 ),
                 None,
             )
-            _LOGGER.info(f"authentication: sense client found: {sense_client != None}")
+            logger.info(f"authentication: sense client found: {sense_client != None}")
             if not sense_client:
-                _LOGGER.info(f"create new sense client")
+                logging.info(f"create new sense client")
                 sense_client = SenseClient()
 
             sense_client.set_websocket(websocket)
@@ -67,7 +67,10 @@ class ClientAuthenticator:
                     data=AuthResponseData(auth_result=AuthResult.SUCCESS)
                 ).model_dump_json(exclude_none=True)
             )
-            await sense_client.send_config()
+            try:
+                await sense_client.send_config()
+            except Exception as e:
+                logger.error(e)
             return sense_client
         else:
             await websocket.send(
@@ -78,7 +81,7 @@ class ClientAuthenticator:
             return None
 
     def _is_authenticated(self, auth_message: AuthenticationIncomingMessage) -> bool:
-        print(
+        logger.info(
             f"Authenticating client with message: {auth_message} == {self.encoded_credentials}"
         )
         return auth_message.data.token == self.encoded_credentials

@@ -1,4 +1,4 @@
-from typing import List, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 
 from pydantic import BaseModel
 
@@ -34,10 +34,38 @@ class SwitchAttributes(BaseModel):
     state: str = "off"
 
 
+class WeatherForecast(BaseModel):
+    condition: str
+    datetime: str
+    wind_bearing: Optional[float] = None
+    temperature: Optional[float] = None
+    templow: Optional[float] = None
+    wind_speed: Optional[float] = None
+    humidity: Optional[float] = None
+
+
+class WeatherAttributes(BaseModel):
+    friendly_name: str
+    attribution: str
+    temperature: float
+    dew_point: Optional[float] = None
+    temperature_unit: str
+    humidity: Optional[float] = None
+    cloud_coverage: Optional[float] = None
+    pressure: Optional[float] = None
+    pressure_unit: str
+    wind_bearing: Optional[float] = None
+    wind_speed_unit: str
+    visibility_unit: str
+    precipitation_unit: str
+    forecast: List[WeatherForecast] = list()
+    supported_features: int
+
+
 class HaEventState(BaseModel):
     entity_id: str
     state: str
-    attributes: dict
+    attributes: Dict[str, Any]
 
 
 class HaEventData(BaseModel):
@@ -50,7 +78,16 @@ class HaEvent(BaseModel):
     data: HaEventData
 
 
+class Result(BaseModel):
+    entity_id: str
+    state: str
+    attributes: Dict[str, Any]
+    last_changed: str
+    last_updated: str
+
+
 class HaIncomeMessage(BaseModel):
     id: Optional[int] = None
     type: str
     event: Optional[HaEvent] = None
+    result: Optional[List[Result]] = None

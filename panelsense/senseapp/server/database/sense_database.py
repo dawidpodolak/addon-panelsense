@@ -1,8 +1,8 @@
 import base64
-from typing import Set
 import os
+from typing import Set
 
-from loging.logger import _LOGGER
+from loguru import logger
 from server.client.sense_client import SenseClient, create_sense_client
 from server.database.tables import *
 from sqlalchemy import create_engine, exists, select
@@ -10,7 +10,7 @@ from sqlalchemy.orm import sessionmaker
 
 
 class SenseDatabase:
-    databasePath = os.getenv('PANEL_SENSE_DATABASE')
+    databasePath = os.getenv("PANEL_SENSE_DATABASE")
     engine = create_engine(f"sqlite:///{databasePath}")
     Base.metadata.create_all(engine)
 
@@ -24,10 +24,10 @@ class SenseDatabase:
                 == sense_client.details.installation_id
             )
         ).scalar()
-        _LOGGER.debug(f"database result: {result}")
+        logger.debug(f"database result: {result}")
 
         if result == False:
-            _LOGGER.debug("Add sense client")
+            logger.debug("Add sense client")
             base64_config = base64.b64encode(
                 sense_client.configuration_str.encode("utf-8")
             ).decode("utf-8")
@@ -43,7 +43,7 @@ class SenseDatabase:
             try:
                 self.session.commit()
             except Exception as e:
-                _LOGGER.error(e)
+                logger.error(e)
                 self.session.rollback()
         else:
             self.update_sense_client(sense_client)
@@ -63,7 +63,7 @@ class SenseDatabase:
         try:
             self.session.commit()
         except Exception as e:
-            _LOGGER.error(e)
+            logger.error(e)
             self.session.rollback()
 
     def update_sense_client_configuration(
@@ -79,7 +79,7 @@ class SenseDatabase:
         try:
             self.session.commit()
         except Exception as e:
-            _LOGGER.error(e)
+            logger.error(e)
             self.session.rollback()
 
     def get_sense_clients(self) -> Set[SenseClient]:

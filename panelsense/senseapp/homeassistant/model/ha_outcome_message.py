@@ -23,7 +23,7 @@ class Target(BaseModel):
 class HaOutcomeMessage(BaseModel):
     id: Optional[int] = None
     type: str
-    domain: str
+    domain: Optional[str] = None
 
 
 class HaCallServiceMessage(HaOutcomeMessage):

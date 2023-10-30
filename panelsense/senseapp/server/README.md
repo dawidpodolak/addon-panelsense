@@ -44,6 +44,43 @@ Below message structure relates incoming message as well as outcoming message.
 | Field          | Type         | Description       |
 | -------------- | ------------ | ----------------- |
 | auth_result    | enum         | SUCCESS or FAILURE|
+
+#### Configuration response data
+This is a configuration for PanelSense client
+| Field         | Type              | Description       |
+| ------------- | ----------------- | ----------------- |
+| system        | System            | Configuration of how client behaves |
+| panel_list    | List<Panel>       | List of panels |
+
+##### System configuration
+| Field             | Type              | Description       |
+| ----------------- | ----------------- | ----------------- |
+| main_panel_id     | str: optional     | Id of PanelItem which will be always visible. If swipe to other pane, app will come back on this. If not defined, than first panel is main
+
+##### Panel
+| Field             | Type                  | Description       |
+| ----------------- | --------------------- | ----------------- |
+| id                | str: optional         | Id of panel, can be set at main_panel_id |
+| type              | PanelType: mandatory  | Type of Panel |
+| coloumn_count     | int: optional         | specify for PanelType grid. Default is 2|
+| name              | str: optional         | Name for panel |
+| item_list         | List<PanelItem>       | List of panel items |
+
+##### PanelType
+|                  | Description       |
+| ---------------- | ----------------- |
+| grid             | Items are compout at grid |
+| home             | Panel with weather (if there is an entity provide), time and two buttons
+
+##### PanelItem
+| Field             | Type                  | Description       |
+| ----------------- | --------------------- | ----------------- |
+| id                | str: optional         | Id of panel item  |
+| entity            | str: mandatory        | Home Assistant entity |
+| title             | str: optional         | By default is taken from entity   |
+| icon              | str: optional         | The name of mdi icon. By default is taken from entity |
+
+
 ### Home Assistant Action Light
 
 `type: ha_action_light`

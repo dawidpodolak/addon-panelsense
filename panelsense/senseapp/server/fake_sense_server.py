@@ -2,7 +2,7 @@ import asyncio
 from asyncio import AbstractEventLoop
 from typing import List
 
-from loging.logger import _LOGGER
+from loguru import logger
 from server.client.sense_client import SenseClienDetails, SenseClient
 from server.client_connection_helper import ClientConectionHelper
 from server.database.sense_database import SenseDatabase
@@ -17,7 +17,7 @@ class FakeSenseServer(ClientConectionHelper):
     def __init__(self, loop: AbstractEventLoop, database: SenseDatabase):
         self.database = database
         self.connected_clients = database.get_sense_clients()
-        _LOGGER.info(f"Sense clients: {len(self.connected_clients)}")
+        logger.info(f"Sense clients: {len(self.connected_clients)}")
         # self.add_fake_client("Test android devices", "test Ad inId")
         # loop.create_task(self.add_fake_client_with_delay())
 
@@ -40,7 +40,7 @@ class FakeSenseServer(ClientConectionHelper):
 
     async def add_fake_client_with_delay(self):
         await asyncio.sleep(5)
-        _LOGGER.debug("Add delayed fake client")
+        logger.debug("Add delayed fake client")
         self.add_fake_client("Test android 2", "Test androd idID")
 
     def get_configuration(self) -> Configuration:
@@ -72,7 +72,7 @@ class FakeSenseServer(ClientConectionHelper):
             if sc.details.installation_id == installation_id:
                 sense_client = sc
 
-        _LOGGER.info(f"Updadate sense client {installation_id} with config: {config}")
+        logger.info(f"Updadate sense client {installation_id} with config: {config}")
         if sense_client:
             sense_client.configuration_str = config
             self.database.update_sense_client_configuration(installation_id, config)

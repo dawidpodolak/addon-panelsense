@@ -65,7 +65,11 @@
                     console.log("Configuration updated!");
                 },
                 error: function(error) {
+                    console.log("errorMessage: " + error.responseJSON.errorMessage);
+                    configurationSentElement.textContent = "Error!\n" + error.responseJSON.errorMessage
+                    configurationSentElement.style.visibility = 'visible'
                     console.log(error);
+
                 }
             });
         } else {
