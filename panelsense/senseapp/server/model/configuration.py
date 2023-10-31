@@ -9,6 +9,7 @@ from .base import *
 class ConfigurationSystem(BaseModel):
     main_panel_id: Optional[str] = None
     show_nav_bar: bool = False
+    background: Optional[str] = None
 
 
 class ConfigurationItem(BaseModel):
