@@ -37,6 +37,7 @@ class Weather(BaseComponent):
             pressure=self.weather_attributes.pressure,
             pressure_unit=self.weather_attributes.pressure_unit,
             wind_bearing=self.weather_attributes.wind_bearing,
+            wind_speed=self.weather_attributes.wind_speed,
             wind_speed_unit=self.weather_attributes.wind_speed_unit,
             visibility_unit=self.weather_attributes.visibility_unit,
             precipitation_unit=self.weather_attributes.precipitation_unit,

@@ -26,6 +26,7 @@ class WeatherOutcomingDataMessage(BaseModel):
     pressure: Optional[float] = None
     pressure_unit: str
     wind_bearing: Optional[float] = None
+    wind_speed: Optional[float] = None
     wind_speed_unit: str
     visibility_unit: str
     precipitation_unit: str

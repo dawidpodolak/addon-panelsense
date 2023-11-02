@@ -46,18 +46,19 @@ class WeatherForecast(BaseModel):
 
 class WeatherAttributes(BaseModel):
     friendly_name: str
-    attribution: str
-    temperature: float
+    attribution: Optional[str] = None
+    temperature: Optional[float] = None
     dew_point: Optional[float] = None
-    temperature_unit: str
+    temperature_unit: Optional[str] = None
     humidity: Optional[float] = None
     cloud_coverage: Optional[float] = None
     pressure: Optional[float] = None
-    pressure_unit: str
+    pressure_unit: Optional[str] = None
     wind_bearing: Optional[float] = None
-    wind_speed_unit: str
-    visibility_unit: str
-    precipitation_unit: str
+    wind_speed: Optional[float] = None
+    wind_speed_unit: Optional[str] = None
+    visibility_unit: Optional[str] = None
+    precipitation_unit: Optional[str] = None
     forecast: List[WeatherForecast] = list()
     supported_features: int
 
