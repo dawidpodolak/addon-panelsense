@@ -90,4 +90,4 @@ class HaIncomeMessage(BaseModel):
     id: Optional[int] = None
     type: str
     event: Optional[HaEvent] = None
-    result: Optional[List[Result]] = None
+    result: Optional[Any] = None
