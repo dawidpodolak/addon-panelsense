@@ -1,9 +1,9 @@
-from typing import Callable
+from typing import Callable, List
 
 from loguru import logger
 
 from .model.ha_income_message import (HaEvent, HaEventData, HaEventState,
-                                      HaIncomeMessage)
+                                      HaIncomeMessage, Result)
 from .model.ha_outcome_message import HaOutcomeMessage
 
 
@@ -20,9 +20,13 @@ class HomeAssistantStateRequestHelper:
         return is_state_request_message
 
     async def process_message(self, message: HaIncomeMessage, callback):
-        result_array = message.result
-        if result_array == None:
-            return
+        result_array: List[Result] = list()
+        if isinstance(message.result, list):
+            for item in message.result:
+                try:
+                    result_array.append(Result(**item))
+                except:
+                    continue
 
         for result in result_array:
             state = HaEventState(
