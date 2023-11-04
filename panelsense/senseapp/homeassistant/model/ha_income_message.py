@@ -23,6 +23,7 @@ class LigthAttributes(BaseModel):
 
 class CoverAttributes(BaseModel):
     friendly_name: Optional[str] = None
+    device_class: Optional[str] = None
     supported_features: Optional[int] = None
     current_position: Optional[int] = None
     current_tilt_position: Optional[int] = None

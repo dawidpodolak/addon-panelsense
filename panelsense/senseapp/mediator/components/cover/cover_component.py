@@ -11,6 +11,8 @@ from server.model.cover import *
 class Cover(BaseComponent):
     entity_id: str
     state: Optional[str] = None
+    friendly_name: Optional[str] = None
+    device_class: Optional[str] = None
     position: Optional[int] = None
     tils_position: Optional[int] = None
     supported_features: Optional[int] = None
@@ -29,6 +31,8 @@ class Cover(BaseComponent):
         attributes = CoverAttributes(**haEventData.new_state.attributes)
         self.entity_id = haEventData.entity_id
         self.position = attributes.current_position
+        self.friendly_name = attributes.friendly_name
+        self.device_class = attributes.device_class
         self.tils_position = attributes.current_tilt_position
         self.state = haEventData.new_state.state
         self.supported_features = attributes.supported_features
@@ -58,6 +62,8 @@ class Cover(BaseComponent):
             state=self.state,
             position=self.position,
             tilt_position=self.tils_position,
+            friendly_name=self.friendly_name,
+            device_class=self.device_class,
             supported_features=self.supported_features,
         )
         return CoverOutcomingMessage(type=MessageType.HA_ACTION_COVER, data=data)

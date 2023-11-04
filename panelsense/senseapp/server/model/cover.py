@@ -37,6 +37,7 @@ class CoverOutcomingDataMessage(BaseModel):
     tilt_position: Optional[int] = None
     icon: Optional[str] = None
     friendly_name: Optional[str] = None
+    device_class: Optional[str] = None
     supported_features: Optional[int] = None
 
 

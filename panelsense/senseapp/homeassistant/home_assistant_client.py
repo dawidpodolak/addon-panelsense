@@ -64,13 +64,17 @@ class HomeAssistantClient:
             logger.info(f"websocket not initialized!")
 
     async def handle_message(self, message):
-        ha_message = HaIncomeMessage.model_validate_json(message, strict=False)
-        if ha_message.type == "event" and ha_message.event:
-            await self.process_state_changed(ha_message.event)
-        elif self.state_request_helper.is_state_request_message(ha_message):
-            await self.state_request_helper.process_message(
-                ha_message, self.process_state_changed
-            )
+        try:
+            ha_message = HaIncomeMessage.model_validate_json(message, strict=False)
+            if ha_message.type == "event" and ha_message.event:
+                await self.process_state_changed(ha_message.event)
+            elif self.state_request_helper.is_state_request_message(ha_message):
+                await self.state_request_helper.process_message(
+                    ha_message, self.process_state_changed
+                )
+        except Exception as e:
+            logger.error(f"Error parsing message: {message}")
+            logger.error(e)
 
     async def process_state_changed(self, event: HaEvent):
         entity = event.data.entity_id
