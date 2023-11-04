@@ -1,5 +1,5 @@
 name: "PanelSense"
-version: "0.0.12"
+version: "0.0.13"
 slug: panel_sense
 description: "Add-on helps to manage PanelSense Android app, that can be used to work with Home Assistant."
 arch:

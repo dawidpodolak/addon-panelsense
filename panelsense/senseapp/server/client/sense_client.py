@@ -1,5 +1,5 @@
 from typing import Optional
-
+from websockets.exceptions import ConnectionClosed
 import yaml
 from loguru import logger
 from pydantic import BaseModel, ValidationError
@@ -55,10 +55,9 @@ class SenseClient:
         if self.websocket:
             try:
                 await self.websocket.send(message)
-            except Exception as e:
+            except ConnectionClosed as e:
                 logger.info("Error message send!")
                 logger.error(e)
-            finally:
                 await self.websocket.close()
 
     def get_sense_client_json(self) -> str:
