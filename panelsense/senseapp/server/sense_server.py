@@ -69,10 +69,16 @@ class PanelSenseServer(ClientConectionHelper):
 
         try:
             async for message in websocket:
-                self.handle_message(websocket, message)
-                logger.debug(f"Reveived message:\n {message}")
+                try:
+                    self.handle_message(websocket, message)
+                    logger.debug(f"Received message:\n {message}")
+                except Exception as e:
+                    logger.debug(f"Error in hande_message!")
+                    logger.error(e)
         except websockets.exceptions.ConnectionClosedError as e:
             logger.error(f"Client disconnected! {e}")
+        except Exception as e:
+            logger.error(e)
         finally:
             logger.info(f"Client disconnected! {sense_client.details.name}")
             self.on_client_disconnected(sense_client)

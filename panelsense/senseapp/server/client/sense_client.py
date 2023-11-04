@@ -53,7 +53,13 @@ class SenseClient:
 
     async def send(self, message: str):
         if self.websocket:
-            await self.websocket.send(message)
+            try:
+                await self.websocket.send(message)
+            except Exception as e:
+                logger.info("Error message send!")
+                logger.error(e)
+            finally:
+                await self.websocket.close()
 
     def get_sense_client_json(self) -> str:
         return self.details.model_dump_json()

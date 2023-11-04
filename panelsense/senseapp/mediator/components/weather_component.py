@@ -59,6 +59,7 @@ class Weather(BaseComponent):
                     templow=ha_forecast.templow,
                     wind_speed=ha_forecast.wind_speed,
                     humidity=ha_forecast.humidity,
+                    pressure=ha_forecast.pressure,
                 )
             )
         return forecast_list

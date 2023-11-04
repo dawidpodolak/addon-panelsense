@@ -13,6 +13,7 @@ class WeatherForecast(BaseModel):
     templow: Optional[float] = None
     wind_speed: Optional[float] = None
     humidity: Optional[float] = None
+    pressure: Optional[float] = None
 
 
 class WeatherOutcomingDataMessage(BaseModel):
