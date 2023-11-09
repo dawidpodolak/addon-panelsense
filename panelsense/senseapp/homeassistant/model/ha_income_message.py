@@ -17,6 +17,7 @@ class LigthAttributes(BaseModel):
     min_mireds: Optional[int] = None
     max_mireds: Optional[int] = None
     rgb_color: Optional[List[int]] = None
+    rgbww_color: Optional[List[int]] = None
     supported_color_modes: Optional[List[str]] = None
     icon: Optional[str] = None
 

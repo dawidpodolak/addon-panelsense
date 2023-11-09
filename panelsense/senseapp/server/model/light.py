@@ -24,6 +24,7 @@ class LightIncomingDataMessage(BaseModel):
     brightness: Optional[int] = None
     color_mode: Optional[str] = None
     rgb_color: Optional[List[int]] = None
+    rgbww_color: Optional[List[int]] = None
     color_temp_kelvin: Optional[int] = None
     max_color_temp_kelvin: Optional[int] = None
     min_color_temp_kelvin: Optional[int] = None
@@ -43,6 +44,7 @@ class LightOutcomingDataMessage(BaseModel):
     brightness: Optional[int] = None
     color_mode: Optional[str] = None
     rgb_color: Optional[List[int]] = None
+    rgbww_color: Optional[List[int]] = None
     color_temp_kelvin: Optional[int] = None
     max_color_temp_kelvin: Optional[int] = None
     min_color_temp_kelvin: Optional[int] = None
@@ -50,6 +52,7 @@ class LightOutcomingDataMessage(BaseModel):
     supported_color_modes: Optional[List[str]] = None
     friendly_name: Optional[str] = None
     icon: Optional[str] = None
+    supported_features: Optional[int] = None
 
 
 class LightOutcomingMessage(ServerOutgoingMessage):

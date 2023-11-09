@@ -7,6 +7,7 @@ class LightServiceData(BaseModel):
     color_name: Optional[str] = None
     color_mode: Optional[str] = None
     rgb_color: Optional[List[int]] = None
+    rgbww_color: Optional[List[int]] = None
     color_temp_kelvin: Optional[int] = None
     brightness: Optional[int] = None
     position: Optional[int] = None

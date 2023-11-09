@@ -3,6 +3,7 @@ from typing import Optional
 from homeassistant.ids import get_message_id
 from homeassistant.model.ha_income_message import HaEventData, LigthAttributes
 from homeassistant.model.ha_outcome_message import *
+from loguru import logger
 from mediator.components.base_component import BaseComponent
 from server.model.light import *
 
@@ -12,12 +13,14 @@ class Light(BaseComponent):
     brightness: Optional[int] = 0
     color_mode: Optional[str] = None
     rgb_color: Optional[List[int]] = None
+    rgbww_color: Optional[List[int]] = None
     color_temp_kelvin: Optional[int] = None
     supported_color_modes: Optional[List[str]] = None
     friendly_name: Optional[str] = None
     min_color_temp_kelvin: Optional[int] = None
     max_color_temp_kelvin: Optional[int] = None
     icon: Optional[str] = None
+    supported_features: Optional[int] = None
 
     def __init__(
         self,
@@ -31,6 +34,7 @@ class Light(BaseComponent):
 
     def updateState(self, haEventData: HaEventData):
         attributes = LigthAttributes(**haEventData.new_state.attributes)
+        logger.debug(f"Update state for light: rgbww_color1: {attributes.rgbww_color}")
         self.entity_id = haEventData.entity_id
         self.on = haEventData.new_state.state == "on"
         self.brightness = attributes.brightness
@@ -45,9 +49,11 @@ class Light(BaseComponent):
         self.min_mireds = attributes.min_mireds
         self.max_mireds = attributes.max_mireds
         self.rgb_color = attributes.rgb_color
+        self.rgbww_color = attributes.rgbww_color
         self.supported_color_modes = attributes.supported_color_modes
         self.supported_features = attributes.supported_features
         self.icon = attributes.icon
+        logger.debug(f"Update state for light: rgbww_color2: {self.rgbww_color}")
 
     def get_message_for_home_assistant(self) -> HaOutcomeMessage:
         return HaCallServiceMessage(
@@ -59,18 +65,21 @@ class Light(BaseComponent):
         )
 
     def get_message_for_client(self) -> LightOutcomingMessage:
+        logger.debug(f"Get message for a client: rgbww_color: {self.rgbww_color}")
         data = LightOutcomingDataMessage(
             entity_id=self.entity_id,
             on=self.on,
             brightness=self.brightness,
             color_mode=self.color_mode,
             rgb_color=self.rgb_color,
+            rgbww_color=self.rgbww_color,
             supported_color_modes=self.supported_color_modes,
             max_color_temp_kelvin=self.max_color_temp_kelvin,
             min_color_temp_kelvin=self.min_color_temp_kelvin,
             color_temp_kelvin=self.color_temp_kelvin,
             friendly_name=self.friendly_name,
             icon=self.icon,
+            supported_features=self.supported_features,
         )
         return LightOutcomingMessage(data=data)
 
@@ -82,6 +91,7 @@ class Light(BaseComponent):
         self.brightness = light_incoming_message.brightness
         self.color_mode = light_incoming_message.color_mode
         self.rgb_color = light_incoming_message.rgb_color
+        self.rgbww_color = light_incoming_message.rgbww_color
         self.color_temp_kelvin = light_incoming_message.color_temp_kelvin
         self.supported_color_modes = light_incoming_message.supported_color_modes
         self.max_color_temp_kelvin = light_incoming_message.max_color_temp_kelvin
@@ -98,6 +108,7 @@ class Light(BaseComponent):
         if self.brightness or self.color_mode or self.rgb_color:
             return LightServiceData(
                 rgb_color=self.rgb_color,
+                rgbww_color=self.rgbww_color,
                 brightness=self.brightness,
                 color_temp_kelvin=self.color_temp_kelvin,
             )
