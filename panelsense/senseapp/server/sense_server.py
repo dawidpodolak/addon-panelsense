@@ -77,6 +77,8 @@ class PanelSenseServer(ClientConectionHelper):
                     logger.debug(f"Error in hande_message!")
                     logger.error(e)
         except websockets.exceptions.ConnectionClosedError as e:
+            sense_client.websocket = None
+            sense_client.is_online = False
             logger.error(f"Client disconnected! {e}")
         except Exception as e:
             logger.error(e)

@@ -57,7 +57,7 @@ class HomeAssistantClient:
         global websocket
         self.state_request_helper.save_if_state_requested(data)
         json_message = json.dumps(data.model_dump(exclude_none=True))
-        logger.info(f"-> HA: {json_message}\n")
+        # logger.info(f"-> HA: {json_message}\n")
         if websocket:
             asyncio.create_task(websocket.send(json_message))
         else:
