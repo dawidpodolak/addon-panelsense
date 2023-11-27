@@ -54,6 +54,7 @@ class PanelSenseServer(ClientConectionHelper):
         return self.connected_clients
 
     async def message_handler(self, websocket: WebSocketClientProtocol):
+        logger.info(f"Attempt to connect: {websocket.remote_address}")
         auth_message = await websocket.recv()
 
         sense_client = await self.client_authenticator.authenticate(
@@ -76,6 +77,8 @@ class PanelSenseServer(ClientConectionHelper):
                     logger.debug(f"Error in hande_message!")
                     logger.error(e)
         except websockets.exceptions.ConnectionClosedError as e:
+            sense_client.websocket = None
+            sense_client.is_online = False
             logger.error(f"Client disconnected! {e}")
         except Exception as e:
             logger.error(e)
@@ -91,9 +94,8 @@ class PanelSenseServer(ClientConectionHelper):
         await self.websocket_server.serve_forever()
 
     async def send_message_async(self, message: BaseComponent):
-        logger.info(f"Connected clients: {len(self.connected_clients)}")
         for client in self.connected_clients:
-            logger.info(f"SERVER ->: {message.get_message_for_client()}\n")
+            # logger.info(f"SERVER ->: {message.get_message_for_client()}\n")
             await client.send(
                 message.get_message_for_client().model_dump_json(exclude_none=True)
             )
@@ -135,7 +137,7 @@ class PanelSenseServer(ClientConectionHelper):
         try:
             client_message = ClientIncomingMessage.model_validate_json(message)
             self.process_client_message_ha_action(client, client_message.type, message)
-            logger.debug(f"CLIENT -> handle_message type: {client_message}")
+            # logger.debug(f"CLIENT -> handle_message type: {client_message}")
         except ValidationError as e:
             logger.error(f"SERVER ERROR -> {message}")
             self.send_error(client, ErrorCode.INVALID_DATA, "Invalid data")
@@ -159,7 +161,6 @@ class PanelSenseServer(ClientConectionHelper):
         elif type == MessageType.HA_STATE_REQUEST:
             state_request = StateRequest()
             self.callback(state_request)
-        logger.debug(f"CLIENT -> process_client_message_ha_action: {type}")
 
     def set_message_callback(self, callback: Callable[[BaseComponent], None]):
         self.callback = callback

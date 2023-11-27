@@ -34,7 +34,6 @@ class Light(BaseComponent):
 
     def updateState(self, haEventData: HaEventData):
         attributes = LigthAttributes(**haEventData.new_state.attributes)
-        logger.debug(f"Update state for light: rgbww_color1: {attributes.rgbww_color}")
         self.entity_id = haEventData.entity_id
         self.on = haEventData.new_state.state == "on"
         self.brightness = attributes.brightness
@@ -53,7 +52,6 @@ class Light(BaseComponent):
         self.supported_color_modes = attributes.supported_color_modes
         self.supported_features = attributes.supported_features
         self.icon = attributes.icon
-        logger.debug(f"Update state for light: rgbww_color2: {self.rgbww_color}")
 
     def get_message_for_home_assistant(self) -> HaOutcomeMessage:
         return HaCallServiceMessage(
@@ -65,7 +63,6 @@ class Light(BaseComponent):
         )
 
     def get_message_for_client(self) -> LightOutcomingMessage:
-        logger.debug(f"Get message for a client: rgbww_color: {self.rgbww_color}")
         data = LightOutcomingDataMessage(
             entity_id=self.entity_id,
             on=self.on,

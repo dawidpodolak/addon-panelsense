@@ -24,10 +24,8 @@ class SenseDatabase:
                 == sense_client.details.installation_id
             )
         ).scalar()
-        logger.debug(f"database result: {result}")
 
         if result == False:
-            logger.debug("Add sense client")
             base64_config = base64.b64encode(
                 sense_client.configuration_str.encode("utf-8")
             ).decode("utf-8")

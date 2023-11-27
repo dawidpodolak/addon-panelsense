@@ -14,7 +14,6 @@ class Weather(BaseComponent):
     weather_attributes: WeatherAttributes
 
     def __init__(self, ha_event_data: HaEventData):
-        logger.debug(f"WEATHER -->> {ha_event_data.model_dump_json()}")
         self.entity = ha_event_data.entity_id
         self.state = ha_event_data.new_state.state
         self.weather_attributes = WeatherAttributes(

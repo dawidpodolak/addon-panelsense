@@ -58,9 +58,6 @@ def set_client_callback(server_callback: Callable[[], ClientConectionHelper]):
 
 
 def on_client_state_changed(senseClient: SenseClient):
-    logger.debug(
-        f"sense client {senseClient.details.name} online: {senseClient.is_online}"
-    )
     update_connected_clients()
     update_selected_client()
     update_page()
@@ -68,7 +65,6 @@ def on_client_state_changed(senseClient: SenseClient):
 
 def update_page():
     global dashboard_state
-    logger.info(f"Update ui client {dashboard_state.selected_client}")
     with app.app_context():
         render_page = None
         if dashboard_state.selected_client:
@@ -102,7 +98,6 @@ def show_page(installation_id):
         if header == "X-Ingress-Path":
             static_path = f"{values}/static"
 
-    logger.info(f"show device: {installation_id}")
     selected_client = get_ui_client(installation_id)
     if selected_client:
         dashboard_state = UiState(
@@ -117,7 +112,6 @@ def show_page(installation_id):
 @app.route("/list")
 def show_list():
     global dashboard_state
-    logger.info(f"show list")
     dashboard_state = UiState(clients=dashboard_state.clients)
     update_page()
     return jsonify({"status": "success"}), 200
@@ -129,7 +123,6 @@ def receive_text():
     configuration = data.get("configuration", "")
     installation_id = data.get("installation_id", "")
 
-    logger.debug(f"Text from page: {sense_server_callback()}")
     try:
         sense_server_callback().update_sense_client_config(
             installation_id, configuration
@@ -163,7 +156,6 @@ def get_dashboard_renderer():
     global dashboard_state
     global static_path
     update_connected_clients()
-    logger.info(f"Client list {len(dashboard_state.clients)}")
     with app.app_context():
         return render_template(
             "index.html", clients=dashboard_state.clients, static_path=static_path
