@@ -50,7 +50,7 @@ class HomeAssistantClient:
     async def listen_for_message(self):
         while True:
             response = await websocket.recv()
-            logger.debug(f"HA Message ->> {response}")
+            # logger.debug(f"HA Message ->> {response}")
             await self.handle_message(response)
 
     def send_data(self, data: HaOutcomeMessage):
