@@ -1,3 +1,5 @@
+
+
 ![Logo](https://github.com/dawidpodolak/addon-panelsense/blob/develop/panelsense/logo.png?raw=true)
 
 # Panel Sense
@@ -20,6 +22,14 @@ In order to do that:
 7. After installation, open Configuration and change server_user and serwer_password. This credentials you will need to use in Android app.
 
 
+## Connect Android Client
+
+In order to connect an android client, first you need to install android app on your device. In order to install app please refer to Android project site, [installation section](https://github.com/dawidpodolak/android-panelsense). After installation, you will see a login page where you have to provide:
+- IP address to your HA instance where PanelSense is installed
+- PanelSense addon port (by default is 8652)
+- server_user and server_password
+- The name of that device simple to remember for you e.g. `Office table` or `Daily Room NSPanel`. It will help you to identify this device in configuration page
+## Configuration
 ## License
 
 [APACHE 2.0](https://github.com/dawidpodolak/addon-panelsense/blob/develop/LICENSE)
