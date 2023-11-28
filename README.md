@@ -9,6 +9,7 @@
 
 PanelSense is a project that helps to manage Home Assistant with Android app that can be installed localy on any Android device like tablet or devices such Sonoff NSPanel. Is fully customizable with this addon installed in HomeAssistant
 
+## Features
 ## Installation
 
 Installation is the same as other addons for HomeAssistant.
@@ -22,14 +23,16 @@ In order to do that:
 7. After installation, open Configuration and change server_user and serwer_password. This credentials you will need to use in Android app.
 
 
-## Connect Android Client
+## Connect android client
 
-In order to connect an android client, first you need to install android app on your device. In order to install app please refer to Android project site, [installation section](https://github.com/dawidpodolak/android-panelsense). After installation, you will see a login page where you have to provide:
+In order to connect an android client, first you need to install android app on your device. To install app please refer to Android project site, [installation section](https://github.com/dawidpodolak/android-panelsense). After installation, you will see a login page where you have to provide:
 - IP address to your HA instance where PanelSense is installed
 - PanelSense addon port (by default is 8652)
 - server_user and server_password
 - The name of that device simple to remember for you e.g. `Office table` or `Daily Room NSPanel`. It will help you to identify this device in configuration page
-## Configuration
+##  Android client configuration
+
+After connecting android client to PanelSense Addon, open web ui in the addon configuration. You can also enable "Show in sidebar" option. If you connect your device properly, you should see the device on the list. Click on that and you will see the top panel with details of the PanelSense device client. Below this, there is a yaml editor to put your configuration. How to configure, please visit [configuration doc](https://github.com/dawidpodolak/addon-panelsense/tree/feature/documentation).
 ## License
 
 [APACHE 2.0](https://github.com/dawidpodolak/addon-panelsense/blob/develop/LICENSE)
