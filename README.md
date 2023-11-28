@@ -48,7 +48,7 @@ In order to connect an android client, first you need to install android app on 
 
 ##  Android client configuration
 
-After connecting android client to PanelSense Addon, open web ui in the addon configuration. You can also enable "Show in sidebar" option. If you connect your device properly, you should see the device on the list. Click on that and you will see the top panel with details of the PanelSense device client. Below this, there is a yaml editor to put your configuration. How to configure, please visit [configuration doc](https://github.com/dawidpodolak/addon-panelsense/tree/feature/documentation).
+After connecting android client to PanelSense Addon, open web ui in the addon configuration. You can also enable "Show in sidebar" option. If you connect your device properly, you should see the device on the list. Click on that and you will see the top panel with details of the PanelSense device client. Below this, there is a yaml editor to put your configuration. How to configure, please visit [configuration doc](https://github.com/dawidpodolak/addon-panelsense/tree/feature/documentation/configuration.md).
 
 ## License
 
