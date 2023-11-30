@@ -2,13 +2,13 @@
 
 
 
-This document provides information how to create yaml configuration for PanelSens Android client.
+This document provides information how to create yaml configuration for PanelSense Android client.
 
 
 
 ## Get started
 
-After connecting Android PanelSense app to your PanelSenseAddon, open yaml editor in HomeAssistant (available from addon webUI). Provide your yaml configuration and click button "Send configuration". Be sure that your device is online. Online status is available at the top panel. If device is offline, then configuration won't be send, instead it will be saved and when client become online, this configuration will be send to them.
+After connecting the Android PanelSense app to your PanelSenseAddon, open yaml editor in HomeAssistant (available from the addon webUI). Provide your yaml configuration and click the button "Send configuration". Be sure that your device is online. Online status is available at the top panel. If the device is offline, then the configuration won't be sent, instead, it will be saved and when the client becomes online, this configuration will be sent to them.
 
 ## YAML Configuration
 | Key | Description |
@@ -19,7 +19,7 @@ After connecting Android PanelSense app to your PanelSenseAddon, open yaml edito
 ### System
 | Key | Required | Description |
 |--|--|--|
-| main_panel_id | false | Id of panel that is treated as default. If you enable navigation bar, this will be a home button. If not set, then first panel from `panel_list` will be treated as main
+| main_panel_id | false | Id of the panel that is treated as default. If you enable a navigation bar, this will be a home button. If not set, then the first panel from `panel_list` will be treated as the main
 | show_nav_bar | false | Navigation bar at the bottom of the screen that help you to navigate between panels |
 | background | false | URL or hex of the background. E.g. of hex "#FFFFFFFF" |
 
@@ -55,7 +55,7 @@ Panels that can be put in `panel_list` list. To use given panel, set `type` key 
 | item_list | false | List of items that will be put into grid
 
 ### Items
-Item is a part of panel that allows you to controll your entities like light, cover etc. If some entity provides more controll options (like light has brightness or color steering) than shuch item can be long pressed. You don't have to specify the type of the item. The type is determined on `entity` key.
+Item is a part of a panel that allows you to control your entities like light, cover, etc. If some entity provides more control options (like the light has brightness or color steering) then such an item can be long-pressed. You don't have to specify the type of the item. The type is determined by `entity` key.
 | Key | Required | Description |
 |--|--|--|
 | entity | true | HomeAssistant entity. Base on this, proper item will be used |
