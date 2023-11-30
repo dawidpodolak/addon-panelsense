@@ -31,6 +31,8 @@ Panels that can be put in `panel_list` list. To use given panel, set `type` key 
 | grid | Panel with grid |
 
 #### Panel Home
+<img  src="https://github.com/dawidpodolak/addon-panelsense/blob/feature/documentation/screenshots/screenshot_panel_home.png?raw=true"  width="350"  />
+
 | Key | Required | Description |
 |--|--|--|
 | type | true | Should be set to `home` |
@@ -42,6 +44,8 @@ Panels that can be put in `panel_list` list. To use given panel, set `type` key 
 | item_right | false | Right item |
 
 #### Panel Grid
+<img  src="https://github.com/dawidpodolak/addon-panelsense/blob/feature/documentation/screenshots/screenshot_panel_grid.png?raw=true"  width="350" />
+
 | Key | Required | Description |
 |--|--|--|
 | type | true | Should be set to `grid` |
