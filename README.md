@@ -1,6 +1,6 @@
 
 
-![Logo](panelsense/logo.png?raw=true)
+<img  src="panelsense/logo.png?raw=true"  width="500" />
 
 # Panel Sense
 
