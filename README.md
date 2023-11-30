@@ -10,7 +10,7 @@
 PanelSense is a project that helps to manage Home Assistant with Android app that can be installed localy on any Android device like tablet or devices such Sonoff NSPanel. Is fully customizable with this addon installed in HomeAssistant. Android application provides you ability to setup many screens with various options like home panel or grid panel, where you can put buttons to controll light, cover and others HomeAssistant entities.
 
 ## Screnshots
-<img  src="https://github.com/dawidpodolak/addon-panelsense/blob/feature/documentation/screenshots/screenshot_panel_home.png?raw=true"  width="350" /><img  src="https://github.com/dawidpodolak/addon-panelsense/blob/feature/documentation/screenshots/screenshot_panel_grid.png?raw=true"  width="350" /><img  src="https://github.com/dawidpodolak/addon-panelsense/blob/feature/documentation/screenshots/screenshot_details_light.png?raw=true"  width="350" /><img  src="https://github.com/dawidpodolak/addon-panelsense/blob/feature/documentation/screenshots/screenshot_details_cover.png?raw=true"  width="350" />
+<img  src="screenshots/screenshot_panel_home.png?raw=true"  width="350" /><img  src="https://github.com/dawidpodolak/addon-panelsense/blob/feature/documentation/screenshots/screenshot_panel_grid.png?raw=true"  width="350" /><img  src="https://github.com/dawidpodolak/addon-panelsense/blob/feature/documentation/screenshots/screenshot_details_light.png?raw=true"  width="350" /><img  src="https://github.com/dawidpodolak/addon-panelsense/blob/feature/documentation/screenshots/screenshot_details_cover.png?raw=true"  width="350" />
 
 ## Features
 * System
