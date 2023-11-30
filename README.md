@@ -1,16 +1,16 @@
 
 
-![Logo](https://github.com/dawidpodolak/addon-panelsense/blob/develop/panelsense/logo.png?raw=true)
+![Logo](panelsense/logo.png?raw=true)
 
 # Panel Sense
 
-[![MIT License](https://img.shields.io/badge/License-APACHE_2.0-green.svg)](https://github.com/dawidpodolak/addon-panelsense/blob/develop/LICENSE)
-[![Version](https://img.shields.io/github/v/release/dawidpodolak/addon-panelsense)](https://github.com/dawidpodolak/addon-panelsense/releases)
+[![MIT License](https://img.shields.io/badge/License-APACHE_2.0-green.svg)](LICENSE)
+[![Version](https://img.shields.io/github/v/release/dawidpodolak/addon-panelsense)](releases)
 
 PanelSense is a project that helps to manage Home Assistant with Android app that can be installed localy on any Android device like tablet or devices such Sonoff NSPanel. Is fully customizable with this addon installed in HomeAssistant. Android application provides you ability to setup many screens with various options like home panel or grid panel, where you can put buttons to controll light, cover and others HomeAssistant entities.
 
 ## Screnshots
-<img  src="screenshots/screenshot_panel_home.png?raw=true"  width="350" /><img  src="https://github.com/dawidpodolak/addon-panelsense/blob/feature/documentation/screenshots/screenshot_panel_grid.png?raw=true"  width="350" /><img  src="https://github.com/dawidpodolak/addon-panelsense/blob/feature/documentation/screenshots/screenshot_details_light.png?raw=true"  width="350" /><img  src="https://github.com/dawidpodolak/addon-panelsense/blob/feature/documentation/screenshots/screenshot_details_cover.png?raw=true"  width="350" />
+<img  src="screenshots/screenshot_panel_home.png?raw=true"  width="350" /><img  src="screenshots/screenshot_panel_grid.png?raw=true"  width="350" /><img  src="screenshots/screenshot_details_light.png?raw=true"  width="350" /><img  src="screenshots/screenshot_details_cover.png?raw=true"  width="350" />
 
 ## Features
 * System
@@ -51,9 +51,9 @@ In order to connect an android client, first you need to install android app on 
 
 ##  Android client configuration
 
-After connecting android client to PanelSense Addon, open web ui in the addon configuration. You can also enable "Show in sidebar" option. If you connect your device properly, you should see the device on the list. Click on that and you will see the top panel with details of the PanelSense device client. Below this, there is a yaml editor to put your configuration. How to configure, please visit [configuration doc](https://github.com/dawidpodolak/addon-panelsense/tree/feature/documentation/configuration.md).
+After connecting android client to PanelSense Addon, open web ui in the addon configuration. You can also enable "Show in sidebar" option. If you connect your device properly, you should see the device on the list. Click on that and you will see the top panel with details of the PanelSense device client. Below this, there is a yaml editor to put your configuration. How to configure, please visit [configuration doc](configuration.md).
 
 ## License
 
-[APACHE 2.0](https://github.com/dawidpodolak/addon-panelsense/blob/develop/LICENSE)
+[APACHE 2.0](LICENSE)
 
