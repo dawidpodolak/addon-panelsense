@@ -45,10 +45,6 @@ class ConfigurationGridPanel(ConfigurationPanel):
 class ConfigurationHomePanel(ConfigurationPanel):
     weather_entity: Optional[str] = None
     time24h: bool = False
-    # deprecated
-    item_left: Optional[ConfigurationItem] = None
-    # deprecated
-    item_right: Optional[ConfigurationItem] = None
     item_list: List[ConfigurationItem] = list()
     background: Optional[str] = None
 
