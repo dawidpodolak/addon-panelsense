@@ -38,11 +38,11 @@ Panels that can be put in `panel_list` list. To use given panel, set `type` key 
 | type | true | Should be set to `home` |
 | id | false | If set, can be used in `main_panel_id` |
 | background | false | URL or hex of the background. E.g. of hex "#FFFFFFFF". |
-| time24h | false | If true time will be display with 24 hour format. Otherwise 12hours format will be used |
-| weather_entity | false | HomeAssistant weather entity. If not set, weather won't be displayed |
+| time24h | false | If true time will be displayed in 24 hour format. Otherwise, 12hours format will be used |
+| weather_entity | false | HomeAssistant weather entity. If not set, the weather won't be displayed |
 | item_left | false | Left item |
 | item_right | false | Right item |
-| item_list | false | List of items that will be put into a bottom panel. The amount of item is not limited. Max amount should be determined by you. For NSpanel the max two items are look ok. For 10" table it could be 5.
+| item_list | false | List of items that will be put into a bottom panel. The amount of items is not limited. The maximum amount should be determined by you. For NSpanel the max two items look ok. For a 10" tablet it could be 5.
 
 #### Panel Grid
 <img  src="https://github.com/dawidpodolak/addon-panelsense/blob/feature/documentation/screenshots/screenshot_panel_grid.png?raw=true"  width="350" />
@@ -52,14 +52,14 @@ Panels that can be put in `panel_list` list. To use given panel, set `type` key 
 | type | true | Should be set to `grid` |
 | id | false | If set, can be used in `main_panel_id` |
 | background | false | URL or hex of the background. E.g. of hex "#FFFFFFFF". |
-| column_count | false | HomeAssistant weather entity. If not set, weather won't be displayed |
-| item_list | false | List of items that will be put into grid
+| column_count | false | HomeAssistant weather entity. If not set, the weather won't be displayed |
+| item_list | false | List of items that will be put into the grid
 
 ### Items
 Item is a part of a panel that allows you to control your entities like light, cover, etc. If some entity provides more control options (like the light has brightness or color steering) then such an item can be long-pressed. You don't have to specify the type of the item. The type is determined by `entity` key.
 | Key | Required | Description |
 |--|--|--|
-| entity | true | HomeAssistant entity. Base on this, proper item will be used |
+| entity | true | HomeAssistant entity. Based on this, the proper item will be used |
 | title | false | Displayed title of panel. If empty, it will be taken from entity |
 | icon | false | Displayed icon from MDI system e.g. "account" or "lightbulb". If empty, it will be taken from entity |
 
