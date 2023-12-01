@@ -42,6 +42,7 @@ Panels that can be put in `panel_list` list. To use given panel, set `type` key 
 | weather_entity | false | HomeAssistant weather entity. If not set, weather won't be displayed |
 | item_left | false | Left item |
 | item_right | false | Right item |
+| item_list | false | List of items that will be put into a bottom panel. The amount of item is not limited. Max amount should be determined by you. For NSpanel the max two items are look ok. For 10" table it could be 5.
 
 #### Panel Grid
 <img  src="https://github.com/dawidpodolak/addon-panelsense/blob/feature/documentation/screenshots/screenshot_panel_grid.png?raw=true"  width="350" />
