@@ -2,8 +2,13 @@ from typing import Callable, List
 
 from loguru import logger
 
-from .model.ha_income_message import (HaEvent, HaEventData, HaEventState,
-                                      HaIncomeMessage, Result)
+from .model.ha_income_message import (
+    HaEvent,
+    HaEventData,
+    HaEventState,
+    HaIncomeMessage,
+    Result,
+)
 from .model.ha_outcome_message import HaOutcomeMessage
 
 
