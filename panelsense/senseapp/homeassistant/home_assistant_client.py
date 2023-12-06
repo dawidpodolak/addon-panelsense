@@ -3,7 +3,7 @@ import json
 import logging
 import os
 from asyncio import AbstractEventLoop
-from typing import Callable
+from typing import Callable, Optional
 
 import websockets
 from homeassistant.components.event_observer import EventObserver
@@ -15,15 +15,15 @@ from mediator.components.cover.cover_component import Cover
 from mediator.components.light.light_component import Light
 from mediator.components.switch.switch_component import Switch
 from mediator.components.weather_component import Weather
+from websockets.client import WebSocketClientProtocol
 
 from .home_assistant_state_helper import HomeAssistantStateRequestHelper
 from .model.ha_outcome_message import HaOutcomeMessage
 
-
 class HomeAssistantClient:
     state_request_helper = HomeAssistantStateRequestHelper()
     HOME_ASSISTANT_URL = os.getenv("HASS_WS_ADDRESS")
-    websocket = None
+    websocket: Optional[WebSocketClientProtocol] = None
     MESSAGE_TYPE = "type"
     event_observer: EventObserver
     callback_message: Callable[[BaseComponent], None]
@@ -33,35 +33,50 @@ class HomeAssistantClient:
         loop.create_task(self.start_haws_client())
 
     async def start_haws_client(self):
-        global websocket
         logger.info(f"Starting HomeAssistant client websocket ....")
         logger.info(f"Websocket address: {self.HOME_ASSISTANT_URL}")
-        websocket = await websockets.connect(self.HOME_ASSISTANT_URL)
-        logger.info(f"HomeAssistant websockent client started!")
+        await self.connect()
 
-        response = await websocket.recv()
-        result = await auth(websocket)
+    async def connect(self):
+        self.websocket = await websockets.connect(self.HOME_ASSISTANT_URL)
+        logger.info(f"Conencted to HomeAssistant!")
+
+        response = await self.websocket.recv()
+        result = await auth(self.websocket)
         if result == False:
             return
         await self.handle_message(response)
-        await self.event_observer.subscribe_to_state(websocket)
+        await self.event_observer.subscribe_to_state(self.websocket)
         await self.listen_for_message()
 
     async def listen_for_message(self):
-        while True:
-            response = await websocket.recv()
-            # logger.debug(f"HA Message ->> {response}")
-            await self.handle_message(response)
+        try:
+            while True:
+                response = await self.websocket.recv()
+                await self.handle_message(response)
+        except Exception as e:
+            self.websocket = None
+            logger.error(f"Connection lost!:\n{e}")
+            await self.start_reconnection()
+
+    async def start_reconnection(self):
+        await asyncio.sleep(10)
+        logger.info("Start reconnection")
+        await self.connect()
 
     def send_data(self, data: HaOutcomeMessage):
-        global websocket
         self.state_request_helper.save_if_state_requested(data)
         json_message = json.dumps(data.model_dump(exclude_none=True))
-        # logger.info(f"-> HA: {json_message}\n")
-        if websocket:
-            asyncio.create_task(websocket.send(json_message))
-        else:
-            logger.info(f"websocket not initialized!")
+        asyncio.create_task(self.send(json_message))
+
+    async def send(self, message):
+        try:
+            if self.websocket:
+                await self.websocket.send(message)
+            else:
+                logger.warning(f"websocket not initialized!")
+        except Exception as e:
+            logger.error(f"Send message error!\n {e}")
 
     async def handle_message(self, message):
         try:
