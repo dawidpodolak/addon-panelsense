@@ -16,7 +16,8 @@ from server.sense_server import PanelSenseServer
 from ui.dashboard import *
 
 parser = argparse.ArgumentParser(description="Start the application")
-parser.add_argument("--debugUI", action="store_true", help="Enable debug UI")
+parser.add_argument("--debug", action="store_true", help="Enable debug UI")
+parser.add_argument("--mock", action="store_true", help="Enable debug UI")
 args = parser.parse_args()
 
 loop = asyncio.get_event_loop()
@@ -57,7 +58,7 @@ def get_server_credentails() -> ServerCredentials:
 
 
 def setup_server():
-    if args.debugUI:
+    if args.mock:
         setup_fake_server()
     else:
         server_thread = threading.Thread(target=setup_real_server)
@@ -90,7 +91,7 @@ def sense_serve_callback() -> ClientConectionHelper:
 
 def main():
     setup_server()
-    start_web_app(args.debugUI)
+    start_web_app(args.debug)
 
 
 if __name__ == "__main__":

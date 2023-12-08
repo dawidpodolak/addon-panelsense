@@ -20,6 +20,7 @@ from websockets.client import WebSocketClientProtocol
 from .home_assistant_state_helper import HomeAssistantStateRequestHelper
 from .model.ha_outcome_message import HaOutcomeMessage
 
+
 class HomeAssistantClient:
     state_request_helper = HomeAssistantStateRequestHelper()
     HOME_ASSISTANT_URL = os.getenv("HASS_WS_ADDRESS")

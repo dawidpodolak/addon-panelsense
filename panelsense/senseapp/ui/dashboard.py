@@ -2,12 +2,16 @@ from typing import Callable, List, Optional, Set
 
 from flask import Flask, jsonify, render_template, request
 from flask_babel import Babel
+from gevent import monkey
+from gevent.pywsgi import WSGIServer
 from loguru import logger
 from pydantic import BaseModel, ValidationError
 from server.client.sense_client import SenseClienDetails, SenseClient
 from server.client_connection_helper import ClientConectionHelper
 from server.model.configuration import ConfigurationError
 from turbo_flask import Turbo
+
+monkey.patch_all()
 
 app = Flask(__name__)
 turbo = Turbo(app)
@@ -47,7 +51,11 @@ dashboard_state = UiState()
 
 def start_web_app(isDebug: bool):
     logger.info(f"Start web app. UI debug is on: {isDebug}")
-    app.run(debug=isDebug, host="0.0.0.0", port=5000)
+    if isDebug:
+        app.run(debug=isDebug, host="0.0.0.0", port=5000)
+    else:
+        http_server = WSGIServer(("", 5000), app)
+        http_server.serve_forever()
 
 
 def set_client_callback(server_callback: Callable[[], ClientConectionHelper]):
@@ -99,6 +107,7 @@ def show_page(installation_id):
             static_path = f"{values}/static"
 
     selected_client = get_ui_client(installation_id)
+    logger.debug(f"Selected client: {selected_client}")
     if selected_client:
         dashboard_state = UiState(
             selected_client=selected_client, clients=dashboard_state.clients

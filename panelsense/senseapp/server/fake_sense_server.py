@@ -17,7 +17,7 @@ class FakeSenseServer(ClientConectionHelper):
     def __init__(self, loop: AbstractEventLoop, database: SenseDatabase):
         self.database = database
         self.connected_clients = database.get_sense_clients()
-        logger.info(f"Sense clients: {len(self.connected_clients)}")
+        logger.info(f"Init FakeSenseServer with {len(self.connected_clients)} clients")
         # self.add_fake_client("Test android devices", "test Ad inId")
         # loop.create_task(self.add_fake_client_with_delay())
 

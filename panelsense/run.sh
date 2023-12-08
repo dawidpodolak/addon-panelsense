@@ -2,15 +2,18 @@
 
 TAG=panel_sense
 USE_DOCKER=false
-DEBUG_UI=false
+FLAGS=()
 
 for arg in "$@"; do
  case $arg in
    --docker)
      USE_DOCKER=true
      ;;
-   --debugUI)
-      DEBUG_UI=true
+   --debug)
+      FLAGS+=(--debug)
+      ;;
+   --mock)
+      FLAGS+=(--mock)
       ;;
    *)
      TAG="$arg"
@@ -23,9 +26,5 @@ if [ "$USE_DOCKER" = "true" ]; then
   docker build -t panel_sense .
   docker run -p 8652:8652 panel_sense
 else
-  if [ "$DEBUG_UI" = "true" ]; then
-    python panelsense/senseapp/sense.py --debugUI
-  else
-    python panelsense/senseapp/sense.py
-  fi
+  python panelsense/senseapp/sense.py "${FLAGS[@]}"
 fi

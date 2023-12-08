@@ -1,5 +1,6 @@
 from homeassistant.ids import get_message_id
-from homeassistant.model.ha_income_message import HaEventData, WeatherAttributes
+from homeassistant.model.ha_income_message import (HaEventData,
+                                                   WeatherAttributes)
 from homeassistant.model.ha_outcome_message import *
 from loguru import logger
 from server.model.weather import *
