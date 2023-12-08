@@ -131,7 +131,7 @@ class PanelSenseServer(ClientConectionHelper):
             sense_client.configuration_str = config
             self.database.update_sense_client_configuration(installation_id, config)
             sense_client.prepare_config()
-            asyncio.run(sense_client.send_config())
+            self.loop.create_task(sense_client.send_config())
 
     def handle_message(self, client: WebSocketClientProtocol, message):
         try:
