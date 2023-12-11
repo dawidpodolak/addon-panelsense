@@ -1,5 +1,6 @@
 ARG BUILD_FROM
 FROM $BUILD_FROM
+# FROM ghcr.io/home-assistant/amd64-base:3.15
 WORKDIR /usr/src/app
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
