@@ -38,3 +38,12 @@ body {
     margin-top: 50px;
     text-size-adjust: 50px;
 }
+
+.footer {
+    text-align: center;
+    padding: 10px;
+    background-color: #f2f2f2;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}

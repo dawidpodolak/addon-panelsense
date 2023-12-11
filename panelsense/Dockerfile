@@ -23,6 +23,7 @@ COPY config.yaml /
 ENV SENSE_APP=/usr/src/app/senseapp/sense.py
 ENV HASS_WS_ADDRESS="ws://supervisor/core/websocket"
 ENV PANEL_SENSE_DATABASE="/config/panelsense/sense_database.db"
+ENV STORAGE_DATABASE="/config/panelsense/storage_database.db"
 # for debug only
 RUN apk add git nano curl zsh vim
 RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
