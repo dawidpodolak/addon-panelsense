@@ -51,10 +51,10 @@ class UiState(BaseModel):
 dashboard_state = UiState()
 
 
-def start_web_app(isDebug: bool):
+def start_web_app(isDebug: bool, isMock: bool):
     logger.info(f"Start web app. UI debug is on: {isDebug}")
     if isDebug:
-        app.run(debug=isDebug, host="0.0.0.0", port=5000)
+        app.run(debug=isMock, host="0.0.0.0", port=5000)
     else:
         http_server = WSGIServer(("", 5000), app)
         http_server.serve_forever()
