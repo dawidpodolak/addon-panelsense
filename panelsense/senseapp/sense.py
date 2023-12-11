@@ -93,7 +93,7 @@ def sense_serve_callback() -> ClientConectionHelper:
 def main():
     logger.info(f"Start application. Installation ID: {get_installation_id()}")
     setup_server()
-    start_web_app(args.debug)
+    start_web_app(args.debug, args.mock)
 
 
 if __name__ == "__main__":
