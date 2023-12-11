@@ -1,6 +1,6 @@
 ARG BUILD_FROM
 FROM $BUILD_FROM
-# FROM ghcr.io/home-assistant/amd64-base:3.15
+
 WORKDIR /usr/src/app
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -10,9 +10,9 @@ COPY rootfs /
 RUN chmod a+x /etc
 
 # Install dependencies
-RUN apk add --no-cache \
-    python3 \
-    py3-pip
+RUN apk update && \
+    apk upgrade && \
+    apk add --no-cache python3 py3-pip
 
 RUN apk add nginx
 
@@ -26,8 +26,9 @@ ENV PANEL_SENSE_DATABASE="/config/panelsense/sense_database.db"
 ENV STORAGE_DATABASE="/config/panelsense/storage_database.db"
 
 # Install python dependencies
-RUN pip3 install --upgrade pip
-RUN pip3 install --no-cache-dir -r /tmp/requirements.txt
+RUN python3 -m venv /venv
+RUN . /venv/bin/activate && \
+  pip install --no-cache-dir -r /tmp/requirements.txt
 
 LABEL \
   io.hass.version="VERSION" \

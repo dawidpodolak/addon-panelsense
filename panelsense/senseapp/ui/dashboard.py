@@ -11,7 +11,6 @@ from server.client_connection_helper import ClientConectionHelper
 from server.model.configuration import ConfigurationError
 from turbo_flask import Turbo
 from storage.sense_storage import get_installation_id
-from utils.version import get_addon_version
 
 monkey.patch_all()
 
@@ -171,7 +170,6 @@ def get_dashboard_renderer():
         return render_template(
             "index.html",
             clients=dashboard_state.clients, static_path=static_path,
-            addon_version = get_addon_version(),
             installation_id = get_installation_id()
         )
 
