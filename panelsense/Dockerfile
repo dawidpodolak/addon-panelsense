@@ -1,5 +1,6 @@
-ARG BUILD_FROM
-FROM $BUILD_FROM
+ARG BUILD_FROM=ghcr.io/hassio-addons/base:13.2.2
+# hadolint ignore=DL3006
+FROM ${BUILD_FROM}
 
 WORKDIR /usr/src/app
 
@@ -26,9 +27,8 @@ ENV PANEL_SENSE_DATABASE="/config/panelsense/sense_database.db"
 ENV STORAGE_DATABASE="/config/panelsense/storage_database.db"
 
 # Install python dependencies
-RUN python3 -m venv /venv
-RUN . /venv/bin/activate && \
-  pip install --no-cache-dir -r /tmp/requirements.txt
+RUN pip3 install --upgrade pip
+RUN pip3 install --no-cache-dir -r /tmp/requirements.txt --break-system-packages
 
 LABEL \
   io.hass.version="VERSION" \
