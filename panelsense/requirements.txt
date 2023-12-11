@@ -2,7 +2,6 @@ asyncio
 websockets
 pydantic
 Flask
-Flask-Babel
 turbo-flask
 pyyaml
 SQLAlchemy
