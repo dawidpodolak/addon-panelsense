@@ -6,13 +6,14 @@ import threading
 
 from homeassistant.components.event_observer import EventObserver
 from homeassistant.home_assistant_client import HomeAssistantClient
-from loging.logger import _LOGGER
+from loguru import logger
 from mediator.mediator import Mediator
 from server.client_connection_helper import ClientConectionHelper
 from server.database.sense_database import SenseDatabase
 from server.fake_sense_server import FakeSenseServer
 from server.model.server_credentials import ServerCredentials
 from server.sense_server import PanelSenseServer
+from storage.sense_storage import get_installation_id
 from ui.dashboard import *
 
 parser = argparse.ArgumentParser(description="Start the application")
@@ -51,7 +52,7 @@ def get_server_credentails() -> ServerCredentials:
     if env_server_password:
         server_credentials.password = env_server_password
 
-    _LOGGER.debug(
+    logger.debug(
         f"Credentials: user: {server_credentials.username}, pswd: {server_credentials.password}"
     )
     return server_credentials
@@ -90,6 +91,7 @@ def sense_serve_callback() -> ClientConectionHelper:
 
 
 def main():
+    logger.info(f"Start application. Installation ID: {get_installation_id()}")
     setup_server()
     start_web_app(args.debug)
 
