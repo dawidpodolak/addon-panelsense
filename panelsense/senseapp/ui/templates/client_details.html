@@ -1,0 +1,82 @@
+{% if client is not none %}
+<div class="top-bar" data-turbo-suppress-warning>
+    <img class="nav-icon" src="{{static_path}}/icons/arrow_left_white.png" id="back_button" alt="Navigate" onclick="showList()">
+    <span class="title"> {{ client.name }}</span>
+</div>
+<div class="device_header">
+    <div class="device_header_info">
+        <span style="font-size: 24px; margin-bottom: 10px;">Details: </span>
+        <span class="text_device_detail">Name: {{ client.name }}</span>
+        <div class="device_status" id="device_status">
+            <span class="text_device_status" style="margin-right: 8px;">Status: </span>
+            {% if client.is_online %}
+            <span class="online" style="font-size: 14px;">Online</span>
+            {% else %}
+            <span class="offline" style="font-size: 14px;">Offline</span>
+            {% endif %}
+        </div>
+        <span class="text_device_detail">Installation ID: {{ client.installation_id }}</span>
+        <span class="text_device_detail">Application version name: {{ client.version_name }}</span>
+        <span class="text_device_detail">Application version code: {{ client.version_code }}</span>
+    </div>
+    <div class="device_header_button">
+        <button id="sendButton" class="device_button_style" onclick="sendConfig()">Send configuration</button>
+        <span class="text_configuration_sent" id="configuration_send">Configuration has been sent!</span>
+    </div>
+</div>
+<div class="device_input_text_layout" id="editor"></div>
+<script>
+    var configurationSentElement = document.getElementById("configuration_send")
+    var sendButton = document.getElementById("sendButton")
+    configurationSentElement.style.visibility = 'hidden'
+    console.log("load editor script")
+    var yamyConfig = ace.createEditSession({{ client.configuration|tojson }});
+    var editor = ace.edit("editor");
+    var errorMessage = ""
+    editor.setTheme("ace/theme/github");
+    editor.setSession(yamyConfig);
+
+    editor.session.setMode("ace/mode/yaml");
+    editor.session.on('change', function(e){
+        configurationSentElement.style.visibility = 'hidden'
+    });
+    editor.session.on('changeAnnotation', function(e){
+        var annotations = editor.session.getAnnotations();
+        errorMessage = ""
+        for (var key in annotations){
+            if (annotations.hasOwnProperty(key))
+                var row = annotations[key].row + 1
+                var column = annotations[key].column
+                var errorText = "Error in line: " + row
+                errorMessage = errorText + "\n"
+                console.log(errorText)
+        }
+    });
+    function sendConfig() {
+        if (errorMessage === "") {
+            $.ajax({
+                url: 'update_configuration',
+                data: JSON.stringify({'configuration': editor.getValue(), 'installation_id': "{{ client.installation_id }}" }),
+                contentType: 'application/json;charset=UTF-8',
+                type: 'POST',
+                success: function(response) {
+                    configurationSentElement.textContent = "Configuration has been sent!"
+                    configurationSentElement.style.visibility = 'visible'
+                    console.log("Configuration updated!");
+                },
+                error: function(error) {
+                    console.log("errorMessage: " + error.responseJSON.errorMessage);
+                    configurationSentElement.textContent = "Error!\n" + error.responseJSON.errorMessage
+                    configurationSentElement.style.visibility = 'visible'
+                    console.log(error);
+
+                }
+            });
+        } else {
+            configurationSentElement.textContent = errorMessage
+            configurationSentElement.style.visibility = 'visible'
+        }
+    }
+</script>
+</div>
+{% endif %}

@@ -1,0 +1,49 @@
+/* CSS Styling */
+body {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: Arial, sans-serif;
+    background-color: rgb(255, 255, 255);
+}
+.device-list {
+    width: 70%;
+    border-top: 1px solid #ddd;
+    margin-top: 60px;  /* Adjusted space for fixed top bar */
+    align-self: center;
+    align-items: center;
+}
+.device-item {
+    width: 100%;
+    height: 80px;
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 15px;
+    box-sizing: border-box;
+}
+.device-subitem {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+}
+.device-empty-placeholder {
+    width: 100%;
+    text-align: center;
+    margin-top: 50px;
+    text-size-adjust: 50px;
+}
+
+.footer {
+    text-align: center;
+    padding: 10px;
+    background-color: #f2f2f2;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}

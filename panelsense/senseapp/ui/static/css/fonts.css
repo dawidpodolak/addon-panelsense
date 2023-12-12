@@ -1,0 +1,21 @@
+.primary-text {
+    margin-top: 0; /* To ensure no space is between text and version info */
+    font-size: 16px;
+    color: black;
+    font-weight: 700;
+}
+.secondary-text {
+    margin-top: 0; /* To ensure no space is between text and version info */
+    font-size: 12px;
+    color: grey;
+}
+.online {
+    font-weight: 600;
+    font-size: 12px;
+    color: lime;
+}
+.offline {
+    font-weight: 600;
+    font-size: 12px;
+    color: crimson;
+}

@@ -1,0 +1,34 @@
+<div class="top-bar" data-turbo-suppress-warning>
+    <div class="nav-space"></div>
+    <span class="title">PaneleSense Dashboard</span>
+</div>
+
+{% if clients|length == 0 %}
+<div class="device-empty-placeholder">
+    <span class="primary-text">No clients connected!</span>
+</div>
+{% else %}
+    <div class="device-list" id="client_list">
+        {% for client in clients %}
+
+        <div class="device-item" onclick="showDevice('{{ client.installation_id }}')">
+            <div class="device-subitem">
+                <span class="primary-text">{{ client.name }}</span>
+                <span class="secondary-text">{{ client.version_name }} ( {{ client.version_code }})</span>
+                {% if client.is_online %}
+                <span class="online" style="font-size: 14px;">Online</span>
+                {% else %}
+                <span class="offline" style="font-size: 14px;">Offline</span>
+                {% endif %}
+            </div>
+            <img src="{{static_path}}/icons/arrow_right.png" style="width: 30px; height: 30px;"/>
+        </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+
+<!-- Footer -->
+<div class="footer" id="footer">
+    <p class="secondary-text">Installation id: {{ installation_id }}</p>
+</div>
