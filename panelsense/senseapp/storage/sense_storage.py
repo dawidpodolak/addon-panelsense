@@ -7,6 +7,7 @@ INSTALLATION_ID = "installation_id"
 
 
 def get_installation_id():
+    return "n/a"
     with shelve.open(databasePath) as storage:
         installation_id = storage.get(INSTALLATION_ID)
         if installation_id is None:
