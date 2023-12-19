@@ -39,7 +39,13 @@ class HomeAssistantClient:
         await self.connect()
 
     async def connect(self):
-        self.websocket = await websockets.connect(self.HOME_ASSISTANT_URL)
+        try:
+            self.websocket = await websockets.connect(self.HOME_ASSISTANT_URL)
+        except Exception as e:
+            logger.error(f"Error connecting to HomeAssistant: {e}")
+            await self.start_reconnection()
+            return
+
         logger.info(f"Conencted to HomeAssistant!")
 
         response = await self.websocket.recv()
