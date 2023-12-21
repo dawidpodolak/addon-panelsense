@@ -1,0 +1,26 @@
+name: Release PanelSense CI
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Prepare Version Name
+        run: |
+          PANEL_SENSE_ADDON_VERSION_NAME=$(<panelsense/config.yaml | grep version | awk -F': ' '{print $2}' | tr -d '"')
+          echo "PANEL_SENSE_ADDON_VERSION_NAME=$PANEL_SENSE_ADDON_VERSION_NAME" >> $GITHUB_ENV
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.CREATE_RELEASE_PAT }}
+        with:
+          tag_name: 'v${{ env.PANEL_SENSE_ADDON_VERSION_NAME }}'
+          release_name: 'Release ${{ env.PANEL_SENSE_ADDON_VERSION_NAME }}'
+          draft: false
+          prerelease: true
+          body: "Release ${{ env.PANEL_SENSE_ADDON_VERSION_NAME }}"
