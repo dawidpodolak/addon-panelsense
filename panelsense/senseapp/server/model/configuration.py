@@ -26,6 +26,7 @@ class ConfigurationItem(BaseModel):
 class ConfigurationPanelType(Enum):
     HOME = "home"
     GRID = "grid"
+    FLEX = "flex"
 
 
 class ConfigurationPanel(BaseModel):
@@ -49,7 +50,15 @@ class ConfigurationHomePanel(ConfigurationPanel):
     background: Optional[str] = None
 
 
-ConfigurationPanelUnion = Union[ConfigurationGridPanel, ConfigurationHomePanel]
+class ConfigurationFlexPanel(ConfigurationPanel):
+    rows: Optional[List[List[ConfigurationItem]]] = None
+    columns: Optional[List[List[ConfigurationItem]]] = None
+    background: Optional[str] = None
+
+
+ConfigurationPanelUnion = Union[
+    ConfigurationGridPanel, ConfigurationHomePanel, ConfigurationFlexPanel
+]
 
 
 class Configuration(BaseModel):
