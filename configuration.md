@@ -59,7 +59,7 @@ Panels that can be put in `panel_list` list. To use given panel, set `type` key 
 #### Panel Flex
 <img  src="screenshots/screenshot_panel_flex.png?raw=true"  width="350" />
 
-This panel contains colums and rows that working separately. Rows are displayed from bottom to the top nnd max amount is 3. Columns (up to 10) contains a lists of items. Columns as same as list can be scrolled if their content exceeds beyond the screen.
+This panel contains colums and rows that working separately. Rows are displayed from bottom to the top and max amount is 3. Columns (up to 10) contains a lists of items. Columns as same as list can be scrolled if their content exceeds beyond the screen.
 
 | Key | Required | Description |
 |--|--|--|
