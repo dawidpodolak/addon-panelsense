@@ -9,8 +9,8 @@ from pydantic import BaseModel, ValidationError
 from server.client.sense_client import SenseClienDetails, SenseClient
 from server.client_connection_helper import ClientConectionHelper
 from server.model.configuration import ConfigurationError
-from turbo_flask import Turbo
 from storage.sense_storage import get_installation_id
+from turbo_flask import Turbo
 
 monkey.patch_all()
 
@@ -169,8 +169,9 @@ def get_dashboard_renderer():
     with app.app_context():
         return render_template(
             "index.html",
-            clients=dashboard_state.clients, static_path=static_path,
-            installation_id = get_installation_id()
+            clients=dashboard_state.clients,
+            static_path=static_path,
+            installation_id=get_installation_id(),
         )
 
 
