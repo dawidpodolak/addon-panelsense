@@ -1,8 +1,7 @@
 import json
 
 from homeassistant.ids import get_message_id
-from homeassistant.model.ha_income_message import (HaEvent, HaEventData,
-                                                   HaEventState)
+from homeassistant.model.ha_income_message import HaEvent, HaEventData, HaEventState
 
 
 class EventObserver:

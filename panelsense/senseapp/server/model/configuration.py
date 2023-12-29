@@ -14,10 +14,12 @@ class ConfigurationSystem(BaseModel):
 
 class ConfigurationItem(BaseModel):
     id: Optional[str] = None
-    entity: str
+    entity: Optional[str] = None
+    type: Optional[str] = None
     title: Optional[str] = None
     icon: Optional[str] = None
     background: Optional[str] = None
+    time24h: Optional[bool] = None
 
     def __hash__(self):
         return hash(self.id)

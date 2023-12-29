@@ -24,6 +24,7 @@ from websockets.client import WebSocketClientProtocol
 from websockets.exceptions import ConnectionClosedError
 from websockets.http11 import Request, Response
 from websockets.server import ServerConnection
+from websockets.typing import Data
 
 from .client_connection_helper import ClientConectionHelper
 
@@ -55,7 +56,12 @@ class PanelSenseServer(ClientConectionHelper):
 
     async def message_handler(self, websocket: WebSocketClientProtocol):
         logger.info(f"Attempt to connect: {websocket.remote_address}")
-        auth_message = await websocket.recv()
+        auth_message: Data = ""
+        try:
+            auth_message = await websocket.recv()
+        except ConnectionClosedError as e:
+            logger.error(f"Connection closed! {e}")
+            return
 
         sense_client = await self.client_authenticator.authenticate(
             auth_message, websocket, self.get_client

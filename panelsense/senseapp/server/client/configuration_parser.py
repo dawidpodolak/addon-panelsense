@@ -30,10 +30,7 @@ def parse_panel_list(
 ) -> List[ConfigurationPanelUnion]:
     configuration_panel_list = list()
     for panel_yaml in panel_list_yaml:
-        try:
-            configuration_panel_list.append(parse_panel(panel_yaml))
-        except Exception as e:
-            logger.error(f"Error: {e} -> {panel_yaml}")
+        configuration_panel_list.append(parse_panel(panel_yaml))
 
     return configuration_panel_list
 
@@ -41,10 +38,8 @@ def parse_panel_list(
 def parse_panel(panel_yaml: Dict[str, Any]) -> ConfigurationPanel:
     type = panel_yaml["type"]
     if type == ConfigurationPanelType.GRID.value:
-        logger.info(f"Grid panel: {panel_yaml}")
         return ConfigurationGridPanel(**panel_yaml)
     elif type == ConfigurationPanelType.HOME.value:
-        logger.info(f"Home panel: {panel_yaml}")
         return ConfigurationHomePanel(**panel_yaml)
     elif type == ConfigurationPanelType.FLEX.value:
         return ConfigurationFlexPanel(**panel_yaml)
