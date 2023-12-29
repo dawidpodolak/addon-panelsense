@@ -90,7 +90,7 @@ system:
 panel_list:
     - type: "flex"
       id: "flex_panel"
-	  background: "#66000000"
+      background: "#66000000"
       columns:
        - - entity: "weather.home"
          - entity: "light.office"
