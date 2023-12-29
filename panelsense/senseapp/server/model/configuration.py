@@ -14,10 +14,12 @@ class ConfigurationSystem(BaseModel):
 
 class ConfigurationItem(BaseModel):
     id: Optional[str] = None
-    entity: str
+    entity: Optional[str] = None
+    type: Optional[str] = None
     title: Optional[str] = None
     icon: Optional[str] = None
     background: Optional[str] = None
+    time24h: Optional[bool] = None
 
     def __hash__(self):
         return hash(self.id)
@@ -26,6 +28,7 @@ class ConfigurationItem(BaseModel):
 class ConfigurationPanelType(Enum):
     HOME = "home"
     GRID = "grid"
+    FLEX = "flex"
 
 
 class ConfigurationPanel(BaseModel):
@@ -49,7 +52,15 @@ class ConfigurationHomePanel(ConfigurationPanel):
     background: Optional[str] = None
 
 
-ConfigurationPanelUnion = Union[ConfigurationGridPanel, ConfigurationHomePanel]
+class ConfigurationFlexPanel(ConfigurationPanel):
+    rows: Optional[List[List[ConfigurationItem]]] = None
+    columns: Optional[List[List[ConfigurationItem]]] = None
+    background: Optional[str] = None
+
+
+ConfigurationPanelUnion = Union[
+    ConfigurationGridPanel, ConfigurationHomePanel, ConfigurationFlexPanel
+]
 
 
 class Configuration(BaseModel):

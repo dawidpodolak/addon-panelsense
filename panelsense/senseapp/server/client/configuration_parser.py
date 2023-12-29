@@ -41,5 +41,7 @@ def parse_panel(panel_yaml: Dict[str, Any]) -> ConfigurationPanel:
         return ConfigurationGridPanel(**panel_yaml)
     elif type == ConfigurationPanelType.HOME.value:
         return ConfigurationHomePanel(**panel_yaml)
+    elif type == ConfigurationPanelType.FLEX.value:
+        return ConfigurationFlexPanel(**panel_yaml)
     else:
         raise ConfigurationError(f"Unsupported type: {type}")

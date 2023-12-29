@@ -4,7 +4,8 @@ import yaml
 from loguru import logger
 from pydantic import BaseModel, ValidationError
 from server.model.authentication import AuthenticationIncomingMessage
-from server.model.configuration import Configuration, ConfigurationOutcomingMessage
+from server.model.configuration import (Configuration,
+                                        ConfigurationOutcomingMessage)
 from websockets.client import WebSocketClientProtocol
 from websockets.exceptions import ConnectionClosed
 
@@ -67,7 +68,11 @@ class SenseClient:
         return self.configuration_str
 
     def prepare_config(self):
-        self.configuration_message = parse_configuration(self.configuration_str)
+        try:
+            self.configuration_message = parse_configuration(self.configuration_str)
+        except Exception as e:
+            logger.error("Configuration parsing error!")
+            logger.error(e)
 
     async def send_config(self):
         try:
