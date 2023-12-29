@@ -29,9 +29,10 @@ Panels that can be put in `panel_list` list. To use given panel, set `type` key 
 |--|--|
 | home | Panel with weather, time, date and one or two buttons |
 | grid | Panel with grid |
+| flex | Flex panel with columns and rows |
 
 #### Panel Home
-<img  src="https://github.com/dawidpodolak/addon-panelsense/blob/feature/documentation/screenshots/screenshot_panel_home.png?raw=true"  width="350"  />
+<img  src="screenshots/screenshot_panel_home.png?raw=true"  width="350"  />
 
 | Key | Required | Description |
 |--|--|--|
@@ -45,7 +46,7 @@ Panels that can be put in `panel_list` list. To use given panel, set `type` key 
 | item_list | false | List of items that will be put into a bottom panel. The amount of items is not limited. The maximum amount should be determined by you. For NSpanel the max two items look ok. For a 10" tablet it could be 5.
 
 #### Panel Grid
-<img  src="https://github.com/dawidpodolak/addon-panelsense/blob/feature/documentation/screenshots/screenshot_panel_grid.png?raw=true"  width="350" />
+<img  src="screenshots/screenshot_panel_grid.png?raw=true"  width="350" />
 
 | Key | Required | Description |
 |--|--|--|
@@ -55,11 +56,26 @@ Panels that can be put in `panel_list` list. To use given panel, set `type` key 
 | column_count | false | HomeAssistant weather entity. If not set, the weather won't be displayed |
 | item_list | false | List of items that will be put into the grid
 
-### Items
-Item is a part of a panel that allows you to control your entities like light, cover, etc. If some entity provides more control options (like the light has brightness or color steering) then such an item can be long-pressed. You don't have to specify the type of the item. The type is determined by `entity` key.
+#### Panel Flex
+<img  src="screenshots/screenshot_panel_grid.png?raw=true"  width="350" />
+
+This panel contains colums and rows that working separately. Rows are displayed from bottom to the top nnd max amount is 3. Columns (up to 10) contains a lists of items. Columns as same as list can be scrolled if their content exceeds beyond the screen.
+
 | Key | Required | Description |
 |--|--|--|
-| entity | true | HomeAssistant entity. Based on this, the proper item will be used |
+| type | true | Should be set to `flex` |
+| id | false | If set, can be used in `main_panel_id` |
+| background | false | URL or hex of the background. E.g. of hex "#FFFFFFFF". |
+| columns | false | List of columns that contains list of items. Up to 10 |
+| rows | false | List of rows that contains list of items. Up to 3
+
+### Items
+Item is a part of a panel that allows you to control your entities like light, cover, etc. If some entity provides more control options (like the light has brightness or color steering) then such an item can be long-pressed. You don't have to specify the type of the item. The type is determined by `entity` key.
+
+| Key | Required | Description |
+|--|--|--|
+| entity | false | HomeAssistant entity. Based on this, the proper item will be used |
+| type | false | If specified, then enitity is ignored. Supported values: `clock` |
 | title | false | Displayed title of panel. If empty, it will be taken from entity |
 | icon | false | Displayed icon from MDI system e.g. "account" or "lightbulb". If empty, it will be taken from entity |
 
@@ -72,19 +88,39 @@ system:
     show_nav_bar: true
     background: "https://asset.gecdesigns.com/img/background-templates/modern-crystal-abstract-background-template-1612247149783-cover.webp"
 panel_list:
+    - type: "flex"
+      id: "flex_panel"
+	  background: "#66000000"
+      columns:
+       - - entity: "weather.home"
+         - entity: "light.office"
+       - - type: "clock"
+           time24h: true
+         - entity: "cover.kitchen"
+       - - entity: "switch.tv"
+         - entity: "light.lamp"
+      rows:
+       - - entity: "cover.kitchen_fron"
+           title: "Cover front"
+         - entity: "cover.room"
+           title: "Room cover"
+       - - entity: "cover.kitchen_fron"
+           title: "Cover front"
+         - entity: "cover.room"
+           title: "Room cover"
+
     - type: "home"
       id: "Home"
       time24h: true
       weather_entity: "weather.main_weather"
       background: "#66000000"
-      item_left:
-        entity: "light.kitchen_leds"
-        title: "Leds"
-        icon: "led-strip-variant"
-      item_right:
-        entity: "light.kitchen_main"
-        title: "Main light"
-        icon: "lightbulb"
+      item_list:
+        - entity: "light.kitchen_leds"
+          title: "Leds"
+          icon: "led-strip-variant"
+        - entity: "light.kitchen_main"
+          title: "Main light"
+          icon: "lightbulb"
     - type: "grid"
       id: "covers_and_lights"
       column_count: 3
