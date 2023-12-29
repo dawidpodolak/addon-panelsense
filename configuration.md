@@ -57,7 +57,7 @@ Panels that can be put in `panel_list` list. To use given panel, set `type` key 
 | item_list | false | List of items that will be put into the grid
 
 #### Panel Flex
-<img  src="screenshots/screenshot_panel_grid.png?raw=true"  width="350" />
+<img  src="screenshots/screenshot_panel_flex.png?raw=true"  width="350" />
 
 This panel contains colums and rows that working separately. Rows are displayed from bottom to the top nnd max amount is 3. Columns (up to 10) contains a lists of items. Columns as same as list can be scrolled if their content exceeds beyond the screen.
 
