@@ -66,6 +66,15 @@ class WeatherAttributes(BaseModel):
     supported_features: int
 
 
+class SensorAttributes(BaseModel):
+    state_class: Optional[str] = None
+    battery_level: Optional[int] = None
+    unit_of_measurement: Optional[str] = None
+    icon: Optional[str] = None
+    device_class: Optional[str] = None
+    friendly_name: Optional[str] = None
+
+
 class HaEventState(BaseModel):
     entity_id: str
     state: str

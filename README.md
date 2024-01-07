@@ -6,7 +6,7 @@
 <img  src="panelsense/logo.png?raw=true"  width="500" />
 
 
-PanelSense is a project that helps to manage Home Assistant with an Android app that can be installed locally on any Android device like a tablet or devices such as Sonoff NSPanel. Is fully customizable with this addon installed in HomeAssistant. Android application provides you the ability to set up many screens with various options like home panel or grid panel, where you can put buttons to control light, cover, and other HomeAssistant entities.
+PanelSense is a project that helps to manage Home Assistant with an Android app that can be installed locally on any Android device like a tablet or devices such as Sonoff NSPanel. It's fully customizable with this addon installed in HomeAssistant. Android application provides you the ability to set up many screens with various options like home panel or grid panel, where you can put buttons to control light, cover, and other HomeAssistant entities.
 
 ## Screnshots
 <img  src="screenshots/screenshot_panel_home.png?raw=true"  width="350" /><img  src="screenshots/screenshot_panel_grid.png?raw=true"  width="350" /><img  src="screenshots/screenshot_details_light.png?raw=true"  width="350" /><img  src="screenshots/screenshot_details_cover.png?raw=true"  width="350" />
