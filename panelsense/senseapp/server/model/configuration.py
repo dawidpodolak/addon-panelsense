@@ -16,12 +16,16 @@ class ConfigurationSystem(BaseModel):
 class ConfigurationItem(BaseModel):
     id: Optional[str] = None
     entity: Optional[str] = None
+<<<<<<< HEAD
 
     #  Supported type: CLOCK, GRID
+=======
+>>>>>>> master
     type: Optional[str] = None
     title: Optional[str] = None
     icon: Optional[str] = None
     background: Optional[str] = None
+<<<<<<< HEAD
     foreground: Optional[str] = None
 
     # dedicated for clock type
@@ -29,6 +33,9 @@ class ConfigurationItem(BaseModel):
 
     # dedicated for sensor grid type
     item_list: Optional[List["ConfigurationItem"]] = None
+=======
+    time24h: Optional[bool] = None
+>>>>>>> master
 
     def __hash__(self):
         return hash(self.id)
@@ -69,7 +76,10 @@ class ConfigurationFlexPanel(ConfigurationPanel):
     rows: Optional[List[List[ConfigurationItem]]] = None
     columns: Optional[List[List[ConfigurationItem]]] = None
     background: Optional[str] = None
+<<<<<<< HEAD
     foreground: Optional[str] = None
+=======
+>>>>>>> master
 
 
 ConfigurationPanelUnion = Union[
