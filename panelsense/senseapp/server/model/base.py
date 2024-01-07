@@ -12,6 +12,8 @@ class MessageType(Enum):
     HA_ACTION_SWITCH = "ha_action_switch"
     HA_STATE_REQUEST = "ha_state_request"
     HA_ACTION_WEATHER = "ha_action_weather"
+    HA_ACTION_SENSOR = "ha_action_sensor"
+    HA_ACTION_BINARY_SENSOR = "ha_action_binary_sensor"
 
 
 # extended class should implement type: MessageType

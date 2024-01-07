@@ -53,6 +53,7 @@ Panels that can be put in `panel_list` list. To use given panel, set `type` key 
 | type | true | Should be set to `grid` |
 | id | false | If set, can be used in `main_panel_id` |
 | background | false | URL or hex of the background. E.g. of hex "#FFFFFFFF". |
+| foreground | false | Only hex and can be applied only together with background. For example to improve item contrast |
 | column_count | false | HomeAssistant weather entity. If not set, the weather won't be displayed |
 | item_list | false | List of items that will be put into the grid
 
@@ -66,6 +67,7 @@ This panel contains colums and rows that working separately. Rows are displayed 
 | type | true | Should be set to `flex` |
 | id | false | If set, can be used in `main_panel_id` |
 | background | false | URL or hex of the background. E.g. of hex "#FFFFFFFF". |
+| foreground | false | Only hex and can be applied only together with background. For example to improve item contrast |
 | columns | false | List of columns that contains list of items. Up to 10 |
 | rows | false | List of rows that contains list of items. Up to 3
 
@@ -78,8 +80,32 @@ Item is a part of a panel that allows you to control your entities like light, c
 | type | false | If specified, then enitity is ignored. Supported values: `clock` |
 | title | false | Displayed title of panel. If empty, it will be taken from entity |
 | icon | false | Displayed icon from MDI system e.g. "account" or "lightbulb". If empty, it will be taken from entity |
+| time24h | false | Only for clock type |
+| item_list | false | Only for grid type |
+| background | false | Hex or image url |
+| foreground | false | Only hex and can be applied only together with background. For example to improve item contrast |
+
+| Supported types | Description |
+| -- | -- |
+| clock | Shows time and date. Time can be presented in 24h mode if time24h is set to true |
+| grid | grid of items | 
 
 Icons are taken from https://pictogrammers.com/
+
+#### Clock type item
+<img  src="screenshots/screenshot_item_clock.png?raw=true"  width="350" />
+
+#### Grid type item
+<img  src="screenshots/screenshot_item_grid.png?raw=true"  width="350" />
+
+| Supported domains |
+| -- |
+| switch |
+| light |
+| cover |
+| sensor |
+| binary_sensor |
+
 ### Sample configuration
 
 ```yaml
@@ -87,6 +113,7 @@ system:
     main_panel_id: "Home"
     show_nav_bar: true
     background: "https://asset.gecdesigns.com/img/background-templates/modern-crystal-abstract-background-template-1612247149783-cover.webp"
+    foreground: "#ce000000"
 panel_list:
     - type: "flex"
       id: "flex_panel"
@@ -99,6 +126,16 @@ panel_list:
          - entity: "cover.kitchen"
        - - entity: "switch.tv"
          - entity: "light.lamp"
+       - - type: "grid"
+           title: "Czujniki"
+           background: "https://cdn.wallpapersafari.com/34/13/pldEkV.jpg"
+           foreground: "#22000000"
+           item_list:
+    	     - entity: "sensor.carbon_dioxide"
+             - entity: "sensor.carbon_dioxide"
+             - entity: "cover.hall_window"
+             - entity: "light.ceiling_lights"
+             - entity: "binary_sensor.movement_backyard"
       rows:
        - - entity: "cover.kitchen_fron"
            title: "Cover front"
