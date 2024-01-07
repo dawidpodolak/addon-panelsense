@@ -67,7 +67,10 @@ This panel contains colums and rows that working separately. Rows are displayed 
 | type | true | Should be set to `flex` |
 | id | false | If set, can be used in `main_panel_id` |
 | background | false | URL or hex of the background. E.g. of hex "#FFFFFFFF". |
+<<<<<<< HEAD
 | foreground | false | Only hex and can be applied only together with background. For example to improve item contrast |
+=======
+>>>>>>> master
 | columns | false | List of columns that contains list of items. Up to 10 |
 | rows | false | List of rows that contains list of items. Up to 3
 
@@ -88,7 +91,7 @@ Item is a part of a panel that allows you to control your entities like light, c
 | Supported types | Description |
 | -- | -- |
 | clock | Shows time and date. Time can be presented in 24h mode if time24h is set to true |
-| grid | grid of items | 
+| grid | grid of items |
 
 Icons are taken from https://pictogrammers.com/
 
@@ -126,6 +129,7 @@ panel_list:
          - entity: "cover.kitchen"
        - - entity: "switch.tv"
          - entity: "light.lamp"
+
        - - type: "grid"
            title: "Czujniki"
            background: "https://cdn.wallpapersafari.com/34/13/pldEkV.jpg"
@@ -136,6 +140,7 @@ panel_list:
              - entity: "cover.hall_window"
              - entity: "light.ceiling_lights"
              - entity: "binary_sensor.movement_backyard"
+
       rows:
        - - entity: "cover.kitchen_fron"
            title: "Cover front"
