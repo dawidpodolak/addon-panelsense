@@ -13,6 +13,7 @@ from loguru import logger
 from mediator.components.base_component import BaseComponent
 from mediator.components.cover.cover_component import Cover
 from mediator.components.light.light_component import Light
+from mediator.components.sensor_component import Sensor
 from mediator.components.switch.switch_component import Switch
 from mediator.components.weather_component import Weather
 from websockets.client import WebSocketClientProtocol
@@ -114,6 +115,12 @@ class HomeAssistantClient:
         elif domain == "weather" and self.callback_message:
             weather = Weather(state)
             self.callback_message(weather)
+        elif (
+            domain == "sensor" or domain == "binary_sensor"
+        ) and self.callback_message:
+            logger.info(f"sensor: {state}")
+            sensor = Sensor(state)
+            self.callback_message(sensor)
 
     def set_message_callback(self, callback: Callable[[BaseComponent], None]):
         self.callback_message = callback
