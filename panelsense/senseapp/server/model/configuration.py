@@ -10,16 +10,25 @@ class ConfigurationSystem(BaseModel):
     main_panel_id: Optional[str] = None
     show_nav_bar: bool = False
     background: Optional[str] = None
+    foreground: Optional[str] = None
 
 
 class ConfigurationItem(BaseModel):
     id: Optional[str] = None
     entity: Optional[str] = None
+
+    #  Supported type: CLOCK, GRID
     type: Optional[str] = None
     title: Optional[str] = None
     icon: Optional[str] = None
     background: Optional[str] = None
+    foreground: Optional[str] = None
+
+    # dedicated for clock type
     time24h: Optional[bool] = None
+
+    # dedicated for sensor grid type
+    item_list: Optional[List["ConfigurationItem"]] = None
 
     def __hash__(self):
         return hash(self.id)
@@ -35,6 +44,7 @@ class ConfigurationPanel(BaseModel):
     id: Optional[str] = None
     type: str
     background: Optional[str] = None
+    foreground: Optional[str] = None
 
     def __hash__(self):
         return hash(self.id)
@@ -43,6 +53,8 @@ class ConfigurationPanel(BaseModel):
 class ConfigurationGridPanel(ConfigurationPanel):
     column_count: int = 1
     item_list: List[ConfigurationItem] = list()
+    background: Optional[str] = None
+    foreground: Optional[str] = None
 
 
 class ConfigurationHomePanel(ConfigurationPanel):
@@ -50,12 +62,14 @@ class ConfigurationHomePanel(ConfigurationPanel):
     time24h: bool = False
     item_list: List[ConfigurationItem] = list()
     background: Optional[str] = None
+    foreground: Optional[str] = None
 
 
 class ConfigurationFlexPanel(ConfigurationPanel):
     rows: Optional[List[List[ConfigurationItem]]] = None
     columns: Optional[List[List[ConfigurationItem]]] = None
     background: Optional[str] = None
+    foreground: Optional[str] = None
 
 
 ConfigurationPanelUnion = Union[
